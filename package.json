@@ -1,0 +1,60 @@
+{
+  "private": true,
+  "name": "simple-oracledb",
+  "version": "0.0.1",
+  "description": "Extend capabilities of oracledb with simplified API for quicker development.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test/spec"
+  },
+  "homepage": "http://github.com/sagiegurari/simple-oracledb",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/sagiegurari/simple-oracledb.git"
+  },
+  "bugs": {
+    "url": "http://github.com/sagiegurari/simple-oracledb/issues"
+  },
+  "keywords": [
+    "oracle",
+    "oracledb",
+    "database"
+  ],
+  "dependencies": {
+    "async": "^1.4.2"
+  },
+  "devDependencies": {
+    "blanket": "latest",
+    "chai": "latest",
+    "grunt": "latest",
+    "grunt-blanket": "latest",
+    "grunt-cli": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-coveralls": "latest",
+    "grunt-eslint": "latest",
+    "grunt-jscs": "latest",
+    "grunt-jsdoc-to-markdown": "latest",
+    "grunt-jslint": "latest",
+    "grunt-jsonlint": "latest",
+    "grunt-mocha-test": "latest",
+    "grunt-todos": "latest",
+    "load-grunt-tasks": "latest",
+    "mocha-lcov-reporter": "latest",
+    "time-grunt": "latest"
+  },
+  "author": {
+    "name": "Sagie Gur-Ari",
+    "email": "sagiegurari@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "grunt test",
+    "clean": "grunt cleanup",
+    "lint": "grunt lint",
+    "docs": "grunt docs",
+    "build": "grunt build"
+  }
+}
