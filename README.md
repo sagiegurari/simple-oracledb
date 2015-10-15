@@ -71,30 +71,6 @@ function myFunction(pool) {
 }
 ```
 
-Another option is to modify your oracledb pool instance (in case the pool was created outside your code and
-out of your control), as follows:
-
-```js
-//load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb');
-
-function myFunction(pool) {    
-    //modify the original oracledb pool instance
-    SimpleOracleDB.extend(pool);
-    
-    //from this point connections fetched via pool.getConnection(...)
-    //have access to additional functionality.
-    pool.getConnection(function onConnection(error, connection) {
-        if (error) {
-            //handle error
-        } else {
-            //work with new capabilities or original oracledb capabilities
-            connection.query(...);
-        }
-    }
-}
-```
-
 One last option is to modify your oracledb connection instance (in case the connection was created outside your code
 and out of your control), as follows:
 
