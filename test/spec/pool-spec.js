@@ -3,7 +3,7 @@
 
 var chai = require('chai');
 var assert = chai.assert;
-var oracledb = require('../helper/test-oracledb');
+var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
 
 describe('Pool Tests', function () {

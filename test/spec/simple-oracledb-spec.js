@@ -5,7 +5,7 @@ var chai = require('chai');
 var assert = chai.assert;
 
 describe('simple oracledb tests', function () {
-    var oracledb = require('../helper/test-oracledb').create();
+    var oracledb = require('../helpers/test-oracledb').create();
     var simpleOracleDB = require('../../');
     simpleOracleDB.extend(oracledb);
 

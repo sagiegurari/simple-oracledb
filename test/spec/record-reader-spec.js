@@ -4,7 +4,7 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
 var assert = chai.assert;
-var helper = require('../helper/test-oracledb');
+var helper = require('../helpers/test-oracledb');
 var RecordReader = require('../../lib/record-reader');
 
 describe('RecordReader Tests', function () {

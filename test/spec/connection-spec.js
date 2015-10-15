@@ -3,7 +3,7 @@
 
 var chai = require('chai');
 var assert = chai.assert;
-var helper = require('../helper/test-oracledb');
+var helper = require('../helpers/test-oracledb');
 var Connection = require('../../lib/connection');
 
 describe('Connection Tests', function () {
