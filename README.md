@@ -9,6 +9,7 @@
 * [Overview](#overview)
 * [Usage](#usage)
   * [query](#usage-query)
+  * [release](#usage-release)
 * [Installation](#installation)
 * [Limitations](#limitations)
 * [API Documentation](docs/api.md)
@@ -104,6 +105,23 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
   } else {
     //print the 4th row DEPARTMENT_ID column value
     console.log(results[3].DEPARTMENT_ID);
+  }
+});
+```
+
+<a name="usage-release"></a>
+## 'connection.release([callback])'
+This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
+Since there is no real way to release a connection that fails to be released, all that you can do in the callback is just log the error and continue.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+```js
+connection.release(); //no callback needed
+
+//still possible to call with a release callback function
+connection.release(function onRelease(error) {
+  if (error) {
+    //now what?
   }
 });
 ```
