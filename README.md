@@ -152,6 +152,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-15  | v0.0.2  | Maintenance |
 | 2015-10-15  | v0.0.1  | Initial release. |
 
 <a name="license"></a>

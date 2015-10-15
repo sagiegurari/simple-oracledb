@@ -39,7 +39,7 @@ See extend function for more info.</p>
 * [Connection](#Connection)
   * [new Connection()](#new_Connection_new)
   * [.simplified](#Connection.simplified) : <code>boolean</code>
-  * [#noop()](#Connection+noop) ℗
+  * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
   * [#query([params])](#Connection+query)
   * [#release([callback])](#Connection+release)
   * _static_
@@ -55,9 +55,10 @@ Marker property.
 
 **Access:** public  
 <a name="Connection+noop"></a>
-### Connection#noop() ℗
+### Connection#noop() ⇒ <code>undefined</code> ℗
 Empty function.
 
+**Returns**: <code>undefined</code> - Empty return  
 **Access:** private  
 <a name="Connection+query"></a>
 ### Connection#query([params])
