@@ -39,6 +39,7 @@ See extend function for more info.</p>
 * [Connection](#Connection)
   * [new Connection()](#new_Connection_new)
   * [.simplified](#Connection.simplified) : <code>boolean</code>
+  * [#noop()](#Connection+noop) ℗
   * [#query([params])](#Connection+query)
   * [#release([callback])](#Connection+release)
   * _static_
@@ -53,6 +54,11 @@ This class holds all the extended capabilities added the oracledb connection.
 Marker property.
 
 **Access:** public  
+<a name="Connection+noop"></a>
+### Connection#noop() ℗
+Empty function.
+
+**Access:** private  
 <a name="Connection+query"></a>
 ### Connection#query([params])
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>

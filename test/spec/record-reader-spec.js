@@ -116,6 +116,14 @@ describe('RecordReader Tests', function () {
             testStream.emit('end');
         });
 
+        it('unsupported', function (done) {
+            RecordReader.getValue({}, function (error, value) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
         it('error', function (done) {
             var testStream = helper.createCLOB();
 
