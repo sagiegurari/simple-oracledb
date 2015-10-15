@@ -289,6 +289,8 @@ describe('Connection Tests', function () {
             var connection = {
                 release: function (cb) {
                     assert.isFunction(cb);
+                    cb();
+
                     done();
                 }
             };
@@ -304,6 +306,8 @@ describe('Connection Tests', function () {
             var connection = {
                 release: function (cb) {
                     assert.isFunction(cb);
+                    cb();
+
                     done();
                 }
             };

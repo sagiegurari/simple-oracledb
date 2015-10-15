@@ -244,7 +244,7 @@ describe('ResultSetReader Tests', function () {
             });
         });
 
-        it('object - error', function (done) {
+        it('object - error lob', function (done) {
             var date = new Date();
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
@@ -305,6 +305,21 @@ describe('ResultSetReader Tests', function () {
             }, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob2 error');
+
+                done();
+            });
+        });
+
+        it('error getRows', function (done) {
+            ResultSetReader.read(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 100);
+
+                    callback(new Error('getrows'));
+                }
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'getrows');
 
                 done();
             });

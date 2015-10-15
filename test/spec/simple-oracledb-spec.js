@@ -6,12 +6,49 @@ var assert = chai.assert;
 
 describe('simple oracledb tests', function () {
     var oracledb = require('../helpers/test-oracledb').create();
+    oracledb.BLOB = 2007;
     var simpleOracleDB = require('../../');
     simpleOracleDB.extend(oracledb);
 
     describe('extend tests', function () {
-        it('extend', function () {
-            assert.isTrue(oracledb.simplified);
+        it('extend oracledb', function () {
+            var oracledbLib = {
+                createPool: function () {
+                    return undefined;
+                }
+            };
+            simpleOracleDB.extend(oracledbLib);
+            assert.isTrue(oracledbLib.simplified);
+        });
+
+        it('extend pool', function () {
+            var pool = {
+                getConnection: function () {
+                    return undefined;
+                }
+            };
+            simpleOracleDB.extend(pool);
+            assert.isTrue(pool.simplified);
+        });
+
+        it('extend connection', function () {
+            var connection = {
+                execute: function () {
+                    return undefined;
+                }
+            };
+            simpleOracleDB.extend(connection);
+            assert.isTrue(connection.simplified);
+        });
+
+        it('extend unsupported', function () {
+            var obj = {};
+            try {
+                simpleOracleDB.extend(obj);
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
         });
     });
 
