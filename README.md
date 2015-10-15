@@ -30,7 +30,7 @@ In order to use this library, you need to either extend the main oracledb object
 var oracledb = require('oracledb');
 
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb);
+var SimpleOracleDB = require('simple-oracledb');
 
 //modify the original oracledb library
 SimpleOracleDB.extend(oracledb);
@@ -52,7 +52,7 @@ out of your control), as follows:
 
 ```js
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb);
+var SimpleOracleDB = require('simple-oracledb');
 
 function myFunction(pool) {    
     //modify the original oracledb pool instance
@@ -76,7 +76,7 @@ out of your control), as follows:
 
 ```js
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb);
+var SimpleOracleDB = require('simple-oracledb');
 
 function myFunction(pool) {    
     //modify the original oracledb pool instance
@@ -100,7 +100,7 @@ and out of your control), as follows:
 
 ```js
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb);
+var SimpleOracleDB = require('simple-oracledb');
 
 function doSomething(connection, callback) {    
     //modify the original oracledb connection instance
