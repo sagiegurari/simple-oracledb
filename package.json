@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "main": "index.js",
   "directories": {
@@ -41,6 +41,7 @@
     "grunt-mocha-test": "latest",
     "grunt-todos": "latest",
     "load-grunt-tasks": "latest",
+    "mocha": "latest",
     "mocha-lcov-reporter": "latest",
     "time-grunt": "latest"
   },
