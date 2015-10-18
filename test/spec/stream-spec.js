@@ -89,4 +89,102 @@ describe('stream Tests', function () {
             testStream.emit('end');
         });
     });
+
+    describe('write Tests', function () {
+        it('write string test', function (done) {
+            var writable = new EventEmitter();
+            writable.end = function (data, encoding, callback) {
+                assert.equal(data, 'TEST STRING DATA');
+                assert.equal(encoding, 'utf8');
+                assert.isFunction(callback);
+
+                callback();
+            };
+
+            stream.write(writable, 'TEST STRING DATA', function (error) {
+                assert.isUndefined(error);
+                assert.equal(0, writable.listeners('error').length);
+
+                done();
+            });
+        });
+
+        it('write Buffer test', function (done) {
+            var writable = new EventEmitter();
+            writable.end = function (data, callback) {
+                assert.deepEqual(data, new Buffer('TEST STRING DATA'));
+                assert.isFunction(callback);
+
+                callback();
+            };
+
+            stream.write(writable, new Buffer('TEST STRING DATA'), function (error) {
+                assert.isUndefined(error);
+                assert.equal(0, writable.listeners('error').length);
+
+                done();
+            });
+        });
+
+        it('write null data test', function (done) {
+            var writable = new EventEmitter();
+            writable.end = function () {
+                assert.fail();
+            };
+
+            stream.write(writable, null, function (error) {
+                assert.isUndefined(error);
+                assert.equal(0, writable.listeners('error').length);
+
+                done();
+            });
+        });
+
+        it('write undefined data test', function (done) {
+            var writable = new EventEmitter();
+            writable.end = function () {
+                assert.fail();
+            };
+
+            stream.write(writable, undefined, function (error) {
+                assert.isUndefined(error);
+                assert.equal(0, writable.listeners('error').length);
+
+                done();
+            });
+        });
+
+        it('write null writable test', function (done) {
+            stream.write(null, 'data', function (error) {
+                assert.isUndefined(error);
+
+                done();
+            });
+        });
+
+        it('write undefined writable test', function (done) {
+            stream.write(undefined, 'data', function (error) {
+                assert.isUndefined(error);
+
+                done();
+            });
+        });
+
+        it('write error test', function (done) {
+            var writable = new EventEmitter();
+            writable.end = function (data, encoding, callback) {
+                writable.emit('error', new Error('test'));
+
+                setTimeout(callback, 10);
+            };
+
+            stream.write(writable, 'TEST STRING DATA', function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'test');
+                assert.equal(0, writable.listeners('error').length);
+
+                done();
+            });
+        });
+    });
 });

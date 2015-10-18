@@ -9,6 +9,7 @@
 * [Overview](#overview)
 * [Usage](#usage)
   * [query](#usage-query)
+  * [insert](#usage-insert)
   * [release](#usage-release)
 * [Installation](#installation)
 * [Limitations](#limitations)
@@ -96,7 +97,7 @@ Provides simpler interface than the original oracledb connection.execute functio
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
-The function arguments used to execute the query are exactly as defined in the oracledb connection.execute function.
+The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
 ```js
 connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], function onResults(error, results) {
@@ -106,6 +107,28 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
     //print the 4th row DEPARTMENT_ID column value
     console.log(results[3].DEPARTMENT_ID);
   }
+});
+```
+
+<a name="usage-insert"></a>
+## 'connection.insert(sql, bindVariables, options, callback)'
+Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation which LOB support.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs will be read and written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
+
+```js
+connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
 });
 ```
 
@@ -152,6 +175,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-18  | v0.0.4  | Added connection.insert support |
 | 2015-10-16  | v0.0.3  | Maintenance |
 | 2015-10-15  | v0.0.1  | Initial release. |
 

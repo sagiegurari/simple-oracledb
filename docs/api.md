@@ -7,8 +7,14 @@
 </dl>
 ## Objects
 <dl>
+<dt><a href="#Constants">Constants</a> : <code>object</code></dt>
+<dd><p>Library constants.</p>
+</dd>
 <dt><a href="#RecordReader">RecordReader</a> : <code>object</code></dt>
 <dd><p>Record reading helper functions.</p>
+</dd>
+<dt><a href="#RecordWriter">RecordWriter</a> : <code>object</code></dt>
+<dd><p>Record writing helper functions.</p>
 </dd>
 <dt><a href="#ResultSetReader">ResultSetReader</a> : <code>object</code></dt>
 <dd><p>ResultSet object reading helper functions.</p>
@@ -41,6 +47,7 @@ See extend function for more info.</p>
   * [.simplified](#Connection.simplified) : <code>boolean</code>
   * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
   * [#query([params])](#Connection+query)
+  * [#insert([params])](#Connection+insert)
   * [#release([callback])](#Connection+release)
   * _static_
     * [.extend(connection)](#Connection.extend)
@@ -66,7 +73,7 @@ Provides simpler interface than the original oracledb connection.execute functio
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
-The function arguments used to execute the query are exactly as defined in the oracledb connection.execute function.
+The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
 **Access:** public  
 
@@ -83,6 +90,34 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
     //print the 4th row DEPARTMENT_ID column value
     console.log(results[3].DEPARTMENT_ID);
   }
+});
+```
+<a name="Connection+insert"></a>
+### Connection#insert([params])
+Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation which LOB support.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs will be read and written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [params] | <code>\*</code> | See oracledb connection.execute function |
+
+**Example**  
+```js
+connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
 });
 ```
 <a name="Connection+release"></a>
@@ -165,6 +200,33 @@ Extends the provided oracledb pool instance.
 | --- | --- | --- |
 | pool | <code>object</code> | The oracledb pool instance |
 
+<a name="Constants"></a>
+## Constants : <code>object</code>
+Library constants.
+
+**Kind**: global namespace  
+**Author:** Sagie Gur-Ari  
+
+* [Constants](#Constants) : <code>object</code>
+  * [.clobType](#Constants.clobType) : <code>number</code>
+  * [.blobType](#Constants.blobType) : <code>number</code>
+  * [.bindOut](#Constants.bindOut) : <code>number</code>
+
+<a name="Constants.clobType"></a>
+### Constants.clobType : <code>number</code>
+Holds the CLOB type.
+
+**Access:** public  
+<a name="Constants.blobType"></a>
+### Constants.blobType : <code>number</code>
+Holds the BLOB type.
+
+**Access:** public  
+<a name="Constants.bindOut"></a>
+### Constants.bindOut : <code>number</code>
+Holds the BIND_OUT value.
+
+**Access:** public  
 <a name="RecordReader"></a>
 ## RecordReader : <code>object</code>
 Record reading helper functions.
@@ -173,17 +235,10 @@ Record reading helper functions.
 **Author:** Sagie Gur-Ari  
 
 * [RecordReader](#RecordReader) : <code>object</code>
-  * [.blobType](#RecordReader.blobType) : <code>number</code>
-  * _static_
-    * [.getValue(field, callback)](#RecordReader.getValue) ℗
-    * [.createFieldHandler(jsObject, columnName, value)](#RecordReader.createFieldHandler) ⇒ <code>function</code> ℗
-    * [.read(columnNames, row, callback)](#RecordReader.read)
+  * [.getValue(field, callback)](#RecordReader.getValue) ℗
+  * [.createFieldHandler(jsObject, columnName, value)](#RecordReader.createFieldHandler) ⇒ <code>function</code> ℗
+  * [.read(columnNames, row, callback)](#RecordReader.read)
 
-<a name="RecordReader.blobType"></a>
-### RecordReader.blobType : <code>number</code>
-Holds the BLOB type.
-
-**Access:** public  
 <a name="RecordReader.getValue"></a>
 ### RecordReader.getValue(field, callback) ℗
 Returns the value of the field from the row.
@@ -222,6 +277,25 @@ Reads all data from the provided oracle record.
 | columnNames | <code>Array</code> | Array of strings holding the column names of the results |
 | row | <code>object</code> &#124; <code>Array</code> | The oracle row object |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully read or in case of an error |
+
+<a name="RecordWriter"></a>
+## RecordWriter : <code>object</code>
+Record writing helper functions.
+
+**Kind**: global namespace  
+**Author:** Sagie Gur-Ari  
+<a name="RecordWriter.write"></a>
+### RecordWriter.write(outBindings, lobData, callback)
+Writes all LOBs columns via out bindings of the INSERT/UPDATE command.
+
+**Kind**: static method of <code>[RecordWriter](#RecordWriter)</code>  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
+| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
 
 <a name="ResultSetReader"></a>
 ## ResultSetReader : <code>object</code>
@@ -349,10 +423,14 @@ Stream helper functions.
 
 **Kind**: global namespace  
 **Author:** Sagie Gur-Ari  
+
+* [Stream](#Stream) : <code>object</code>
+  * [.readFully(readableStream, binary, callback)](#Stream.readFully)
+  * [.write(writableStream, data, callback)](#Stream.write)
+
 <a name="Stream.readFully"></a>
 ### Stream.readFully(readableStream, binary, callback)
-Reads all data from the provided stream.<br>
-The stream data is expected to be UTF-8 string.
+Reads all data from the provided stream.
 
 **Kind**: static method of <code>[Stream](#Stream)</code>  
 **Access:** public  
@@ -362,6 +440,19 @@ The stream data is expected to be UTF-8 string.
 | readableStream | <code>object</code> | The readable stream |
 | binary | <code>boolean</code> | True for binary stream, else character stream |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the stream is fully read. |
+
+<a name="Stream.write"></a>
+### Stream.write(writableStream, data, callback)
+Writes the provided data to the stream.
+
+**Kind**: static method of <code>[Stream](#Stream)</code>  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| writableStream | <code>object</code> | The writable stream |
+| data | <code>Buffer</code> &#124; <code>string</code> | The text of binary data to write |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the data is fully written to the provided stream |
 
 <a name="AsyncCallback"></a>
 ## AsyncCallback : <code>function</code>

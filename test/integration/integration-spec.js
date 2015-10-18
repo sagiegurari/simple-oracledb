@@ -9,7 +9,8 @@ describe('Integration Tests', function () {
     var oracledb;
     var integrated = true;
     try {
-        oracledb = require('oracledb');} catch (error) {
+        oracledb = require('oracledb');
+    } catch (error) {
         integrated = false;
     }
 
@@ -305,6 +306,95 @@ describe('Integration Tests', function () {
                                     LOB2: new Buffer('BLOB - 123456')
                                 }
                             ], jsRows);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('insert', function () {
+            var columnNames = [
+                {
+                    name: 'COL1'
+                },
+                {
+                    name: 'COL2'
+                },
+                {
+                    name: 'COL3'
+                },
+                {
+                    name: 'COL4'
+                },
+                {
+                    name: 'LOB1'
+                },
+                {
+                    name: 'LOB2'
+                }
+            ];
+
+            it('error', function (done) {
+                var table = 'TEST_ORA_INST1';
+                initDB(table, null, function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO TEST_NOTHING (SOMEFIELD), (:value)', {
+                            value: 'valid'
+                        }, {}, function (error) {
+                            assert.isDefined(error);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+
+            it('insert - simple data', function (done) {
+                var table = 'TEST_ORA_INST2';
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
+                            value1: 'test',
+                            value2: 123
+                        }, {}, function (error, results) {
+                            assert.isUndefined(error);
+                            assert.equal(1, results.rowsAffected);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+
+            it('insert - LOB data', function (done) {
+                var table = 'TEST_ORA_INST3';
+
+                var longClobText = 'this is a really long line of test data\n';
+                var index;
+                var buffer = [];
+                for (index = 0; index < 1000; index++) {
+                    buffer.push(longClobText);
+                }
+                longClobText = buffer.join('');
+
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, :clob1, :blob2)', {
+                            value1: 'test',
+                            value2: 123,
+                            clob1: longClobText,
+                            blob2: new Buffer('blob text here')
+                        }, {}, function (error, results) {
+                            assert.isUndefined(error);
+                            assert.equal(1, results.rowsAffected);
 
                             end(done, connection);
                         });

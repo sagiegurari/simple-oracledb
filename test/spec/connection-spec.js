@@ -4,6 +4,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var helper = require('../helpers/test-oracledb');
+var constants = require('../../lib/constants');
 var Connection = require('../../lib/connection');
 
 describe('Connection Tests', function () {
@@ -280,6 +281,241 @@ describe('Connection Tests', function () {
                         LOB2: undefined
                     }
                 ], jsRows);
+            });
+        });
+    });
+
+    describe('insert', function () {
+        it('no lobs', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
+                assert.deepEqual(bindVars, {
+                    id1: 1,
+                    id2: 2
+                });
+                assert.deepEqual(options, {
+                    lobMetaInfo: {}
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {}
+                });
+            };
+
+            connection.insert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', {
+                id1: 1,
+                id2: 2
+            }, {
+                lobMetaInfo: {}
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.equal(results.rowsAffected, 1);
+
+                done();
+            });
+        });
+
+        it('multiple lobs', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var lobsWritten = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                });
+                assert.deepEqual(options, {
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                lob1.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+                lob3.once('end', function () {
+                    lobsWritten++;
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
+                id: 1,
+                lob1: 'clob text',
+                lob2: 'second clob text',
+                lob3: new Buffer('binary data')
+            }, {
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.equal(results.rowsAffected, 1);
+                assert.equal(lobsWritten, 3);
+
+                done();
+            });
+        });
+
+        it('error while writing lobs', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                });
+                assert.deepEqual(options, {
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lobsWritten;
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.end = function (data, encoding, cb) {
+                    lob2.emit('error', new Error('lob test error'));
+
+                    setTimeout(cb, 10);
+                };
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
+                id: 1,
+                lob1: 'clob text',
+                lob2: 'second clob text',
+                lob3: new Buffer('binary data')
+            }, {
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'lob test error');
+                assert.isUndefined(results);
+
+                done();
+            });
+        });
+
+        it('error on execute', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                });
+                assert.deepEqual(options, {
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                callback(new Error('execute error test'));
+            };
+
+            connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
+                id: 1,
+                lob1: 'clob text',
+                lob2: 'second clob text',
+                lob3: new Buffer('binary data')
+            }, {
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'execute error test');
+                assert.isUndefined(results);
+
+                done();
             });
         });
     });

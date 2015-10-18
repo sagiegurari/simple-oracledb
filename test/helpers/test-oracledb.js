@@ -43,16 +43,33 @@ module.exports = {
     },
     createCLOB: function () {
         var testStream = new EventEmitter();
-        testStream.type = 10;
+        testStream.type = require('../../lib/constants').clobType;
         testStream.setEncoding = function (encoding) {
             assert.equal(encoding, 'utf8');
+        };
+        testStream.end = function (data, encoding, callback) {
+            assert.deepEqual(data, testStream.testData);
+            assert.equal(encoding, 'utf8');
+            assert.isFunction(callback);
+
+            this.emit('end');
+
+            callback();
         };
 
         return testStream;
     },
     createBLOB: function () {
         var testStream = new EventEmitter();
-        testStream.type = require('../../lib/record-reader').blobType;
+        testStream.type = require('../../lib/constants').blobType;
+        testStream.end = function (data, callback) {
+            assert.deepEqual(data, new Buffer(testStream.testData));
+            assert.isFunction(callback);
+
+            this.emit('end');
+
+            callback();
+        };
 
         return testStream;
     }
