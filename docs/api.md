@@ -94,9 +94,9 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 ```
 <a name="Connection+insert"></a>
 ### Connection#insert([params])
-Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation which LOB support.<br>
+Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb conection.execute.<br>
-All LOBs will be read and written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
 **Access:** public  
