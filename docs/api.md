@@ -179,7 +179,9 @@ connection.release(function onRelease(error) {
 ```
 <a name="Connection+modifyParams"></a>
 ### Connection#modifyParams([argumentsArray]) ⇒ <code>object</code> ℗
-Internal function used to modify the INSERT/UPDATE SQL arguments.
+Internal function used to modify the INSERT/UPDATE SQL arguments.<br>
+This function will add the RETURNING clause to the SQL to support LOBs modification after the INSERT/UPDATE finished.<br>
+In addition it will modify the bind variables to specify the OUT bind to enable access to the LOB object.
 
 **Returns**: <code>object</code> - LOB information used for SQL execution processing  
 **Access:** private  
