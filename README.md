@@ -10,6 +10,7 @@
 * [Usage](#usage)
   * [query](#usage-query)
   * [insert](#usage-insert)
+  * [update](#usage-update)
   * [release](#usage-release)
 * [Installation](#installation)
 * [Limitations](#limitations)
@@ -132,6 +133,29 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 });
 ```
 
+<a name="usage-update"></a>
+## 'connection.update(sql, bindVariables, options, callback)'
+Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
+
+```js
+connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  name: 'My Name',
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
+});
+```
+
 <a name="usage-release"></a>
 ## 'connection.release([callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
@@ -175,6 +199,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-18  | v0.0.5  | Added connection.update support |
 | 2015-10-18  | v0.0.4  | Added connection.insert support |
 | 2015-10-16  | v0.0.3  | Maintenance |
 | 2015-10-15  | v0.0.1  | Initial release. |

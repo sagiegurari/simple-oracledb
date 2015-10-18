@@ -48,7 +48,10 @@ See extend function for more info.</p>
   * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
   * [#query([params])](#Connection+query)
   * [#insert([params])](#Connection+insert)
+  * [#update([params])](#Connection+update)
   * [#release([callback])](#Connection+release)
+  * [#modifyParams([argumentsArray])](#Connection+modifyParams) ⇒ <code>object</code> ℗
+  * [#createCallback(callback, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
     * [.extend(connection)](#Connection.extend)
 
@@ -120,6 +123,35 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
   //continue flow...
 });
 ```
+<a name="Connection+update"></a>
+### Connection#update([params])
+Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [params] | <code>\*</code> | See oracledb connection.execute function |
+
+**Example**  
+```js
+connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  name: 'My Name',
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
+});
+```
 <a name="Connection+release"></a>
 ### Connection#release([callback])
 This function modifies the existing connection.release function by enabling the input
@@ -145,6 +177,29 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+<a name="Connection+modifyParams"></a>
+### Connection#modifyParams([argumentsArray]) ⇒ <code>object</code> ℗
+Internal function used to modify the INSERT/UPDATE SQL arguments.
+
+**Returns**: <code>object</code> - LOB information used for SQL execution processing  
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [argumentsArray] | <code>Array</code> | Array of arguments provided in the insert/update functions |
+
+<a name="Connection+createCallback"></a>
+### Connection#createCallback(callback, [output]) ⇒ <code>function</code> ℗
+Internal function used to wrap the original callback.
+
+**Returns**: <code>function</code> - A wrapper callback  
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | The callback function to invoke |
+| [output] | <code>object</code> | Optional output to pass to the callback |
+
 <a name="Connection.extend"></a>
 ### Connection.extend(connection)
 Extends the provided oracledb connection instance.
@@ -284,9 +339,27 @@ Record writing helper functions.
 
 **Kind**: global namespace  
 **Author:** Sagie Gur-Ari  
+
+* [RecordWriter](#RecordWriter) : <code>object</code>
+  * [.write(outBindings, lobData, callback)](#RecordWriter.write)
+  * [.writeMultiple(outBindings, lobData, callback)](#RecordWriter.writeMultiple)
+
 <a name="RecordWriter.write"></a>
 ### RecordWriter.write(outBindings, lobData, callback)
 Writes all LOBs columns via out bindings of the INSERT/UPDATE command.
+
+**Kind**: static method of <code>[RecordWriter](#RecordWriter)</code>  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
+| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
+
+<a name="RecordWriter.writeMultiple"></a>
+### RecordWriter.writeMultiple(outBindings, lobData, callback)
+Writes all LOBs columns via out bindings of the INSERT/UPDATE command with support of multiple rows.
 
 **Kind**: static method of <code>[RecordWriter](#RecordWriter)</code>  
 **Access:** public  
@@ -425,11 +498,11 @@ Stream helper functions.
 **Author:** Sagie Gur-Ari  
 
 * [Stream](#Stream) : <code>object</code>
-  * [.readFully(readableStream, binary, callback)](#Stream.readFully)
+  * [.read(readableStream, binary, callback)](#Stream.read)
   * [.write(writableStream, data, callback)](#Stream.write)
 
-<a name="Stream.readFully"></a>
-### Stream.readFully(readableStream, binary, callback)
+<a name="Stream.read"></a>
+### Stream.read(readableStream, binary, callback)
 Reads all data from the provided stream.
 
 **Kind**: static method of <code>[Stream](#Stream)</code>  

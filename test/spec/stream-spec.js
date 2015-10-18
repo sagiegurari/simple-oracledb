@@ -7,14 +7,14 @@ var EventEmitter = require('events').EventEmitter;
 var stream = require('../../lib/stream');
 
 describe('stream Tests', function () {
-    describe('readFully Tests', function () {
-        it('readFully valid test', function (done) {
+    describe('read Tests', function () {
+        it('read valid test', function (done) {
             var testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
 
-            stream.readFully(testStream, false, function (error, data) {
+            stream.read(testStream, false, function (error, data) {
                 assert.isNull(error);
                 assert.equal(data, 'first line\nsecond line, second part.');
 
@@ -36,13 +36,13 @@ describe('stream Tests', function () {
             testStream.emit('close');
         });
 
-        it('readFully error test', function (done) {
+        it('read error test', function (done) {
             var testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
 
-            stream.readFully(testStream, false, function (error, data) {
+            stream.read(testStream, false, function (error, data) {
                 assert.isDefined(error);
                 assert.isUndefined(data);
 
@@ -63,13 +63,13 @@ describe('stream Tests', function () {
             testStream.emit('error', new Error('test'));
         });
 
-        it('readFully close test', function (done) {
+        it('read close test', function (done) {
             var testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
 
-            stream.readFully(testStream, false, function (error, data) {
+            stream.read(testStream, false, function (error, data) {
                 assert.isNull(error);
                 assert.equal(data, 'My Data.');
 
@@ -172,7 +172,8 @@ describe('stream Tests', function () {
 
         it('write error test', function (done) {
             var writable = new EventEmitter();
-            writable.end = function (data, encoding, callback) {
+            writable.end = function () {
+                var callback = Array.prototype.pop.call(arguments);
                 writable.emit('error', new Error('test'));
 
                 setTimeout(callback, 10);

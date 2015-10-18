@@ -41,7 +41,7 @@ describe('Integration Tests', function () {
             setTimeout(done, 10);
         };
 
-        var pool;
+        var testPool;
         var initDB = function (tableName, data, cb) {
             oracledb.getConnection(connAttrs, function (connErr, connection) {
                 data = data || [];
@@ -74,34 +74,32 @@ describe('Integration Tests', function () {
                                             } else {
                                                 asyncCB(null, rowData);
                                             }
-                                        })
+                                        });
                                     });
                                 });
 
                                 asyncLib.series(func, function (asynErr) {
                                     connection.release(function (rerr) {
                                         if (asynErr) {
-                                            console.error(err);
+                                            console.error(asynErr);
                                             assert.fail('UNABLE TO CREATE DB POOL.');
                                         } else if (rerr) {
                                             console.error('release error: ', rerr);
+                                        } else if (testPool) {
+                                            cb(testPool);
                                         } else {
-                                            if (pool) {
-                                                cb(pool);
-                                            } else {
-                                                oracledb.createPool(connAttrs, function (perr, newPool) {
-                                                    if (perr) {
-                                                        console.error(perr);
-                                                        assert.fail('UNABLE TO CREATE DB POOL.');
-                                                    } else {
-                                                        pool = newPool;
-                                                        cb(pool)
-                                                    }
-                                                });
-                                            }
+                                            oracledb.createPool(connAttrs, function (perr, newPool) {
+                                                if (perr) {
+                                                    console.error(perr);
+                                                    assert.fail('UNABLE TO CREATE DB POOL.');
+                                                } else {
+                                                    testPool = newPool;
+                                                    cb(testPool);
+                                                }
+                                            });
                                         }
                                     });
-                                })
+                                });
                             }
                         });
                     });
@@ -110,26 +108,6 @@ describe('Integration Tests', function () {
         };
 
         describe('query', function () {
-            var columnNames = [
-                {
-                    name: 'COL1'
-                },
-                {
-                    name: 'COL2'
-                }, {
-                    name: 'COL3'
-                },
-                {
-                    name: 'COL4'
-                },
-                {
-                    name: 'LOB1'
-                },
-                {
-                    name: 'LOB2'
-                }
-            ];
-
             it('error', function (done) {
                 var table = 'TEST_ORA1';
                 initDB(table, null, function (pool) {
@@ -315,27 +293,6 @@ describe('Integration Tests', function () {
         });
 
         describe('insert', function () {
-            var columnNames = [
-                {
-                    name: 'COL1'
-                },
-                {
-                    name: 'COL2'
-                },
-                {
-                    name: 'COL3'
-                },
-                {
-                    name: 'COL4'
-                },
-                {
-                    name: 'LOB1'
-                },
-                {
-                    name: 'LOB2'
-                }
-            ];
-
             it('error', function (done) {
                 var table = 'TEST_ORA_INST1';
                 initDB(table, null, function (pool) {
@@ -366,7 +323,19 @@ describe('Integration Tests', function () {
                             assert.isUndefined(error);
                             assert.equal(1, results.rowsAffected);
 
-                            end(done, connection);
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: false
+                            }, function (queryError, jsRows) {
+                                assert.isNull(queryError);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'test',
+                                        COL2: 123
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
                         });
                     });
                 });
@@ -396,7 +365,21 @@ describe('Integration Tests', function () {
                             assert.isUndefined(error);
                             assert.equal(1, results.rowsAffected);
 
-                            end(done, connection);
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: false
+                            }, function (queryError, jsRows) {
+                                assert.isNull(queryError);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'test',
+                                        COL2: 123,
+                                        LOB1: longClobText,
+                                        LOB2: new Buffer('blob text here')
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
                         });
                     });
                 });
