@@ -50,7 +50,7 @@ See extend function for more info.</p>
   * [#insert([params])](#Connection+insert)
   * [#update([params])](#Connection+update)
   * [#release([callback])](#Connection+release)
-  * [#modifyParams([argumentsArray])](#Connection+modifyParams) ⇒ <code>object</code> ℗
+  * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
   * [#createCallback(callback, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
     * [.extend(connection)](#Connection.extend)
@@ -178,7 +178,7 @@ connection.release(function onRelease(error) {
 });
 ```
 <a name="Connection+modifyParams"></a>
-### Connection#modifyParams([argumentsArray]) ⇒ <code>object</code> ℗
+### Connection#modifyParams(argumentsArray) ⇒ <code>object</code> ℗
 Internal function used to modify the INSERT/UPDATE SQL arguments.<br>
 This function will add the RETURNING clause to the SQL to support LOBs modification after the INSERT/UPDATE finished.<br>
 In addition it will modify the bind variables to specify the OUT bind to enable access to the LOB object.
@@ -188,7 +188,7 @@ In addition it will modify the bind variables to specify the OUT bind to enable 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [argumentsArray] | <code>Array</code> | Array of arguments provided in the insert/update functions |
+| argumentsArray | <code>Array</code> | Array of arguments provided in the insert/update functions |
 
 <a name="Connection+createCallback"></a>
 ### Connection#createCallback(callback, [output]) ⇒ <code>function</code> ℗
