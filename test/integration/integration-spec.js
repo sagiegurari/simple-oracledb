@@ -360,13 +360,6 @@ describe('Integration Tests', function () {
                     pool.getConnection(function (err, connection) {
                         assert.isUndefined(err);
 
-                        //TODO RMOVE
-                        var e = connection.execute;
-                        connection.execute =function () {
-                            console.log(arguments);
-                            e.apply(connection, arguments);
-                        }
-
                         connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', {
                             value1: 'test',
                             value2: 123,

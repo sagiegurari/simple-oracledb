@@ -342,6 +342,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
@@ -417,6 +418,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
@@ -489,6 +491,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
@@ -577,6 +580,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
@@ -652,6 +656,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
@@ -724,6 +729,7 @@ describe('Connection Tests', function () {
                     }
                 });
                 assert.deepEqual(options, {
+                    autoCommit: false,
                     lobMetaInfo: {
                         c1: 'lob1',
                         c2: 'lob2',
