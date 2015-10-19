@@ -323,6 +323,12 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
+            var commitCalled = false;
+            connection.commit = function (callback) {
+                commitCalled = true;
+                callback();
+            };
+
             var lobsWritten = 0;
             connection.execute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
@@ -382,6 +388,7 @@ describe('Connection Tests', function () {
                 lob2: 'second clob text',
                 lob3: new Buffer('binary data')
             }, {
+                autoCommit: true,
                 lobMetaInfo: {
                     c1: 'lob1',
                     c2: 'lob2',
@@ -391,6 +398,7 @@ describe('Connection Tests', function () {
                 assert.isNull(error);
                 assert.equal(results.rowsAffected, 1);
                 assert.equal(lobsWritten, 3);
+                assert.isTrue(commitCalled);
 
                 done();
             });
