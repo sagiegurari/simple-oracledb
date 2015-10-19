@@ -24,7 +24,7 @@ describe('Pool Tests', function () {
 
             Pool.extend(testPool);
 
-            testPool.getConnection(false, function (error, connection) {
+            testPool.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -36,7 +36,8 @@ describe('Pool Tests', function () {
 
             Pool.extend(testPool);
 
-            testPool.getConnection(true, function (error, connection) {
+            testPool.throwError = true;
+            testPool.getConnection(function (error, connection) {
                 assert.isDefined(error);
                 assert.isUndefined(connection);
             })

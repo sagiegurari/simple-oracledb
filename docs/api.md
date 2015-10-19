@@ -39,9 +39,9 @@
   * [new Connection()](#new_Connection_new)
   * [.simplified](#Connection.simplified) : <code>boolean</code>
   * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
-  * [#query([params])](#Connection+query)
-  * [#insert([params])](#Connection+insert)
-  * [#update([params])](#Connection+update)
+  * [#query(sql, [bindParams], [options], callback)](#Connection+query)
+  * [#insert(sql, bindParams, options, callback)](#Connection+insert)
+  * [#update(sql, bindParams, options, callback)](#Connection+update)
   * [#release([callback])](#Connection+release)
   * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
   * [#createCallback(callback, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
@@ -64,7 +64,7 @@ Empty function.
 **Returns**: <code>undefined</code> - Empty return  
 **Access:** private  
 <a name="Connection+query"></a>
-### Connection#query([params])
+### Connection#query(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -75,7 +75,10 @@ The function arguments used to execute the 'query' are exactly as defined in the
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [params] | <code>\*</code> | See oracledb connection.execute function |
+| sql | <code>string</code> | The SQL to execute |
+| [bindParams] | <code>object</code> | Optional bind parameters |
+| [options] | <code>object</code> | Optional execute options |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the query results object holding all data including LOBs |
 
 **Example**  
 ```js
@@ -89,7 +92,7 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 });
 ```
 <a name="Connection+insert"></a>
-### Connection#insert([params])
+### Connection#insert(sql, bindParams, options, callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb conection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -99,7 +102,11 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [params] | <code>\*</code> | See oracledb connection.execute function |
+| sql | <code>string</code> | The SQL to execute |
+| bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
+| options | <code>object</code> | Any execute options |
+| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -117,7 +124,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 });
 ```
 <a name="Connection+update"></a>
-### Connection#update([params])
+### Connection#update(sql, bindParams, options, callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb conection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -127,7 +134,11 @@ The function arguments used to execute the 'update' are exactly as defined in th
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [params] | <code>\*</code> | See oracledb connection.execute function |
+| sql | <code>string</code> | The SQL to execute |
+| bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
+| options | <code>object</code> | Any execute options |
+| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -215,7 +226,7 @@ Extends the provided oracledb connection instance.
 * [Pool](#Pool)
   * [new Pool()](#new_Pool_new)
   * [.simplified](#Pool.simplified) : <code>boolean</code>
-  * [#getConnection([params], callback)](#Pool+getConnection)
+  * [#getConnection(callback)](#Pool+getConnection)
   * _static_
     * [.extend(pool)](#Pool.extend)
 
@@ -229,14 +240,14 @@ Marker property.
 
 **Access:** public  
 <a name="Pool+getConnection"></a>
-### Pool#getConnection([params], callback)
-Wraps the original oracledb getConnection in order to provide an extended connection object.
+### Pool#getConnection(callback)
+Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
+See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for more details.
 
 **Access:** public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [params] | <code>\*</code> | The oracledb pool getConnection arguments |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
 <a name="Pool.extend"></a>

@@ -16,8 +16,8 @@ TestConnection.prototype.execute = function () {
     arguments[arguments.length - 1]();
 };
 
-TestPool.prototype.getConnection = function (invalid, callback) {
-    if (invalid) {
+TestPool.prototype.getConnection = function (callback) {
+    if (this.throwError) {
         callback(new Error());
     } else {
         callback(null, new TestConnection());

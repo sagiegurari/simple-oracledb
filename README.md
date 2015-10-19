@@ -90,8 +90,6 @@ function doSomething(connection, callback) {
 }
 ```
 
-The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md<br>
-
 <a name="usage-query"></a>
 ## 'connection.query(sql, bindVariables, [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
@@ -172,6 +170,8 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+<br>
+**The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
 <a name="installation"></a>
 ## Installation

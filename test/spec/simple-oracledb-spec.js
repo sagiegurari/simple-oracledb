@@ -73,17 +73,10 @@ describe('simple oracledb tests', function () {
 
     describe('getConnection tests', function () {
         it('getConnection valid', function () {
-            oracledb.getConnection(false, function (error, connection) {
+            oracledb.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
-            });
-        });
-
-        it('getConnection error', function () {
-            oracledb.getConnection(true, function (error, connection) {
-                assert.isDefined(error);
-                assert.isUndefined(connection);
             });
         });
     });
