@@ -320,7 +320,7 @@ describe('Integration Tests', function () {
                             value1: 'test',
                             value2: 123
                         }, {}, function (error, results) {
-                            assert.isUndefined(error);
+                            assert.isNull(error);
                             assert.equal(1, results.rowsAffected);
 
                             connection.query('SELECT * FROM ' + table, [], {
@@ -330,7 +330,11 @@ describe('Integration Tests', function () {
                                 assert.deepEqual([
                                     {
                                         COL1: 'test',
-                                        COL2: 123
+                                        COL2: 123,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: undefined,
+                                        LOB2: undefined
                                     }
                                 ], jsRows);
 
@@ -362,7 +366,7 @@ describe('Integration Tests', function () {
                             clob1: longClobText,
                             blob2: new Buffer('blob text here')
                         }, {}, function (error, results) {
-                            assert.isUndefined(error);
+                            assert.isNull(error);
                             assert.equal(1, results.rowsAffected);
 
                             connection.query('SELECT * FROM ' + table, [], {
@@ -373,12 +377,212 @@ describe('Integration Tests', function () {
                                     {
                                         COL1: 'test',
                                         COL2: 123,
+                                        COL3: undefined,
+                                        COL4: undefined,
                                         LOB1: longClobText,
                                         LOB2: new Buffer('blob text here')
                                     }
                                 ], jsRows);
 
                                 end(done, connection);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        describe('update', function () {
+            it('error', function (done) {
+                var table = 'TEST_ORA_UDT1';
+                initDB(table, null, function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('UPDATE TEST_NOTHING SET SOMEFIELD = 1', {
+                            value: 'valid'
+                        }, {}, function (error) {
+                            assert.isDefined(error);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+
+            it('update - simple data', function (done) {
+                var table = 'TEST_ORA_UDT2';
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
+                            value1: 'test',
+                            value2: 123
+                        }, {}, function (error1, results1) {
+                            assert.isNull(error1);
+                            assert.equal(1, results1.rowsAffected);
+
+                            connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
+                                value1: 'test2',
+                                value2: 234
+                            }, {}, function (error2, results2) {
+                                assert.isNull(error2);
+                                assert.equal(1, results2.rowsAffected);
+
+                                connection.query('SELECT * FROM ' + table, [], {
+                                    resultSet: false
+                                }, function (queryError, jsRows) {
+                                    assert.isNull(queryError);
+                                    assert.deepEqual([
+                                        {
+                                            COL1: 'test',
+                                            COL2: 123,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: undefined,
+                                            LOB2: undefined
+                                        },
+                                        {
+                                            COL1: 'test2',
+                                            COL2: 234,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: undefined,
+                                            LOB2: undefined
+                                        }
+                                    ], jsRows);
+
+                                    connection.update('UPDATE ' + table + ' SET COL3 = :newcol1 WHERE COL2 > :value', {
+                                        newcol1: 1000,
+                                        value: 5
+                                    }, {}, function onUpdate(updateError, updateResults) {
+                                        assert.isNull(updateError);
+                                        assert.isDefined(updateResults);
+
+                                        connection.query('SELECT * FROM ' + table, [], {
+                                            resultSet: false
+                                        }, function (queryError2, jsRows2) {
+                                            assert.isNull(queryError2);
+                                            assert.deepEqual([
+                                                {
+                                                    COL1: 'test',
+                                                    COL2: 123,
+                                                    COL3: 1000,
+                                                    COL4: undefined,
+                                                    LOB1: undefined,
+                                                    LOB2: undefined
+                                                },
+                                                {
+                                                    COL1: 'test2',
+                                                    COL2: 234,
+                                                    COL3: 1000,
+                                                    COL4: undefined,
+                                                    LOB1: undefined,
+                                                    LOB2: undefined
+                                                }
+                                            ], jsRows2);
+
+                                            end(done, connection);
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+
+            it('insert - LOB data', function (done) {
+                var table = 'TEST_ORA_UPDT3';
+
+                var longClobText = 'this is a really long line of test data\n';
+                var index;
+                var buffer = [];
+                for (index = 0; index < 1000; index++) {
+                    buffer.push(longClobText);
+                }
+                longClobText = buffer.join('');
+
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, :clob1, :blob2)', {
+                            value1: 'test',
+                            value2: 123,
+                            clob1: longClobText,
+                            blob2: new Buffer('blob text here')
+                        }, {}, function (error1, results1) {
+                            assert.isNull(error1);
+                            assert.equal(1, results1.rowsAffected);
+
+                            connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, :clob1, :blob2)', {
+                                value1: 'test2',
+                                value2: 333,
+                                clob1: longClobText,
+                                blob2: new Buffer('second blob text here')
+                            }, {}, function (error2, results2) {
+                                assert.isNull(error2);
+                                assert.equal(1, results2.rowsAffected);
+
+                                connection.query('SELECT * FROM ' + table, [], {
+                                    resultSet: false
+                                }, function (queryError, jsRows) {
+                                    assert.isNull(queryError);
+                                    assert.deepEqual([
+                                        {
+                                            COL1: 'test',
+                                            COL2: 123,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            COL1: 'test2',
+                                            COL2: 333,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('second blob text here')
+                                        }
+                                    ], jsRows);
+
+                                    connection.update('UPDATE ' + table + ' SET COL3 = :newcol1 WHERE COL2 > :value', {
+                                        newcol1: 7777,
+                                        value: 5
+                                    }, {}, function onUpdate(updateError, updateResults) {
+                                        assert.isNull(updateError);
+                                        assert.isDefined(updateResults);
+
+                                        connection.query('SELECT * FROM ' + table, [], {
+                                            resultSet: false
+                                        }, function (queryError2, jsRows2) {
+                                            assert.isNull(queryError2);
+                                            assert.deepEqual([
+                                                {
+                                                    COL1: 'test',
+                                                    COL2: 123,
+                                                    COL3: 7777,
+                                                    COL4: undefined,
+                                                    LOB1: longClobText,
+                                                    LOB2: new Buffer('blob text here')
+                                                },
+                                                {
+                                                    COL1: 'test2',
+                                                    COL2: 333,
+                                                    COL3: 7777,
+                                                    COL4: undefined,
+                                                    LOB1: longClobText,
+                                                    LOB2: new Buffer('second blob text here')
+                                                }
+                                            ], jsRows2);
+
+                                            end(done, connection);
+                                        });
+                                    });
+                                });
                             });
                         });
                     });

@@ -199,6 +199,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-19  | v0.0.6  | Maintenance |
 | 2015-10-18  | v0.0.5  | Added connection.update support |
 | 2015-10-18  | v0.0.4  | Added connection.insert support |
 | 2015-10-16  | v0.0.3  | Maintenance |

@@ -4,30 +4,23 @@
 <dd></dd>
 <dt><a href="#Pool">Pool</a></dt>
 <dd></dd>
+<dt><a href="#RecordReader">RecordReader</a></dt>
+<dd></dd>
+<dt><a href="#RecordWriter">RecordWriter</a></dt>
+<dd></dd>
+<dt><a href="#ResultSetReader">ResultSetReader</a></dt>
+<dd></dd>
+<dt><a href="#RowsReader">RowsReader</a></dt>
+<dd></dd>
+<dt><a href="#SimpleOracleDB">SimpleOracleDB</a></dt>
+<dd></dd>
+<dt><a href="#Stream">Stream</a></dt>
+<dd></dd>
 </dl>
 ## Objects
 <dl>
 <dt><a href="#Constants">Constants</a> : <code>object</code></dt>
 <dd><p>Library constants.</p>
-</dd>
-<dt><a href="#RecordReader">RecordReader</a> : <code>object</code></dt>
-<dd><p>Record reading helper functions.</p>
-</dd>
-<dt><a href="#RecordWriter">RecordWriter</a> : <code>object</code></dt>
-<dd><p>Record writing helper functions.</p>
-</dd>
-<dt><a href="#ResultSetReader">ResultSetReader</a> : <code>object</code></dt>
-<dd><p>ResultSet object reading helper functions.</p>
-</dd>
-<dt><a href="#RowsReader">RowsReader</a> : <code>object</code></dt>
-<dd><p>Rows array reading helper functions.</p>
-</dd>
-<dt><a href="#SimpleOracleDB">SimpleOracleDB</a> : <code>object</code></dt>
-<dd><p>Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
-See extend function for more info.</p>
-</dd>
-<dt><a href="#Stream">Stream</a> : <code>object</code></dt>
-<dd><p>Stream helper functions.</p>
 </dd>
 </dl>
 ## Typedefs
@@ -257,6 +250,265 @@ Extends the provided oracledb pool instance.
 | --- | --- | --- |
 | pool | <code>object</code> | The oracledb pool instance |
 
+<a name="RecordReader"></a>
+## RecordReader
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [RecordReader](#RecordReader)
+  * [new RecordReader()](#new_RecordReader_new)
+  * [#getValue(field, callback)](#RecordReader+getValue) ℗
+  * [#createFieldHandler(jsObject, columnName, value)](#RecordReader+createFieldHandler) ⇒ <code>function</code> ℗
+  * [#read(columnNames, row, callback)](#RecordReader+read)
+
+<a name="new_RecordReader_new"></a>
+### new RecordReader()
+Record reading helper functions.
+
+<a name="RecordReader+getValue"></a>
+### RecordReader#getValue(field, callback) ℗
+Returns the value of the field from the row.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| field | <code>object</code> | The field value |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the value is fully read or in case of an error |
+
+<a name="RecordReader+createFieldHandler"></a>
+### RecordReader#createFieldHandler(jsObject, columnName, value) ⇒ <code>function</code> ℗
+Returns a handler function.
+
+**Returns**: <code>function</code> - The handler function  
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsObject | <code>object</code> | The result object holder to populate |
+| columnName | <code>string</code> | The field name |
+| value | <code>object</code> | The field value |
+
+<a name="RecordReader+read"></a>
+### RecordReader#read(columnNames, row, callback)
+Reads all data from the provided oracle record.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| row | <code>object</code> &#124; <code>Array</code> | The oracle row object |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully read or in case of an error |
+
+<a name="RecordWriter"></a>
+## RecordWriter
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [RecordWriter](#RecordWriter)
+  * [new RecordWriter()](#new_RecordWriter_new)
+  * [#write(outBindings, lobData, callback)](#RecordWriter+write)
+  * [#writeMultiple(outBindings, lobData, callback)](#RecordWriter+writeMultiple)
+
+<a name="new_RecordWriter_new"></a>
+### new RecordWriter()
+Record writing helper functions.
+
+<a name="RecordWriter+write"></a>
+### RecordWriter#write(outBindings, lobData, callback)
+Writes all LOBs columns via out bindings of the INSERT/UPDATE command.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
+| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
+
+<a name="RecordWriter+writeMultiple"></a>
+### RecordWriter#writeMultiple(outBindings, lobData, callback)
+Writes all LOBs columns via out bindings of the INSERT/UPDATE command with support of multiple rows.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
+| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
+
+<a name="ResultSetReader"></a>
+## ResultSetReader
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [ResultSetReader](#ResultSetReader)
+  * [new ResultSetReader()](#new_ResultSetReader_new)
+  * [#readNextRows(columnNames, resultSet, callback)](#ResultSetReader+readNextRows) ℗
+  * [#readAllRows(columnNames, resultSet, callback, jsRowsBuffer)](#ResultSetReader+readAllRows) ℗
+  * [#read(columnNames, resultSet, callback)](#ResultSetReader+read)
+
+<a name="new_ResultSetReader_new"></a>
+### new ResultSetReader()
+ResultSet object reading helper functions.
+
+<a name="ResultSetReader+readNextRows"></a>
+### ResultSetReader#readNextRows(columnNames, resultSet, callback) ℗
+Reads the next rows data from the provided oracle ResultSet object.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| resultSet | <code>Array</code> | The oracle ResultSet object |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the next rows have been read |
+
+<a name="ResultSetReader+readAllRows"></a>
+### ResultSetReader#readAllRows(columnNames, resultSet, callback, jsRowsBuffer) ℗
+Reads all data from the provided oracle ResultSet object into the provided buffer.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| resultSet | <code>Array</code> | The oracle ResultSet object |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
+| jsRowsBuffer | <code>Array</code> | The result buffer |
+
+<a name="ResultSetReader+read"></a>
+### ResultSetReader#read(columnNames, resultSet, callback)
+Reads all data from the provided oracle ResultSet object.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| resultSet | <code>Array</code> | The oracle ResultSet object |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
+
+<a name="RowsReader"></a>
+## RowsReader
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [RowsReader](#RowsReader)
+  * [new RowsReader()](#new_RowsReader_new)
+  * [#read(columnNames, rows, callback)](#RowsReader+read)
+
+<a name="new_RowsReader_new"></a>
+### new RowsReader()
+Rows array reading helper functions.
+
+<a name="RowsReader+read"></a>
+### RowsReader#read(columnNames, rows, callback)
+Reads all data from the provided oracle records array.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| rows | <code>Array</code> | The oracle rows array |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
+
+<a name="SimpleOracleDB"></a>
+## SimpleOracleDB
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [SimpleOracleDB](#SimpleOracleDB)
+  * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
+  * [#extend(oracledb)](#SimpleOracleDB+extend)
+  * [#extend(pool)](#SimpleOracleDB+extend)
+  * [#extend(connection)](#SimpleOracleDB+extend)
+
+<a name="new_SimpleOracleDB_new"></a>
+### new SimpleOracleDB()
+Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
+See extend function for more info.
+
+<a name="SimpleOracleDB+extend"></a>
+### SimpleOracleDB#extend(oracledb)
+Extends the oracledb library which from that point will allow fetching the modified
+connection objects via oracledb.getConnection or via pool.getConnection
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| oracledb | <code>oracledb</code> | The oracledb library |
+
+<a name="SimpleOracleDB+extend"></a>
+### SimpleOracleDB#extend(pool)
+Extends the oracledb pool instance which from that point will allow fetching the modified
+connection objects via pool.getConnection
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pool | <code>[Pool](#Pool)</code> | The oracledb pool instance |
+
+<a name="SimpleOracleDB+extend"></a>
+### SimpleOracleDB#extend(connection)
+Extends the oracledb connection instance which from that point will allow access to all
+the extended capabilities of this library.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The oracledb connection instance |
+
+<a name="Stream"></a>
+## Stream
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [Stream](#Stream)
+  * [new Stream()](#new_Stream_new)
+  * [#read(readableStream, binary, callback)](#Stream+read)
+  * [#write(writableStream, data, callback)](#Stream+write)
+
+<a name="new_Stream_new"></a>
+### new Stream()
+Stream helper functions.
+
+<a name="Stream+read"></a>
+### Stream#read(readableStream, binary, callback)
+Reads all data from the provided stream.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| readableStream | <code>object</code> | The readable stream |
+| binary | <code>boolean</code> | True for binary stream, else character stream |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the stream is fully read. |
+
+<a name="Stream+write"></a>
+### Stream#write(writableStream, data, callback)
+Writes the provided data to the stream.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| writableStream | <code>object</code> | The writable stream |
+| data | <code>Buffer</code> &#124; <code>string</code> | The text of binary data to write |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the data is fully written to the provided stream |
+
 <a name="Constants"></a>
 ## Constants : <code>object</code>
 Library constants.
@@ -284,251 +536,6 @@ Holds the BLOB type.
 Holds the BIND_OUT value.
 
 **Access:** public  
-<a name="RecordReader"></a>
-## RecordReader : <code>object</code>
-Record reading helper functions.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-
-* [RecordReader](#RecordReader) : <code>object</code>
-  * [.getValue(field, callback)](#RecordReader.getValue) ℗
-  * [.createFieldHandler(jsObject, columnName, value)](#RecordReader.createFieldHandler) ⇒ <code>function</code> ℗
-  * [.read(columnNames, row, callback)](#RecordReader.read)
-
-<a name="RecordReader.getValue"></a>
-### RecordReader.getValue(field, callback) ℗
-Returns the value of the field from the row.
-
-**Kind**: static method of <code>[RecordReader](#RecordReader)</code>  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| field | <code>object</code> | The field value |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the value is fully read or in case of an error |
-
-<a name="RecordReader.createFieldHandler"></a>
-### RecordReader.createFieldHandler(jsObject, columnName, value) ⇒ <code>function</code> ℗
-Returns a handler function.
-
-**Kind**: static method of <code>[RecordReader](#RecordReader)</code>  
-**Returns**: <code>function</code> - The handler function  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| jsObject | <code>object</code> | The result object holder to populate |
-| columnName | <code>string</code> | The field name |
-| value | <code>object</code> | The field value |
-
-<a name="RecordReader.read"></a>
-### RecordReader.read(columnNames, row, callback)
-Reads all data from the provided oracle record.
-
-**Kind**: static method of <code>[RecordReader](#RecordReader)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| row | <code>object</code> &#124; <code>Array</code> | The oracle row object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully read or in case of an error |
-
-<a name="RecordWriter"></a>
-## RecordWriter : <code>object</code>
-Record writing helper functions.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-
-* [RecordWriter](#RecordWriter) : <code>object</code>
-  * [.write(outBindings, lobData, callback)](#RecordWriter.write)
-  * [.writeMultiple(outBindings, lobData, callback)](#RecordWriter.writeMultiple)
-
-<a name="RecordWriter.write"></a>
-### RecordWriter.write(outBindings, lobData, callback)
-Writes all LOBs columns via out bindings of the INSERT/UPDATE command.
-
-**Kind**: static method of <code>[RecordWriter](#RecordWriter)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
-| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
-
-<a name="RecordWriter.writeMultiple"></a>
-### RecordWriter.writeMultiple(outBindings, lobData, callback)
-Writes all LOBs columns via out bindings of the INSERT/UPDATE command with support of multiple rows.
-
-**Kind**: static method of <code>[RecordWriter](#RecordWriter)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| outBindings | <code>object</code> | The output bindings of the INSERT/UPDATE result |
-| lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
-
-<a name="ResultSetReader"></a>
-## ResultSetReader : <code>object</code>
-ResultSet object reading helper functions.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-
-* [ResultSetReader](#ResultSetReader) : <code>object</code>
-  * [.readNextRows(columnNames, resultSet, callback)](#ResultSetReader.readNextRows) ℗
-  * [.readAllRows(columnNames, resultSet, callback, jsRowsBuffer)](#ResultSetReader.readAllRows) ℗
-  * [.read(columnNames, resultSet, callback)](#ResultSetReader.read)
-
-<a name="ResultSetReader.readNextRows"></a>
-### ResultSetReader.readNextRows(columnNames, resultSet, callback) ℗
-Reads the next rows data from the provided oracle ResultSet object.
-
-**Kind**: static method of <code>[ResultSetReader](#ResultSetReader)</code>  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| resultSet | <code>Array</code> | The oracle ResultSet object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the next rows have been read |
-
-<a name="ResultSetReader.readAllRows"></a>
-### ResultSetReader.readAllRows(columnNames, resultSet, callback, jsRowsBuffer) ℗
-Reads all data from the provided oracle ResultSet object into the provided buffer.
-
-**Kind**: static method of <code>[ResultSetReader](#ResultSetReader)</code>  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| resultSet | <code>Array</code> | The oracle ResultSet object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
-| jsRowsBuffer | <code>Array</code> | The result buffer |
-
-<a name="ResultSetReader.read"></a>
-### ResultSetReader.read(columnNames, resultSet, callback)
-Reads all data from the provided oracle ResultSet object.
-
-**Kind**: static method of <code>[ResultSetReader](#ResultSetReader)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| resultSet | <code>Array</code> | The oracle ResultSet object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
-
-<a name="RowsReader"></a>
-## RowsReader : <code>object</code>
-Rows array reading helper functions.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-<a name="RowsReader.read"></a>
-### RowsReader.read(columnNames, rows, callback)
-Reads all data from the provided oracle records array.
-
-**Kind**: static method of <code>[RowsReader](#RowsReader)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| rows | <code>Array</code> | The oracle rows array |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
-
-<a name="SimpleOracleDB"></a>
-## SimpleOracleDB : <code>object</code>
-Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
-See extend function for more info.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-
-* [SimpleOracleDB](#SimpleOracleDB) : <code>object</code>
-  * [.extend(oracledb)](#SimpleOracleDB.extend)
-  * [.extend(pool)](#SimpleOracleDB.extend)
-  * [.extend(connection)](#SimpleOracleDB.extend)
-
-<a name="SimpleOracleDB.extend"></a>
-### SimpleOracleDB.extend(oracledb)
-Extends the oracledb library which from that point will allow fetching the modified
-connection objects via oracledb.getConnection or via pool.getConnection
-
-**Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| oracledb | <code>oracledb</code> | The oracledb library |
-
-<a name="SimpleOracleDB.extend"></a>
-### SimpleOracleDB.extend(pool)
-Extends the oracledb pool instance which from that point will allow fetching the modified
-connection objects via pool.getConnection
-
-**Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pool | <code>[Pool](#Pool)</code> | The oracledb pool instance |
-
-<a name="SimpleOracleDB.extend"></a>
-### SimpleOracleDB.extend(connection)
-Extends the oracledb connection instance which from that point will allow access to all
-the extended capabilities of this library.
-
-**Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| connection | <code>[Connection](#Connection)</code> | The oracledb connection instance |
-
-<a name="Stream"></a>
-## Stream : <code>object</code>
-Stream helper functions.
-
-**Kind**: global namespace  
-**Author:** Sagie Gur-Ari  
-
-* [Stream](#Stream) : <code>object</code>
-  * [.read(readableStream, binary, callback)](#Stream.read)
-  * [.write(writableStream, data, callback)](#Stream.write)
-
-<a name="Stream.read"></a>
-### Stream.read(readableStream, binary, callback)
-Reads all data from the provided stream.
-
-**Kind**: static method of <code>[Stream](#Stream)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| readableStream | <code>object</code> | The readable stream |
-| binary | <code>boolean</code> | True for binary stream, else character stream |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the stream is fully read. |
-
-<a name="Stream.write"></a>
-### Stream.write(writableStream, data, callback)
-Writes the provided data to the stream.
-
-**Kind**: static method of <code>[Stream](#Stream)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| writableStream | <code>object</code> | The writable stream |
-| data | <code>Buffer</code> &#124; <code>string</code> | The text of binary data to write |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the data is fully written to the provided stream |
-
 <a name="AsyncCallback"></a>
 ## AsyncCallback : <code>function</code>
 Invoked when an async operation has finished.
