@@ -395,4 +395,92 @@ describe('RecordReader Tests', function () {
             }, 10);
         });
     });
+
+    describe('readJSON tests', function () {
+        it('undefined no column', function () {
+            var json = RecordReader.readJSON();
+            assert.isUndefined(json);
+        });
+
+        it('undefined with column', function () {
+            var json = RecordReader.readJSON(undefined, 'data');
+            assert.isUndefined(json);
+        });
+
+        it('not json no column', function () {
+            try {
+                RecordReader.readJSON('some text');
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('not json with column', function () {
+            try {
+                RecordReader.readJSON('some text', 'data');
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('not json in data with column', function () {
+            try {
+                RecordReader.readJSON({
+                    data: 'some text'
+                }, 'data');
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('json no column', function () {
+            var output = RecordReader.readJSON({
+                data: JSON.stringify({
+                    a: 1
+                })
+            });
+
+            assert.isUndefined(output);
+        });
+
+        it('json with column', function () {
+            var output = RecordReader.readJSON({
+                data: JSON.stringify({
+                    a: 1,
+                    test: true,
+                    array: [1, 2, 3],
+                    subObject: {
+                        key1: 'value1'
+                    }
+                })
+            }, 'data');
+
+            assert.deepEqual(output, {
+                a: 1,
+                test: true,
+                array: [1, 2, 3],
+                subObject: {
+                    key1: 'value1'
+                }
+            });
+        });
+
+        it('json wrong column', function () {
+            var output = RecordReader.readJSON({
+                data: JSON.stringify({
+                    a: 1,
+                    test: true,
+                    array: [1, 2, 3],
+                    subObject: {
+                        key1: 'value1'
+                    }
+                })
+            }, 'wrong');
+
+            assert.deepEqual(output, {});
+        });
+    });
 });

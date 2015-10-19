@@ -884,4 +884,267 @@ describe('Connection Tests', function () {
             connection.release();
         });
     });
+
+    describe('queryJSON', function () {
+        it('error in query', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                argumentsArray.pop()(new Error('test error'));
+            };
+
+            connection.queryJSON(1, 2, 3, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'test error');
+            });
+        });
+
+        it('error in parse', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                argumentsArray.pop()(null, [{
+                    data: 'not json text'
+                }]);
+            };
+
+            connection.queryJSON(1, 2, 3, function (error) {
+                assert.isDefined(error);
+            });
+        });
+
+        it('empty', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                argumentsArray.pop()(null, []);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(0, results.rowCount);
+                assert.deepEqual([], results.json);
+            });
+        });
+
+        it('undefined', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(0, results.rowCount);
+                assert.deepEqual([], results.json);
+            });
+        });
+
+        it('null', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, null);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(0, results.rowCount);
+                assert.deepEqual([], results.json);
+            });
+        });
+
+        it('single row empty data', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [{
+                    data: ''
+                }]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(1, results.rowCount);
+                assert.deepEqual({}, results.json);
+            });
+        });
+
+        it('single row undefined data', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [{
+                    data: undefined
+                }]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(1, results.rowCount);
+                assert.deepEqual({}, results.json);
+            });
+        });
+
+        it('single row not json data', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [{
+                    data: 'some text'
+                }]);
+            };
+
+            connection.queryJSON(function (error) {
+                assert.isDefined(error);
+            });
+        });
+
+        it('multiple rows empty data', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [
+                    {
+                        data: ''
+                    },
+                    {
+                        data: ''
+                    }
+                ]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(2, results.rowCount);
+                assert.deepEqual([{}, {}], results.json);
+            });
+        });
+
+        it('multiple rows undefined data', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [
+                    {
+                        data: undefined
+                    },
+                    {
+                        data: undefined
+                    }
+                ]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(2, results.rowCount);
+                assert.deepEqual([{}, {}], results.json);
+            });
+        });
+
+        it('single row', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [
+                    {
+                        data: JSON.stringify({
+                            a: 1,
+                            test: true,
+                            array: [1, 2, 3],
+                            subObject: {
+                                key1: 'value1'
+                            }
+                        })
+                    }
+                ]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(1, results.rowCount);
+                assert.deepEqual({
+                    a: 1,
+                    test: true,
+                    array: [1, 2, 3],
+                    subObject: {
+                        key1: 'value1'
+                    }
+                }, results.json);
+            });
+        });
+
+        it('multiple rows', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.query = function (callback) {
+                callback(null, [
+                    {
+                        data: JSON.stringify({
+                            a: 1,
+                            test: true,
+                            array: [1, 2, 3],
+                            subObject: {
+                                key1: 'value1'
+                            }
+                        })
+                    },
+                    {
+                        data: JSON.stringify({
+                            a: 2,
+                            test: true,
+                            array: ['a', true],
+                            subObject: {
+                                key1: 'value1',
+                                arr: [true, false, {}]
+                            }
+                        })
+                    }
+                ]);
+            };
+
+            connection.queryJSON(function (error, results) {
+                assert.isNull(error);
+                assert.equal(2, results.rowCount);
+                assert.deepEqual([
+                    {
+                        a: 1,
+                        test: true,
+                        array: [1, 2, 3],
+                        subObject: {
+                            key1: 'value1'
+                        }
+                    },
+                    {
+                        a: 2,
+                        test: true,
+                        array: ['a', true],
+                        subObject: {
+                            key1: 'value1',
+                            arr: [true, false, {}]
+                        }
+                    }
+                ], results.json);
+            });
+        });
+    });
 });

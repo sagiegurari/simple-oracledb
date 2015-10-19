@@ -411,4 +411,76 @@ describe('RowsReader Tests', function () {
             }, 10);
         });
     });
+
+    describe('readJSON tests', function () {
+        it('undefined', function () {
+            var json = RowsReader.readJSON();
+            assert.isUndefined(json);
+        });
+
+        it('multiple keys', function () {
+            try {
+                RowsReader.readJSON([{
+                    key1: JSON.stringify({
+                        test: true
+                    }),
+                    key2: JSON.stringify({
+                        test: true
+                    })
+                }]);
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('no rows', function () {
+            var json = RowsReader.readJSON([]);
+            assert.deepEqual([], json);
+        });
+
+        it('multiple json rows', function () {
+            var output = RowsReader.readJSON([
+                {
+                    data: JSON.stringify({
+                        a: 1,
+                        test: true,
+                        array: [1, 2, 3],
+                        subObject: {
+                            key1: 'value1'
+                        }
+                    })
+                },
+                {
+                    data: JSON.stringify({
+                        a: 2,
+                        test: false,
+                        array: [1, 'b', 3],
+                        subObject: {
+                            key1: 'value1'
+                        }
+                    })
+                }
+            ]);
+
+            assert.deepEqual(output, [
+                {
+                    a: 1,
+                    test: true,
+                    array: [1, 2, 3],
+                    subObject: {
+                        key1: 'value1'
+                    }
+                },
+                {
+                    a: 2,
+                    test: false,
+                    array: [1, 'b', 3],
+                    subObject: {
+                        key1: 'value1'
+                    }
+                }
+            ]);
+        });
+    });
 });

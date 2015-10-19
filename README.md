@@ -11,6 +11,7 @@
   * [query](#usage-query)
   * [insert](#usage-insert)
   * [update](#usage-update)
+  * [queryJSON](#usage-queryJSON)
   * [release](#usage-release)
   * [terminate](#usage-terminate)
 * [Installation](#installation)
@@ -157,6 +158,31 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 });
 ```
 
+<a name="usage-queryJSON"></a>
+## 'connection.queryJSON(sql, [bindVariables], [options], callback)'
+This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
+The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
+The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
+The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
+
+```js
+connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else if (results.rowCount === 1) { //single JSON is returned
+    //print the JSON
+    console.log(results.json);
+  } else if (results.rowCount > 1) { //multiple JSONs are returned
+    //print the JSON
+    results.json.forEach(function printJSON(json) {
+      console.log(json);
+    });
+  } else {
+    console.log('Did not find any results');
+  }
+});
+```
+
 <a name="usage-release"></a>
 ## 'connection.release([callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
@@ -221,11 +247,12 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-20  | v0.0.10 | Added connection.queryJSON |
 | 2015-10-19  | v0.0.9  | autoCommit support when doing INSERT/UPDATE with LOBs |
-| 2015-10-19  | v0.0.7  | Added pool.terminate support |
+| 2015-10-19  | v0.0.7  | Added pool.terminate |
 | 2015-10-19  | v0.0.6  | Maintenance |
-| 2015-10-18  | v0.0.5  | Added connection.update support |
-| 2015-10-18  | v0.0.4  | Added connection.insert support |
+| 2015-10-18  | v0.0.5  | Added connection.update |
+| 2015-10-18  | v0.0.4  | Added connection.insert |
 | 2015-10-16  | v0.0.3  | Maintenance |
 | 2015-10-15  | v0.0.1  | Initial release. |
 

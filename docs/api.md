@@ -43,6 +43,7 @@
   * [#insert(sql, bindParams, options, callback)](#Connection+insert)
   * [#update(sql, bindParams, options, callback)](#Connection+update)
   * [#release([callback])](#Connection+release)
+  * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
   * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
   * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
@@ -185,6 +186,40 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+<a name="Connection+queryJSON"></a>
+### Connection#queryJSON(sql, [bindParams], [options], callback)
+This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
+The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
+The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
+The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>string</code> | The SQL to execute |
+| [bindParams] | <code>object</code> | Optional bind parameters |
+| [options] | <code>object</code> | Optional execute options |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the query results object holding the row count and JSONs |
+
+**Example**  
+```js
+connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else if (results.rowCount === 1) { //single JSON is returned
+    //print the JSON
+    console.log(results.json);
+  } else if (results.rowCount > 1) { //multiple JSONs are returned
+    //print the JSON
+    results.json.forEach(function printJSON(json) {
+      console.log(json);
+    });
+  } else {
+    console.log('Did not find any results');
+  }
+});
+```
 <a name="Connection+modifyParams"></a>
 ### Connection#modifyParams(argumentsArray) ⇒ <code>object</code> ℗
 Internal function used to modify the INSERT/UPDATE SQL arguments.<br>
@@ -310,6 +345,7 @@ Extends the provided oracledb pool instance.
   * [#getValue(field, callback)](#RecordReader+getValue) ℗
   * [#createFieldHandler(jsObject, columnName, value)](#RecordReader+createFieldHandler) ⇒ <code>function</code> ℗
   * [#read(columnNames, row, callback)](#RecordReader+read)
+  * [#readJSON(jsRow, column)](#RecordReader+readJSON) ⇒ <code>object</code>
 
 <a name="new_RecordReader_new"></a>
 ### new RecordReader()
@@ -350,6 +386,18 @@ Reads all data from the provided oracle record.
 | columnNames | <code>Array</code> | Array of strings holding the column names of the results |
 | row | <code>object</code> &#124; <code>Array</code> | The oracle row object |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully read or in case of an error |
+
+<a name="RecordReader+readJSON"></a>
+### RecordReader#readJSON(jsRow, column) ⇒ <code>object</code>
+Read a JSON record.
+
+**Returns**: <code>object</code> - The JSON object  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsRow | <code>object</code> | The JS object holding the row data. |
+| column | <code>string</code> | The column name |
 
 <a name="RecordWriter"></a>
 ## RecordWriter
@@ -452,6 +500,7 @@ Reads all data from the provided oracle ResultSet object.
 * [RowsReader](#RowsReader)
   * [new RowsReader()](#new_RowsReader_new)
   * [#read(columnNames, rows, callback)](#RowsReader+read)
+  * [#readJSON(jsRows)](#RowsReader+readJSON) ⇒ <code>object</code>
 
 <a name="new_RowsReader_new"></a>
 ### new RowsReader()
@@ -468,6 +517,17 @@ Reads all data from the provided oracle records array.
 | columnNames | <code>Array</code> | Array of strings holding the column names of the results |
 | rows | <code>Array</code> | The oracle rows array |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
+
+<a name="RowsReader+readJSON"></a>
+### RowsReader#readJSON(jsRows) ⇒ <code>object</code>
+Read a JSON rows.
+
+**Returns**: <code>object</code> - The JSON object  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsRows | <code>Array</code> | The JS objects holding the row data. |
 
 <a name="SimpleOracleDB"></a>
 ## SimpleOracleDB
