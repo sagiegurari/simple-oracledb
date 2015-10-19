@@ -44,7 +44,7 @@
   * [#update(sql, bindParams, options, callback)](#Connection+update)
   * [#release([callback])](#Connection+release)
   * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
-  * [#createCallback(callback, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
+  * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
     * [.extend(connection)](#Connection.extend)
 
@@ -105,6 +105,7 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | sql | <code>string</code> | The SQL to execute |
 | bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
 | options | <code>object</code> | Any execute options |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
@@ -115,6 +116,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
   clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
   blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
 }, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
   lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
@@ -137,6 +139,7 @@ The function arguments used to execute the 'update' are exactly as defined in th
 | sql | <code>string</code> | The SQL to execute |
 | bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
 | options | <code>object</code> | Any execute options |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
@@ -148,6 +151,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
   clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
   blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
 }, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
   lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
@@ -195,7 +199,7 @@ In addition it will modify the bind variables to specify the OUT bind to enable 
 | argumentsArray | <code>Array</code> | Array of arguments provided in the insert/update functions |
 
 <a name="Connection+createCallback"></a>
-### Connection#createCallback(callback, [output]) ⇒ <code>function</code> ℗
+### Connection#createCallback(callback, commit, [output]) ⇒ <code>function</code> ℗
 Internal function used to wrap the original callback.
 
 **Returns**: <code>function</code> - A wrapper callback  
@@ -204,6 +208,7 @@ Internal function used to wrap the original callback.
 | Param | Type | Description |
 | --- | --- | --- |
 | callback | <code>function</code> | The callback function to invoke |
+| commit | <code>boolean</code> | True to run commit |
 | [output] | <code>object</code> | Optional output to pass to the callback |
 
 <a name="Connection.extend"></a>

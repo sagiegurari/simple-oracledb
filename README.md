@@ -123,6 +123,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
   clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
   blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
 }, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
   lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
@@ -146,6 +147,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
   clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
   blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
 }, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
   lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
@@ -219,7 +221,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-10-19  | v0.0.8  | autoCommit=false when doing INSERT/UPDATE with LOBs |
+| 2015-10-19  | v0.0.9  | autoCommit support when doing INSERT/UPDATE with LOBs |
 | 2015-10-19  | v0.0.7  | Added pool.terminate support |
 | 2015-10-19  | v0.0.6  | Maintenance |
 | 2015-10-18  | v0.0.5  | Added connection.update support |

@@ -366,6 +366,7 @@ describe('Integration Tests', function () {
                             clob1: longClobText,
                             blob2: new Buffer('blob text here')
                         }, {
+                            autoCommit: true,
                             lobMetaInfo: {
                                 LOB1: 'clob1',
                                 LOB2: 'blob2'
@@ -519,6 +520,7 @@ describe('Integration Tests', function () {
                             clob1: longClobText,
                             blob2: new Buffer('blob text here')
                         }, {
+                            autoCommit: true,
                             lobMetaInfo: {
                                 LOB1: 'clob1',
                                 LOB2: 'blob2'
