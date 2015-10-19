@@ -360,12 +360,24 @@ describe('Integration Tests', function () {
                     pool.getConnection(function (err, connection) {
                         assert.isUndefined(err);
 
-                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, :clob1, :blob2)', {
+                        //TODO RMOVE
+                        var e = connection.execute;
+                        connection.execute =function () {
+                            console.log(arguments);
+                            e.apply(connection, arguments);
+                        }
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', {
                             value1: 'test',
                             value2: 123,
                             clob1: longClobText,
                             blob2: new Buffer('blob text here')
-                        }, {}, function (error, results) {
+                        }, {
+                            lobMetaInfo: {
+                                LOB1: 'clob1',
+                                LOB2: 'blob2'
+                            }
+                        }, function (error, results) {
                             assert.isNull(error);
                             assert.equal(1, results.rowsAffected);
 
@@ -493,7 +505,7 @@ describe('Integration Tests', function () {
                 });
             });
 
-            it('insert - LOB data', function (done) {
+            it('update - LOB data', function (done) {
                 var table = 'TEST_ORA_UPDT3';
 
                 var longClobText = 'this is a really long line of test data\n';
@@ -508,12 +520,17 @@ describe('Integration Tests', function () {
                     pool.getConnection(function (err, connection) {
                         assert.isUndefined(err);
 
-                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, :clob1, :blob2)', {
+                        connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', {
                             value1: 'test',
                             value2: 123,
                             clob1: longClobText,
                             blob2: new Buffer('blob text here')
-                        }, {}, function (error1, results1) {
+                        }, {
+                            lobMetaInfo: {
+                                LOB1: 'clob1',
+                                LOB2: 'blob2'
+                            }
+                        }, function (error1, results1) {
                             assert.isNull(error1);
                             assert.equal(1, results1.rowsAffected);
 
