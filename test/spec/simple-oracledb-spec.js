@@ -52,6 +52,16 @@ describe('simple oracledb tests', function () {
                 assert.isDefined(error);
             }
         });
+
+        it('extend no input', function () {
+            var obj = {};
+            try {
+                simpleOracleDB.extend();
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
     });
 
     describe('createPool tests', function () {
