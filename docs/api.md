@@ -226,7 +226,9 @@ Extends the provided oracledb connection instance.
 * [Pool](#Pool)
   * [new Pool()](#new_Pool_new)
   * [.simplified](#Pool.simplified) : <code>boolean</code>
+  * [#noop()](#Pool+noop) ⇒ <code>undefined</code> ℗
   * [#getConnection(callback)](#Pool+getConnection)
+  * [#terminate([callback])](#Pool+terminate)
   * _static_
     * [.extend(pool)](#Pool.extend)
 
@@ -239,6 +241,12 @@ This class holds all the extended capabilities added the oracledb pool.
 Marker property.
 
 **Access:** public  
+<a name="Pool+noop"></a>
+### Pool#noop() ⇒ <code>undefined</code> ℗
+Empty function.
+
+**Returns**: <code>undefined</code> - Empty return  
+**Access:** private  
 <a name="Pool+getConnection"></a>
 ### Pool#getConnection(callback)
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
@@ -250,6 +258,31 @@ See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnection
 | --- | --- | --- |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
+<a name="Pool+terminate"></a>
+### Pool#terminate([callback])
+This function modifies the existing pool.terminate function by enabling the input
+callback to be an optional parameter.<br>
+Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
+is just log the error and continue.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [callback] | <code>function</code> | An optional terminate callback function (see oracledb docs) |
+
+**Example**  
+```js
+pool.terminate(); //no callback needed
+
+//still possible to call with a terminate callback function
+pool.terminate(function onTerminate(error) {
+  if (error) {
+    //now what?
+  }
+});
+```
 <a name="Pool.extend"></a>
 ### Pool.extend(pool)
 Extends the provided oracledb pool instance.

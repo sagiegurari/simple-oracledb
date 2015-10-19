@@ -43,4 +43,38 @@ describe('Pool Tests', function () {
             })
         });
     });
+
+    describe('terminate', function () {
+        it('callback provided', function (done) {
+            var pool = {
+                terminate: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Pool.extend(pool);
+
+            assert.isFunction(pool.baseTerminate);
+            pool.terminate(function () {
+                return undefined;
+            });
+        });
+
+        it('callback undefined', function (done) {
+            var pool = {
+                terminate: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Pool.extend(pool);
+
+            assert.isFunction(pool.baseTerminate);
+            pool.terminate();
+        });
+    });
 });

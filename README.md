@@ -12,6 +12,7 @@
   * [insert](#usage-insert)
   * [update](#usage-update)
   * [release](#usage-release)
+  * [terminate](#usage-terminate)
 * [Installation](#installation)
 * [Limitations](#limitations)
 * [API Documentation](docs/api.md)
@@ -170,6 +171,25 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+
+<a name="usage-terminate"></a>
+## 'pool.terminate([callback])'
+This function modifies the existing pool.terminate function by enabling the input
+callback to be an optional parameter.<br>
+Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
+is just log the error and continue.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+```js
+pool.terminate(); //no callback needed
+
+//still possible to call with a terminate callback function
+pool.terminate(function onTerminate(error) {
+  if (error) {
+    //now what?
+  }
+});
+```
 <br>
 **The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
@@ -199,6 +219,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-10-19  | v0.0.7  | Added pool.terminate support |
 | 2015-10-19  | v0.0.6  | Maintenance |
 | 2015-10-18  | v0.0.5  | Added connection.update support |
 | 2015-10-18  | v0.0.4  | Added connection.insert support |
