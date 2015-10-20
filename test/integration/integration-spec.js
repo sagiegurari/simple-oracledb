@@ -601,5 +601,113 @@ describe('Integration Tests', function () {
                 });
             });
         });
+
+        describe('queryJSON', function () {
+            it('single row', function (done) {
+                var table = 'TEST_ORA_JSON1';
+                initDB(table, [
+                    {
+                        COL1: 'PK1',
+                        COL2: 2,
+                        COL3: 30,
+                        COL4: '123',
+                        LOB1: JSON.stringify({
+                            json: true,
+                            oracle: true,
+                            text: 'test',
+                            subObj: {
+                                array: [1, 2, 3, '4']
+                            }
+                        })
+                    }
+                ], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.queryJSON('SELECT LOB1 FROM ' + table, function (error, results) {
+                            assert.isNull(error);
+                            assert.equal(results.rowCount, 1);
+                            assert.deepEqual({
+                                json: true,
+                                oracle: true,
+                                text: 'test',
+                                subObj: {
+                                    array: [1, 2, 3, '4']
+                                }
+                            }, results.json);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+
+            it('multiple row', function (done) {
+                var table = 'TEST_ORA_JSON1';
+                initDB(table, [
+                    {
+                        COL1: 'PK1',
+                        COL2: 2,
+                        COL3: 30,
+                        COL4: '123',
+                        LOB1: JSON.stringify({
+                            json: true,
+                            oracle: true,
+                            text: 'test',
+                            subObj: {
+                                array: [1, 2, 3, '4']
+                            }
+                        })
+                    },
+                    {
+                        COL1: 'PK2',
+                        COL2: 2,
+                        COL3: 30,
+                        COL4: '123',
+                        LOB1: JSON.stringify({
+                            json: 100,
+                            oracle: 'oracledb',
+                            text: 'test',
+                            subObj: {
+                                array: [1, 2, 3, '4', {
+                                    works: 'yes'
+                                }]
+                            }
+                        })
+                    }
+                ], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.queryJSON('SELECT LOB1 FROM ' + table, function (error, results) {
+                            assert.isNull(error);
+                            assert.equal(results.rowCount, 2);
+                            assert.deepEqual([
+                                {
+                                    json: true,
+                                    oracle: true,
+                                    text: 'test',
+                                    subObj: {
+                                        array: [1, 2, 3, '4']
+                                    }
+                                },
+                                {
+                                    json: 100,
+                                    oracle: 'oracledb',
+                                    text: 'test',
+                                    subObj: {
+                                        array: [1, 2, 3, '4', {
+                                            works: 'yes'
+                                        }]
+                                    }
+                                }
+                            ], results.json);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+        });
     }
 });

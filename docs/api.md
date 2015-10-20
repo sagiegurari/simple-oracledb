@@ -47,6 +47,7 @@
   * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
   * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
+    * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
     * [.extend(connection)](#Connection.extend)
 
 <a name="new_Connection_new"></a>
@@ -245,6 +246,19 @@ Internal function used to wrap the original callback.
 | callback | <code>function</code> | The callback function to invoke |
 | commit | <code>boolean</code> | True to run commit |
 | [output] | <code>object</code> | Optional output to pass to the callback |
+
+<a name="Connection.wrapOnConnection"></a>
+### Connection.wrapOnConnection(callback) ⇒ <code>function</code>
+Returns a getConnection callback wrapper which extends the connection and
+calls the original callback.
+
+**Kind**: static method of <code>[Connection](#Connection)</code>  
+**Returns**: <code>function</code> - The getConnection callback wrapper.  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | The getConnection callback |
 
 <a name="Connection.extend"></a>
 ### Connection.extend(connection)
