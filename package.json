@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "main": "index.js",
   "directories": {
