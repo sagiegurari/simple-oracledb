@@ -1,12 +1,12 @@
 {
   "name": "simple-oracledb",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test/spec"
+  "author": {
+    "name": "Sagie Gur-Ari",
+    "email": "sagiegurari@gmail.com"
   },
+  "license": "Apache-2.0",
   "homepage": "http://github.com/sagiegurari/simple-oracledb",
   "repository": {
     "type": "git",
@@ -20,8 +20,21 @@
     "oracledb",
     "database"
   ],
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test/spec"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "clean": "grunt cleanup",
+    "lint": "grunt lint",
+    "docs": "grunt docs",
+    "build": "grunt build",
+    "precommit": "npm run build"
+  },
   "dependencies": {
-    "async": "^1.4.2"
+    "async": "^1.5.0"
   },
   "devDependencies": {
     "blanket": "latest",
@@ -45,18 +58,5 @@
     "mocha": "latest",
     "mocha-lcov-reporter": "latest",
     "time-grunt": "latest"
-  },
-  "author": {
-    "name": "Sagie Gur-Ari",
-    "email": "sagiegurari@gmail.com"
-  },
-  "license": "Apache-2.0",
-  "scripts": {
-    "test": "grunt test",
-    "clean": "grunt cleanup",
-    "lint": "grunt lint",
-    "docs": "grunt docs",
-    "build": "grunt build",
-    "precommit": "npm run build"
   }
 }
