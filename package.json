@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "author": {
     "name": "Sagie Gur-Ari",

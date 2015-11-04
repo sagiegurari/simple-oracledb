@@ -2,9 +2,6 @@
   "env": {
     "node": true
   },
-  "globals": {
-    "root": true
-  },
   "rules": {
     "block-scoped-var": 0,
     "no-extra-parens": 0,

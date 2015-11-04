@@ -247,7 +247,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-11-03  | v0.0.13 | Maintenance |
+| 2015-11-04  | v0.0.14 | Maintenance |
 | 2015-10-20  | v0.0.10 | Added connection.queryJSON |
 | 2015-10-19  | v0.0.9  | autoCommit support when doing INSERT/UPDATE with LOBs |
 | 2015-10-19  | v0.0.7  | Added pool.terminate |
