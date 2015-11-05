@@ -59,10 +59,10 @@ out of your control), as follows:
 //load the simple oracledb
 var SimpleOracleDB = require('simple-oracledb');
 
-function myFunction(pool) {    
+function myFunction(pool) {
     //modify the original oracledb pool instance
     SimpleOracleDB.extend(pool);
-    
+
     //from this point connections fetched via pool.getConnection(...)
     //have access to additional functionality.
     pool.getConnection(function onConnection(error, connection) {
@@ -83,10 +83,10 @@ and out of your control), as follows:
 //load the simple oracledb
 var SimpleOracleDB = require('simple-oracledb');
 
-function doSomething(connection, callback) {    
+function doSomething(connection, callback) {
     //modify the original oracledb connection instance
     SimpleOracleDB.extend(connection);
-    
+
     //from this point the connection has access to additional functionality as well as the original oracledb capabilities.
     connection.query(...);
 }
@@ -247,7 +247,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-11-04  | v0.0.14 | Maintenance |
+| 2015-11-05  | v0.0.15 | Maintenance |
 | 2015-10-20  | v0.0.10 | Added connection.queryJSON |
 | 2015-10-19  | v0.0.9  | autoCommit support when doing INSERT/UPDATE with LOBs |
 | 2015-10-19  | v0.0.7  | Added pool.terminate |
