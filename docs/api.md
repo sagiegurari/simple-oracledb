@@ -43,7 +43,9 @@
   * [#insert(sql, bindParams, options, callback)](#Connection+insert)
   * [#update(sql, bindParams, options, callback)](#Connection+update)
   * [#release([callback])](#Connection+release)
+  * [#rollback([callback])](#Connection+rollback)
   * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
+  * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
   * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
   * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
   * _static_
@@ -107,7 +109,7 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | sql | <code>string</code> | The SQL to execute |
 | bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
 | options | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
@@ -187,6 +189,30 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+<a name="Connection+rollback"></a>
+### Connection#rollback([callback])
+This function modifies the existing connection.rollback function by enabling the input
+callback to be an optional parameter.<br>
+If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [callback] | <code>function</code> | An optional rollback callback function (see oracledb docs) |
+
+**Example**  
+```js
+connection.rollback(); //no callback needed
+
+//still possible to call with a rollback callback function
+connection.rollback(function onRollback(error) {
+  if (error) {
+    //now what?
+  }
+});
+```
 <a name="Connection+queryJSON"></a>
 ### Connection#queryJSON(sql, [bindParams], [options], callback)
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
@@ -219,6 +245,50 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
   } else {
     console.log('Did not find any results');
   }
+});
+```
+<a name="Connection+batchInsert"></a>
+### Connection#batchInsert(sql, bindParamsArray, options, callback)
+Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
+This allows to insert to same table multiple different rows with one single call.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
+the bind params is now an array of bind params (one per row).<br>
+The callback results will be an array of a results object for each row.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>string</code> | The SQL to execute |
+| bindParamsArray | <code>Array</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>object</code> | Any execute options |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+
+**Example**  
+```js
+connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
+  { //first row values
+    id: 110,
+    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  },
+  { //second row values
+    id: 111,
+    clobText1: 'second row',
+    blobBuffer2: new Buffer('second rows')
+  }
+], {
+  autoCommit: true, //must be set to true in options to support auto commit after insert is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
 });
 ```
 <a name="Connection+modifyParams"></a>

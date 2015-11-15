@@ -885,6 +885,40 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('rollback', function () {
+        it('callback provided', function (done) {
+            var connection = {
+                rollback: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRollback);
+            connection.rollback(function () {
+                return undefined;
+            });
+        });
+
+        it('callback undefined', function (done) {
+            var connection = {
+                rollback: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRollback);
+            connection.rollback();
+        });
+    });
+
     describe('queryJSON', function () {
         it('error in query', function () {
             var connection = {};
@@ -1144,6 +1178,460 @@ describe('Connection Tests', function () {
                         }
                     }
                 ], results.json);
+            });
+        });
+    });
+
+    describe('batchInsert', function () {
+        it('no lobs', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ];
+            var counter = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    lobMetaInfo: {},
+                    autoCommit: false
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {}
+                });
+            };
+
+            connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ], {
+                lobMetaInfo: {}
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    },
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    }
+                ], results);
+                assert.equal(counter, 2);
+
+                done();
+            });
+        });
+
+        it('multiple lobs', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitCalled = false;
+            connection.commit = function (callback) {
+                commitCalled = true;
+                callback();
+            };
+
+            var lobsWritten = 0;
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+            var counter = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                lob1.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+                lob3.once('end', function () {
+                    lobsWritten++;
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.equal(counter, 2);
+                assert.equal(lobsWritten, 6);
+                assert.isTrue(commitCalled);
+
+                done();
+            });
+        });
+
+        it('error while writing lobs', function (done) {
+            var rollbackCalled = false;
+            var connection = {
+                rollback: function (cb) {
+                    rollbackCalled = true;
+                    cb();
+                }
+            };
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+            var counter = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.end = function () {
+                    var cb = Array.prototype.pop.call(arguments);
+                    lob2.emit('error', new Error('lob test error'));
+
+                    setTimeout(cb, 10);
+                };
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'lob test error');
+                assert.isUndefined(results);
+                assert.isTrue(rollbackCalled);
+
+                done();
+            });
+        });
+
+        it('error on execute', function (done) {
+            var rollbackCalled = false;
+            var connection = {
+                rollback: function (cb) {
+                    rollbackCalled = true;
+                    cb();
+                }
+            };
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+            var counter = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                if (counter < 2) {
+                    callback(null, {
+                        rowsAffected: 1,
+                        outBinds: {}
+                    });
+                } else {
+                    callback(new Error('execute error test'));
+                }
+            };
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'execute error test');
+                assert.isUndefined(results);
+                assert.isTrue(rollbackCalled);
+
+                done();
+            });
+        });
+
+        it('error on commit', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.commit = function (callback) {
+                callback(new Error('commit error'));
+            };
+
+            var lobsWritten = 0;
+            connection.execute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                lob1.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+                lob3.once('end', function () {
+                    lobsWritten++;
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: new Buffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'commit error');
+                assert.equal(lobsWritten, 6);
+
+                done();
             });
         });
     });

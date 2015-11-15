@@ -12,7 +12,9 @@
   * [insert](#usage-insert)
   * [update](#usage-update)
   * [queryJSON](#usage-queryJSON)
+  * [batchInsert](#usage-batchInsert)
   * [release](#usage-release)
+  * [rollback](#usage-rollback)
   * [terminate](#usage-terminate)
 * [Installation](#installation)
 * [Limitations](#limitations)
@@ -183,6 +185,39 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 });
 ```
 
+<a name="usage-batchInsert"></a>
+## 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
+Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
+This allows to insert to same table multiple different rows with one single call.<br>
+The callback output will be the same as oracledb conection.execute.<br>
+All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
+the bind params is now an array of bind params (one per row).<br>
+The callback results will be an array of a results object for each row.
+
+```js
+connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
+  { //first row values
+    id: 110,
+    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  },
+  { //second row values
+    id: 111,
+    clobText1: 'second row',
+    blobBuffer2: new Buffer('second rows')
+  }
+], {
+  autoCommit: true, //must be set to true in options to support auto commit after insert is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
+});
+```
+
 <a name="usage-release"></a>
 ## 'connection.release([callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
@@ -194,6 +229,24 @@ connection.release(); //no callback needed
 
 //still possible to call with a release callback function
 connection.release(function onRelease(error) {
+  if (error) {
+    //now what?
+  }
+});
+```
+
+<a name="usage-rollback"></a>
+## 'connection.rollback([callback])'
+This function modifies the existing connection.rollback function by enabling the input
+callback to be an optional parameter.<br>
+If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+```js
+connection.rollback(); //no callback needed
+
+//still possible to call with a rollback callback function
+connection.rollback(function onRollback(error) {
   if (error) {
     //now what?
   }
@@ -247,6 +300,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-11-15  | v0.0.16 | Added connection.batchInsert and connection.rollback |
 | 2015-11-05  | v0.0.15 | Maintenance |
 | 2015-10-20  | v0.0.10 | Added connection.queryJSON |
 | 2015-10-19  | v0.0.9  | autoCommit support when doing INSERT/UPDATE with LOBs |
