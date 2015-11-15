@@ -189,11 +189,10 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ## 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
-The callback output will be the same as oracledb conection.execute.<br>
+The callback output will be an array of objects of same as oracledb conection.execute (per row).<br>
 All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
-the bind params is now an array of bind params (one per row).<br>
-The callback results will be an array of a results object for each row.
+the bind params is now an array of bind params (one per row).
 
 ```js
 connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
