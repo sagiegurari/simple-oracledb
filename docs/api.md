@@ -353,7 +353,7 @@ Extends the provided oracledb connection instance.
   * [#getConnection(callback)](#Pool+getConnection)
   * [#terminate([callback])](#Pool+terminate)
   * _static_
-    * [.extend(pool)](#Pool.extend)
+    * [.extend(pool, [poolAttributes])](#Pool.extend)
 
 <a name="new_Pool_new"></a>
 ### new Pool()
@@ -407,15 +407,18 @@ pool.terminate(function onTerminate(error) {
 });
 ```
 <a name="Pool.extend"></a>
-### Pool.extend(pool)
+### Pool.extend(pool, [poolAttributes])
 Extends the provided oracledb pool instance.
 
 **Kind**: static method of <code>[Pool](#Pool)</code>  
 **Access:** public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| pool | <code>object</code> | The oracledb pool instance |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| pool | <code>object</code> |  | The oracledb pool instance |
+| [poolAttributes] | <code>object</code> |  | The connection pool attributes object |
+| [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
+| [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
 
 <a name="RecordReader"></a>
 ## RecordReader

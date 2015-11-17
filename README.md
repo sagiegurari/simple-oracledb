@@ -8,14 +8,18 @@
 
 * [Overview](#overview)
 * [Usage](#usage)
-  * [query](#usage-query)
-  * [insert](#usage-insert)
-  * [update](#usage-update)
-  * [queryJSON](#usage-queryJSON)
-  * [batchInsert](#usage-batchInsert)
-  * [release](#usage-release)
-  * [rollback](#usage-rollback)
-  * [terminate](#usage-terminate)
+  * [OracleDB](#usage-oracledb)
+    * [createPool](#usage-createpool)
+  * [Pool](#usage-pool)
+    * [terminate](#usage-terminate)
+  * [Connection](#usage-connection)
+    * [query](#usage-query)
+    * [insert](#usage-insert)
+    * [update](#usage-update)
+    * [queryJSON](#usage-queryJSON)
+    * [batchInsert](#usage-batchInsert)
+    * [release](#usage-release)
+    * [rollback](#usage-rollback)
 * [Installation](#installation)
 * [Limitations](#limitations)
 * [API Documentation](docs/api.md)
@@ -94,6 +98,44 @@ function doSomething(connection, callback) {
 }
 ```
 
+<a name="usage-oracledb"></a>
+<a name="usage-createpool"></a>
+## 'oracledb.createPool(poolAttributes, callback)'
+This function modifies the existing oracledb.createPool function by enhancing the returned pool to support retry in the getConnection function.<br>
+The pool.getConnection will retry configurable amount of times with configurable interval between attempts to return a connection in the getConnection function.<br>
+In case all attempts fail, the getConnection callback will receive the error object of the last attempt.
+
+```js
+oracledb.createPool({
+  retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
+  retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
+  //any other oracledb pool attributes
+}, function onPoolCreated(error, pool) {
+  //continue flow
+});
+```
+
+<a name="usage-pool"></a>
+<a name="usage-terminate"></a>
+## 'pool.terminate([callback])'
+This function modifies the existing pool.terminate function by enabling the input
+callback to be an optional parameter.<br>
+Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
+is just log the error and continue.<br>
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+
+```js
+pool.terminate(); //no callback needed
+
+//still possible to call with a terminate callback function
+pool.terminate(function onTerminate(error) {
+  if (error) {
+    //now what?
+  }
+});
+```
+
+<a name="usage-connection"></a>
 <a name="usage-query"></a>
 ## 'connection.query(sql, bindVariables, [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
@@ -251,25 +293,6 @@ connection.rollback(function onRollback(error) {
   }
 });
 ```
-
-<a name="usage-terminate"></a>
-## 'pool.terminate([callback])'
-This function modifies the existing pool.terminate function by enabling the input
-callback to be an optional parameter.<br>
-Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
-is just log the error and continue.<br>
-Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
-
-```js
-pool.terminate(); //no callback needed
-
-//still possible to call with a terminate callback function
-pool.terminate(function onTerminate(error) {
-  if (error) {
-    //now what?
-  }
-});
-```
 <br>
 **The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
@@ -299,6 +322,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |
 | 2015-11-15  | v0.0.16 | Added connection.batchInsert and connection.rollback |
 | 2015-11-05  | v0.0.15 | Maintenance |
 | 2015-10-20  | v0.0.10 | Added connection.queryJSON |
