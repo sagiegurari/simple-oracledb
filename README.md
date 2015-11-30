@@ -322,7 +322,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-11-29  | v0.0.22 | Maintenance |
+| 2015-11-30  | v0.0.23 | Maintenance |
 | 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |
 | 2015-11-15  | v0.0.16 | Added connection.batchInsert and connection.rollback |
 | 2015-11-05  | v0.0.15 | Maintenance |
