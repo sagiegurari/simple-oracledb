@@ -124,7 +124,7 @@ oracledb.createPool({
 This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
-See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB+createPool for extended createPool API details.
+See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.
 
 ```js
 oracledb.createPool({
