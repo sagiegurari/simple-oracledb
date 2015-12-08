@@ -11,6 +11,7 @@
   * [OracleDB](#usage-oracledb)
     * [createPool](#usage-createpool)
   * [Pool](#usage-pool)
+    * [getConnection](#usage-getconnection)
     * [terminate](#usage-terminate)
   * [Connection](#usage-connection)
     * [query](#usage-query)
@@ -109,6 +110,8 @@ In case all attempts fail, the getConnection callback will receive the error obj
 oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
+  runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  validationSQL: 'SELECT 1 FROM DUAL', The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }, function onPoolCreated(error, pool) {
   //continue flow
@@ -116,6 +119,27 @@ oracledb.createPool({
 ```
 
 <a name="usage-pool"></a>
+<a name="usage-getconnection"></a>
+## 'pool.getConnection(callback)'
+This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
+It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
+See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
+See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB+createPool for extended createPool API details.
+
+```js
+oracledb.createPool({
+  retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
+  retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
+  runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  validationSQL: 'SELECT 1 FROM DUAL', The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
+  //any other oracledb pool attributes
+}, function onPoolCreated(error, pool) {
+  pool.getConnection(function onConnection(poolError, connection) {
+    //continue flow (connection, if provided, has been tested to ensure it is valid)
+  });
+});
+```
+
 <a name="usage-terminate"></a>
 ## 'pool.terminate([callback])'
 This function modifies the existing pool.terminate function by enabling the input
@@ -322,6 +346,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |
 | 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |
 | 2015-11-15  | v0.0.16 | Added connection.batchInsert and connection.rollback |

@@ -13,7 +13,17 @@ function TestPool() {
 /*jslint debug: false */
 
 TestConnection.prototype.execute = function () {
-    arguments[arguments.length - 1]();
+    var callback = arguments[arguments.length - 1];
+
+    if (this.throwError) {
+        callback(new Error());
+    } else {
+        callback(null, {});
+    }
+};
+
+TestConnection.prototype.release = function (callback) {
+    callback();
 };
 
 TestPool.prototype.getConnection = function (callback) {

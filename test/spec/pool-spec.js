@@ -66,7 +66,8 @@ describe('Pool Tests', function () {
             };
 
             Pool.extend(testPool, {
-                retryCount: 5
+                retryCount: 5,
+                runValidationSQL: false
             });
 
             testPool.getConnection(function (error, connection) {
@@ -86,7 +87,7 @@ describe('Pool Tests', function () {
             testPool.getConnection = function (callback) {
                 counter++;
 
-                if (counter > 10) {
+                if (counter > 5) {
                     assert.fail();
                 }
 
@@ -94,12 +95,72 @@ describe('Pool Tests', function () {
             };
 
             Pool.extend(testPool, {
-                retryInterval: 5
+                retryInterval: 5,
+                retryCount: 5
             });
 
             testPool.getConnection(function (error) {
-                assert.equal(counter, 10);
+                assert.equal(counter, 5);
                 assert.isDefined(error);
+
+                done();
+            })
+        });
+
+        it('getConnection sql error', function (done) {
+            var testPool = oracledb.createPool();
+            var orgGetConnection = testPool.getConnection;
+
+            testPool.getConnection = function (callback) {
+                orgGetConnection.call(testPool, function (connError, connection) {
+                    connection.throwError = true;
+
+                    callback(null, connection);
+                });
+            };
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.getConnection(function (error, connection) {
+                assert.isDefined(error);
+                assert.isUndefined(connection);
+
+                done();
+            })
+        });
+
+        it('getConnection sql error with valid retry', function (done) {
+            var testPool = oracledb.createPool();
+            var orgGetConnection = testPool.getConnection;
+
+            var counter = 0;
+            testPool.getConnection = function (callback) {
+                counter++;
+
+                orgGetConnection.call(testPool, function (connError, connection) {
+                    connection.throwError = true;
+
+                    if (counter > 5) {
+                        assert.fail();
+                    } else if (counter === 4) {
+                        connection.throwError = false;
+                    }
+
+                    callback(null, connection);
+                });
+            };
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.getConnection(function (error, connection) {
+                assert.equal(counter, 4);
+                assert.isNull(error);
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
 
                 done();
             })
