@@ -423,7 +423,7 @@ Extends the provided oracledb pool instance.
 | [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
 | [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
-| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;&#x27;SELECT 1 FROM DUAL&#x27;&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
+| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 
 <a name="RecordReader"></a>
 ## RecordReader
@@ -698,7 +698,7 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
 | [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
-| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;&#x27;SELECT 1 FROM DUAL&#x27;&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
+| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
 
 <a name="Stream"></a>
