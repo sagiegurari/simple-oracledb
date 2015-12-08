@@ -111,7 +111,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
-  validationSQL: 'SELECT 1 FROM DUAL', The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
+  validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }, function onPoolCreated(error, pool) {
   //continue flow
@@ -131,7 +131,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
-  validationSQL: 'SELECT 1 FROM DUAL', The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
+  validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }, function onPoolCreated(error, pool) {
   pool.getConnection(function onConnection(poolError, connection) {
@@ -346,6 +346,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-08  | v0.0.25 | Maintenance |
 | 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |
 | 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |
