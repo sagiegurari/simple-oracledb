@@ -346,7 +346,7 @@ See full docs at: [API Docs](docs/api.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-12-12  | v0.0.27 | Maintenance |
+| 2015-12-12  | v0.0.28 | Maintenance |
 | 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |
 | 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |

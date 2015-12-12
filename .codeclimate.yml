@@ -3,6 +3,14 @@ engines:
     enabled: true
   fixme:
     enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+        mass_threshold: 10
+  nodesecurity:
+    enabled: true
 ratings:
   paths:
     - index.js
