@@ -1,4 +1,5 @@
 ## Classes
+
 <dl>
 <dt><a href="#Connection">Connection</a></dt>
 <dd></dd>
@@ -17,18 +18,23 @@
 <dt><a href="#Stream">Stream</a></dt>
 <dd></dd>
 </dl>
+
 ## Objects
+
 <dl>
 <dt><a href="#Constants">Constants</a> : <code>object</code></dt>
 <dd><p>Library constants.</p>
 </dd>
 </dl>
+
 ## Typedefs
+
 <dl>
 <dt><a href="#AsyncCallback">AsyncCallback</a> : <code>function</code></dt>
 <dd><p>Invoked when an async operation has finished.</p>
 </dd>
 </dl>
+
 <a name="Connection"></a>
 ## Connection
 **Kind**: global class  
@@ -36,21 +42,21 @@
 **Author:** Sagie Gur-Ari  
 
 * [Connection](#Connection)
-  * [new Connection()](#new_Connection_new)
-  * [.simplified](#Connection.simplified) : <code>boolean</code>
-  * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
-  * [#query(sql, [bindParams], [options], callback)](#Connection+query)
-  * [#insert(sql, bindParams, options, callback)](#Connection+insert)
-  * [#update(sql, bindParams, options, callback)](#Connection+update)
-  * [#release([callback])](#Connection+release)
-  * [#rollback([callback])](#Connection+rollback)
-  * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
-  * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
-  * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
-  * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
-  * _static_
-    * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
-    * [.extend(connection)](#Connection.extend)
+    * [new Connection()](#new_Connection_new)
+    * [.simplified](#Connection.simplified) : <code>boolean</code>
+    * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
+    * [#query(sql, [bindParams], [options], callback)](#Connection+query)
+    * [#insert(sql, bindParams, options, callback)](#Connection+insert)
+    * [#update(sql, bindParams, options, callback)](#Connection+update)
+    * [#release([callback])](#Connection+release)
+    * [#rollback([callback])](#Connection+rollback)
+    * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
+    * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
+    * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
+    * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
+    * _static_
+        * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
+        * [.extend(connection)](#Connection.extend)
 
 <a name="new_Connection_new"></a>
 ### new Connection()
@@ -347,13 +353,13 @@ Extends the provided oracledb connection instance.
 **Author:** Sagie Gur-Ari  
 
 * [Pool](#Pool)
-  * [new Pool()](#new_Pool_new)
-  * [.simplified](#Pool.simplified) : <code>boolean</code>
-  * [#noop()](#Pool+noop) ⇒ <code>undefined</code> ℗
-  * [#getConnection(callback)](#Pool+getConnection)
-  * [#terminate([callback])](#Pool+terminate)
-  * _static_
-    * [.extend(pool, [poolAttributes])](#Pool.extend)
+    * [new Pool()](#new_Pool_new)
+    * [.simplified](#Pool.simplified) : <code>boolean</code>
+    * [#noop()](#Pool+noop) ⇒ <code>undefined</code> ℗
+    * [#getConnection(callback)](#Pool+getConnection)
+    * [#terminate([callback])](#Pool+terminate)
+    * _static_
+        * [.extend(pool, [poolAttributes])](#Pool.extend)
 
 <a name="new_Pool_new"></a>
 ### new Pool()
@@ -432,11 +438,11 @@ Extends the provided oracledb pool instance.
 **Author:** Sagie Gur-Ari  
 
 * [RecordReader](#RecordReader)
-  * [new RecordReader()](#new_RecordReader_new)
-  * [#getValue(field, callback)](#RecordReader+getValue) ℗
-  * [#createFieldHandler(jsObject, columnName, value)](#RecordReader+createFieldHandler) ⇒ <code>function</code> ℗
-  * [#read(columnNames, row, callback)](#RecordReader+read)
-  * [#readJSON(jsRow, column)](#RecordReader+readJSON) ⇒ <code>object</code>
+    * [new RecordReader()](#new_RecordReader_new)
+    * [#getValue(field, callback)](#RecordReader+getValue) ℗
+    * [#createFieldHandler(jsObject, columnName, value)](#RecordReader+createFieldHandler) ⇒ <code>function</code> ℗
+    * [#read(columnNames, row, callback)](#RecordReader+read)
+    * [#readJSON(jsRow, column)](#RecordReader+readJSON) ⇒ <code>object</code>
 
 <a name="new_RecordReader_new"></a>
 ### new RecordReader()
@@ -497,9 +503,9 @@ Read a JSON record.
 **Author:** Sagie Gur-Ari  
 
 * [RecordWriter](#RecordWriter)
-  * [new RecordWriter()](#new_RecordWriter_new)
-  * [#write(outBindings, lobData, callback)](#RecordWriter+write)
-  * [#writeMultiple(outBindings, lobData, callback)](#RecordWriter+writeMultiple)
+    * [new RecordWriter()](#new_RecordWriter_new)
+    * [#write(outBindings, lobData, callback)](#RecordWriter+write)
+    * [#writeMultiple(outBindings, lobData, callback)](#RecordWriter+writeMultiple)
 
 <a name="new_RecordWriter_new"></a>
 ### new RecordWriter()
@@ -536,10 +542,10 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 **Author:** Sagie Gur-Ari  
 
 * [ResultSetReader](#ResultSetReader)
-  * [new ResultSetReader()](#new_ResultSetReader_new)
-  * [#readNextRows(columnNames, resultSet, callback)](#ResultSetReader+readNextRows) ℗
-  * [#readAllRows(columnNames, resultSet, callback, jsRowsBuffer)](#ResultSetReader+readAllRows) ℗
-  * [#read(columnNames, resultSet, callback)](#ResultSetReader+read)
+    * [new ResultSetReader()](#new_ResultSetReader_new)
+    * [#readNextRows(columnNames, resultSet, callback)](#ResultSetReader+readNextRows) ℗
+    * [#readAllRows(columnNames, resultSet, callback, jsRowsBuffer)](#ResultSetReader+readAllRows) ℗
+    * [#read(columnNames, resultSet, callback)](#ResultSetReader+read)
 
 <a name="new_ResultSetReader_new"></a>
 ### new ResultSetReader()
@@ -589,9 +595,9 @@ Reads all data from the provided oracle ResultSet object.
 **Author:** Sagie Gur-Ari  
 
 * [RowsReader](#RowsReader)
-  * [new RowsReader()](#new_RowsReader_new)
-  * [#read(columnNames, rows, callback)](#RowsReader+read)
-  * [#readJSON(jsRows)](#RowsReader+readJSON) ⇒ <code>object</code>
+    * [new RowsReader()](#new_RowsReader_new)
+    * [#read(columnNames, rows, callback)](#RowsReader+read)
+    * [#readJSON(jsRows)](#RowsReader+readJSON) ⇒ <code>object</code>
 
 <a name="new_RowsReader_new"></a>
 ### new RowsReader()
@@ -627,13 +633,13 @@ Read a JSON rows.
 **Author:** Sagie Gur-Ari  
 
 * [SimpleOracleDB](#SimpleOracleDB)
-  * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
-  * [#extend(oracledb)](#SimpleOracleDB+extend)
-  * [#extend(pool)](#SimpleOracleDB+extend)
-  * [#extend(connection)](#SimpleOracleDB+extend)
-  * _static_
-    * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
-    * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
+    * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
+    * [#extend(oracledb)](#SimpleOracleDB+extend)
+    * [#extend(pool)](#SimpleOracleDB+extend)
+    * [#extend(connection)](#SimpleOracleDB+extend)
+    * _static_
+        * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
+        * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
 
 <a name="new_SimpleOracleDB_new"></a>
 ### new SimpleOracleDB()
@@ -708,9 +714,9 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 **Author:** Sagie Gur-Ari  
 
 * [Stream](#Stream)
-  * [new Stream()](#new_Stream_new)
-  * [#read(readableStream, binary, callback)](#Stream+read)
-  * [#write(writableStream, data, callback)](#Stream+write)
+    * [new Stream()](#new_Stream_new)
+    * [#read(readableStream, binary, callback)](#Stream+read)
+    * [#write(writableStream, data, callback)](#Stream+write)
 
 <a name="new_Stream_new"></a>
 ### new Stream()
@@ -748,9 +754,9 @@ Library constants.
 **Author:** Sagie Gur-Ari  
 
 * [Constants](#Constants) : <code>object</code>
-  * [.clobType](#Constants.clobType) : <code>number</code>
-  * [.blobType](#Constants.blobType) : <code>number</code>
-  * [.bindOut](#Constants.bindOut) : <code>number</code>
+    * [.clobType](#Constants.clobType) : <code>number</code>
+    * [.blobType](#Constants.blobType) : <code>number</code>
+    * [.bindOut](#Constants.bindOut) : <code>number</code>
 
 <a name="Constants.clobType"></a>
 ### Constants.clobType : <code>number</code>
