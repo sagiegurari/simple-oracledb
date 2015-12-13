@@ -48,6 +48,7 @@
     * [#query(sql, [bindParams], [options], callback)](#Connection+query)
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
+    * [#insertOrUpdate(insert, argumentsArray)](#Connection+insertOrUpdate) ℗
     * [#release([callback])](#Connection+release)
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
@@ -170,6 +171,17 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
   //continue flow...
 });
 ```
+<a name="Connection+insertOrUpdate"></a>
+### Connection#insertOrUpdate(insert, argumentsArray) ℗
+Internal function which handles both INSERT and UPDATE commands.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| insert | <code>boolean</code> | True for insert, false for update |
+| argumentsArray | <code>Array</code> | The original arguments array |
+
 <a name="Connection+release"></a>
 ### Connection#release([callback])
 This function modifies the existing connection.release function by enabling the input
