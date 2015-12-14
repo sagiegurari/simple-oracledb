@@ -24,6 +24,7 @@
 * [Installation](#installation)
 * [Limitations](#limitations)
 * [API Documentation](docs/api.md)
+* [Contributing](docs/CONTRIBUTING.md)
 * [Release History](#history)
 * [License](#license)
 
@@ -341,12 +342,15 @@ However, in the near future more and more functionality will be added.
 ## API Documentation
 See full docs at: [API Docs](docs/api.md)
 
+## Contributing
+See [contributing guide](docs/CONTRIBUTING.md)
+
 <a name="history"></a>
 ## Release History
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2015-12-13  | v0.0.31 | Maintenance |
+| 2015-12-14  | v0.0.32 | Maintenance |
 | 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |
 | 2015-11-17  | v0.0.17 | Added pool.getConnection automatic retry |
