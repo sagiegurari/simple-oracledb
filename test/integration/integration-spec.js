@@ -255,7 +255,7 @@ describe('Integration Tests', function () {
                 });
             });
 
-            it('resultset - stream', function (done) {
+            it('resultset - split', function (done) {
                 var table = 'TEST_ORA5';
                 initDB(table, [
                     {
@@ -276,7 +276,7 @@ describe('Integration Tests', function () {
 
                         connection.query('SELECT * FROM ' + table, [], {
                             resultSet: true,
-                            streamResults: true
+                            splitResults: true
                         }, function (error, jsRows) {
                             assert.isNull(error);
 
@@ -299,7 +299,7 @@ describe('Integration Tests', function () {
                                         LOB2: undefined
                                     }
                                 ], jsRows);
-                            } else { //end of stream
+                            } else { //end of bulks
                                 end(done, connection);
                             }
                         });
