@@ -21,6 +21,116 @@ describe('ResultSetReader Tests', function () {
         }
     ];
 
+    describe('readNextRows tests', function () {
+        it('array - all types without bulk size', function (done) {
+            var date = new Date();
+            var lob1 = helper.createCLOB();
+            var lob2 = helper.createCLOB();
+
+            var dbData = [
+                [
+                    ['first row', 1, false, date]
+                ],
+                [
+                    [1, 'test', 50, lob1],
+                    ['a', date, undefined, null]
+                ],
+                [
+                    [10, true, lob2, 100]
+                ]
+            ];
+            var dbEvents = [null, function () {
+                lob1.emit('data', 'test1');
+                lob1.emit('data', '\ntest2');
+                lob1.emit('end');
+            }, function () {
+                lob2.emit('data', '123');
+                lob2.emit('data', '456');
+                lob2.emit('end');
+            }];
+
+            ResultSetReader.readNextRows(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 100);
+
+                    var events = dbEvents.shift();
+                    if (events) {
+                        setTimeout(events, 10);
+                    }
+
+                    callback(null, dbData.shift());
+                }
+            }, function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        COL1: 'first row',
+                        COL2: 1,
+                        COL3: false,
+                        COL4: date
+                    }
+                ], jsRows);
+
+                done();
+            });
+        });
+
+        it('array - all types with bulk size', function (done) {
+            var date = new Date();
+            var lob1 = helper.createCLOB();
+            var lob2 = helper.createCLOB();
+
+            var dbData = [
+                [
+                    ['first row', 1, false, date]
+                ],
+                [
+                    [1, 'test', 50, lob1],
+                    ['a', date, undefined, null]
+                ],
+                [
+                    [10, true, lob2, 100]
+                ]
+            ];
+            var dbEvents = [null, function () {
+                lob1.emit('data', 'test1');
+                lob1.emit('data', '\ntest2');
+                lob1.emit('end');
+            }, function () {
+                lob2.emit('data', '123');
+                lob2.emit('data', '456');
+                lob2.emit('end');
+            }];
+
+            ResultSetReader.readNextRows(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 5);
+
+                    var events = dbEvents.shift();
+                    if (events) {
+                        setTimeout(events, 10);
+                    }
+
+                    callback(null, dbData.shift());
+                }
+            }, {
+                bulkRowsAmount: 5
+            }, function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        COL1: 'first row',
+                        COL2: 1,
+                        COL3: false,
+                        COL4: date
+                    }
+                ], jsRows);
+
+                done();
+            });
+        });
+    });
+
     describe('read tests', function () {
         it('empty', function (done) {
             ResultSetReader.read(columnNames, {
@@ -28,7 +138,7 @@ describe('ResultSetReader Tests', function () {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
 
@@ -74,7 +184,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -165,7 +275,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -236,7 +346,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error) {
+            }, null, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob2 error');
 
@@ -302,7 +412,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error) {
+            }, null, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob2 error');
 
@@ -317,7 +427,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(new Error('getrows'));
                 }
-            }, function (error) {
+            }, null, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'getrows');
 
@@ -333,7 +443,7 @@ describe('ResultSetReader Tests', function () {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
 
@@ -412,7 +522,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);
 
@@ -515,7 +625,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, jsRows) {
+            }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);
 
@@ -566,7 +676,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error) {
+            }, null, function (error) {
                 counter++;
 
                 if (counter === 3) {
@@ -640,7 +750,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error) {
+            }, null, function (error) {
                 counter++;
 
                 if (counter === 3) {
@@ -661,7 +771,7 @@ describe('ResultSetReader Tests', function () {
 
                     callback(new Error('getrows'));
                 }
-            }, function (error) {
+            }, null, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'getrows');
 
