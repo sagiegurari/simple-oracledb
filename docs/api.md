@@ -106,7 +106,7 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 });
 
 //read all rows in bulks (streaming results)
-connection.query('SELECT * FROM departments', {
+connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation)
 }, function onResults(error, results) {

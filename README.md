@@ -185,7 +185,7 @@ The callback will be called for each bulk with array of objects.<br>
 Once all rows are read, the callback will be called with an empty array.
 
 ```js
-connection.query('SELECT * FROM departments', {
+connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation)
 }, function onResults(error, results) {
@@ -369,6 +369,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-21  | v0.0.36 | Maintenance |
 | 2015-12-21  | v0.0.35 | New bulkRowsAmount option to manage query resultset behaviour |
 | 2015-12-21  | v0.0.34 | Added streaming of query results with new option streamResults=true |
 | 2015-12-17  | v0.0.33 | Maintenance |
