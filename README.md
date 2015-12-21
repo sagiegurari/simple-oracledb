@@ -180,6 +180,24 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 });
 ```
 
+In order to tream the results in bulks, you can provide the streamResults = true option.<br>
+The callback will be called for each bulk with array of objects.<br>
+Once all rows are read, the callback will be called with an empty array.
+
+```js
+connection.query('SELECT * FROM departments', {
+  streamResults: true
+}, function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else if (results.length) {
+    //handle next bulk of results
+  } else {
+    //all rows read
+  }
+});
+```
+
 <a name="usage-insert"></a>
 ## 'connection.insert(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
@@ -350,6 +368,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-21  | v0.0.34 | Added streaming of query results with new option streamResults=true |
 | 2015-12-17  | v0.0.33 | Maintenance |
 | 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |

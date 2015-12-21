@@ -255,6 +255,58 @@ describe('Integration Tests', function () {
                 });
             });
 
+            it('resultset - stream', function (done) {
+                var table = 'TEST_ORA5';
+                initDB(table, [
+                    {
+                        COL1: 'PK1',
+                        COL2: 2,
+                        COL3: 30,
+                        COL4: '123'
+                    },
+                    {
+                        COL1: 'PK2',
+                        COL2: 200,
+                        COL3: 30,
+                        COL4: 'SOME TEST HERE'
+                    }
+                ], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.query('SELECT * FROM ' + table, [], {
+                            resultSet: true,
+                            streamResults: true
+                        }, function (error, jsRows) {
+                            assert.isNull(error);
+
+                            if (jsRows.length) {
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'PK1',
+                                        COL2: 2,
+                                        COL3: 30,
+                                        COL4: '123',
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    },
+                                    {
+                                        COL1: 'PK2',
+                                        COL2: 200,
+                                        COL3: 30,
+                                        COL4: 'SOME TEST HERE',
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    }
+                                ], jsRows);
+                            } else { //end of stream
+                                end(done, connection);
+                            }
+                        });
+                    });
+                });
+            });
+
             it('rows - lob data', function (done) {
                 var table = 'TEST_ORA6';
                 initDB(table, [
