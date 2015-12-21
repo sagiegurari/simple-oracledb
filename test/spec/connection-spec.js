@@ -78,7 +78,7 @@ describe('Connection Tests', function () {
             });
         });
 
-        it('resultset - empty', function () {
+        it('resultset - empty without stream', function () {
             var connection = {};
             Connection.extend(connection);
 
@@ -102,6 +102,39 @@ describe('Connection Tests', function () {
             };
 
             connection.query(1, 2, 'a', function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual([], jsRows);
+            });
+        });
+
+        it('resultset - empty with stream', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                assert.equal(argumentsArray.length, 5);
+                assert.equal(argumentsArray.shift(), 1);
+                assert.equal(argumentsArray.shift(), 2);
+                assert.equal(argumentsArray.shift(), 'a');
+
+                argumentsArray.shift();
+
+                argumentsArray.shift()(null, {
+                    metaData: columnNames,
+                    resultSet: {
+                        getRows: function (number, callback) {
+                            assert.equal(number, 100);
+                            callback(null, []);
+                        }
+                    }
+                });
+            };
+
+            connection.query(1, 2, 'a', {
+                streamResults: true
+            }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
             });
@@ -172,7 +205,7 @@ describe('Connection Tests', function () {
             });
         });
 
-        it('resultset - data', function () {
+        it('resultset - data', function (done) {
             var connection = {};
             Connection.extend(connection);
 
@@ -281,6 +314,136 @@ describe('Connection Tests', function () {
                         LOB2: undefined
                     }
                 ], jsRows);
+
+                done();
+            });
+        });
+
+        it('resultset - data stream', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var date = new Date();
+            connection.execute = function () {
+                var lob1 = helper.createCLOB();
+                var lob2 = helper.createCLOB();
+
+                var dbData = [
+                    [
+                        {
+                            COL1: 'first row',
+                            COL2: 1,
+                            COL3: false,
+                            COL4: date,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        }
+                    ],
+                    [
+                        {
+                            COL1: 1,
+                            COL2: 'test',
+                            COL3: 50,
+                            COL4: lob1
+                        },
+                        {
+                            COL1: 'a',
+                            COL2: date,
+                            COL3: undefined,
+                            COL4: undefined
+                        }
+                    ],
+                    [
+                        {
+                            COL1: 10,
+                            COL2: true,
+                            COL3: lob2,
+                            COL4: 100,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        }
+                    ]
+                ];
+                var dbEvents = [null, function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                }, function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }];
+
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                argumentsArray.pop()(null, {
+                    metaData: columnNames,
+                    resultSet: {
+                        getRows: function (number, callback) {
+                            assert.equal(number, 100);
+
+                            var events = dbEvents.shift();
+                            if (events) {
+                                setTimeout(events, 10);
+                            }
+
+                            callback(null, dbData.shift());
+                        }
+                    }
+                });
+            };
+
+            var outputData = [
+                [
+                    {
+                        COL1: 'first row',
+                        COL2: 1,
+                        COL3: false,
+                        COL4: date,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    }
+                ],
+                [
+                    {
+                        COL1: 1,
+                        COL2: 'test',
+                        COL3: 50,
+                        COL4: 'test1\ntest2',
+                        LOB1: undefined,
+                        LOB2: undefined
+                    },
+                    {
+                        COL1: 'a',
+                        COL2: date,
+                        COL3: undefined,
+                        COL4: undefined,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    }
+                ],
+                [
+                    {
+                        COL1: 10,
+                        COL2: true,
+                        COL3: '123456',
+                        COL4: 100,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    }
+                ]
+            ];
+
+            connection.query(1, 2, 3, {
+                streamResults: true,
+            }, function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual(outputData.shift(), jsRows);
+
+                if (outputData.length === 0) {
+                    done();
+                } else if (outputData.length < 0) {
+                    assert.fail();
+                }
             });
         });
     });
