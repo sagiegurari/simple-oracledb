@@ -180,14 +180,14 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 });
 ```
 
-In order to tream the results in bulks, you can provide the streamResults = true option.<br>
+In order to split results into bulks, you can provide the splitResults = true option.<br>
 The callback will be called for each bulk with array of objects.<br>
 Once all rows are read, the callback will be called with an empty array.
 
 ```js
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
-  streamResults: true,
-  bulkRowsAmount: 100 //The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation)
+  splitResults: true, //True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results)
+  bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
 }, function onResults(error, results) {
   if (error) {
     //handle error...
@@ -369,9 +369,10 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-21  | v0.1.1  | Rename streamResults to splitResults |
 | 2015-12-21  | v0.0.36 | Maintenance |
 | 2015-12-21  | v0.0.35 | New bulkRowsAmount option to manage query resultset behaviour |
-| 2015-12-21  | v0.0.34 | Added streaming of query results with new option streamResults=true |
+| 2015-12-21  | v0.0.34 | Added splitting of query results into bulks with new option splitResults=true |
 | 2015-12-17  | v0.0.33 | Maintenance |
 | 2015-12-08  | v0.0.24 | Added pool.getConnection connection validation via running SQL test command |
 | 2015-11-30  | v0.0.23 | Maintenance |

@@ -133,7 +133,7 @@ describe('Connection Tests', function () {
             };
 
             connection.query(1, 2, 'a', {
-                streamResults: true
+                splitResults: true
             }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
@@ -434,7 +434,7 @@ describe('Connection Tests', function () {
             ];
 
             connection.query(1, 2, 3, {
-                streamResults: true,
+                splitResults: true,
             }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);

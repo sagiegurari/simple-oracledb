@@ -89,7 +89,7 @@ The function arguments used to execute the 'query' are exactly as defined in the
 | sql | <code>string</code> |  | The SQL to execute |
 | [bindParams] | <code>object</code> |  | Optional bind parameters |
 | [options] | <code>object</code> |  | Optional execute options |
-| [options.streamResults] | <code>object</code> |  | True to enable to stream the results in bulks, each bulk will invoke the provided callback (last callback invocation will have empty results) |
+| [options.splitResults] | <code>object</code> |  | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results) |
 | [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation) |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs |
 
@@ -105,10 +105,10 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
   }
 });
 
-//read all rows in bulks (streaming results)
+//read all rows in bulks (split results)
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
-  streamResults: true,
-  bulkRowsAmount: 100 //The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation)
+  splitResults: true,
+  bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
 }, function onResults(error, results) {
   if (error) {
     //handle error...
@@ -574,8 +574,8 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
     * [new ResultSetReader()](#new_ResultSetReader_new)
     * [#readNextRows(columnNames, resultSet, [options], callback)](#ResultSetReader+readNextRows) ℗
     * [#readAllRows(columnNames, resultSet, options, callback, [jsRowsBuffer])](#ResultSetReader+readAllRows) ℗
-    * [#read(columnNames, resultSet, options, callback)](#ResultSetReader+read)
-    * [#stream(columnNames, resultSet, options, callback)](#ResultSetReader+stream)
+    * [#readFully(columnNames, resultSet, options, callback)](#ResultSetReader+readFully)
+    * [#readBulks(columnNames, resultSet, options, callback)](#ResultSetReader+readBulks)
 
 <a name="new_ResultSetReader_new"></a>
 ### new ResultSetReader()
@@ -609,8 +609,8 @@ Reads all data from the provided oracle ResultSet object into the provided buffe
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
 | [jsRowsBuffer] | <code>Array</code> | The result buffer, if not provided, the callback will be called for each bulk |
 
-<a name="ResultSetReader+read"></a>
-### ResultSetReader#read(columnNames, resultSet, options, callback)
+<a name="ResultSetReader+readFully"></a>
+### ResultSetReader#readFully(columnNames, resultSet, options, callback)
 Reads all data from the provided oracle ResultSet object.
 
 **Access:** public  
@@ -622,9 +622,9 @@ Reads all data from the provided oracle ResultSet object.
 | options | <code>object</code> | Any options |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
 
-<a name="ResultSetReader+stream"></a>
-### ResultSetReader#stream(columnNames, resultSet, options, callback)
-Streams all data from the provided oracle ResultSet object to the callback in bulks.<br>
+<a name="ResultSetReader+readBulks"></a>
+### ResultSetReader#readBulks(columnNames, resultSet, options, callback)
+Reads all data from the provided oracle ResultSet object to the callback in bulks.<br>
 The last callback call will have an empty result.
 
 **Access:** public  

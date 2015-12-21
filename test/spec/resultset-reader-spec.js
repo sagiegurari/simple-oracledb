@@ -131,9 +131,9 @@ describe('ResultSetReader Tests', function () {
         });
     });
 
-    describe('read tests', function () {
+    describe('readFully tests', function () {
         it('empty', function (done) {
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -173,7 +173,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -264,7 +264,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -335,7 +335,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('error', new Error('lob2 error'));
             }];
 
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -401,7 +401,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('error', new Error('lob2 error'));
             }];
 
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -421,7 +421,7 @@ describe('ResultSetReader Tests', function () {
         });
 
         it('error getRows', function (done) {
-            ResultSetReader.read(columnNames, {
+            ResultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -436,9 +436,9 @@ describe('ResultSetReader Tests', function () {
         });
     });
 
-    describe('stream tests', function () {
+    describe('readBulks tests', function () {
         it('empty', function (done) {
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -511,7 +511,7 @@ describe('ResultSetReader Tests', function () {
                 ]
             ];
 
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -614,7 +614,7 @@ describe('ResultSetReader Tests', function () {
                 ]
             ];
 
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -665,7 +665,7 @@ describe('ResultSetReader Tests', function () {
             }];
 
             var counter = 0;
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -739,7 +739,7 @@ describe('ResultSetReader Tests', function () {
             }];
 
             var counter = 0;
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -765,7 +765,7 @@ describe('ResultSetReader Tests', function () {
         });
 
         it('error getRows', function (done) {
-            ResultSetReader.stream(columnNames, {
+            ResultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
