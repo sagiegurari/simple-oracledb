@@ -48,7 +48,6 @@
     "grunt-contrib-jshint": "latest",
     "grunt-coveralls": "latest",
     "grunt-eslint": "latest",
-    "grunt-force-task": "latest",
     "grunt-jscs": "latest",
     "grunt-jsdoc-to-markdown": "latest",
     "grunt-jslint": "latest",
