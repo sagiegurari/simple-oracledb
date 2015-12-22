@@ -966,19 +966,21 @@ describe('ResultSetReader Tests', function () {
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
-                    callback(new Error('getrows'));
+                    process.nextTick(function () {
+                        callback(new Error('getrows'));
+                    });
                 }
             }, function (error, stream) {
                 assert.isNull(error);
-
-                stream.on('data', function () {
-                    assert.fail();
-                });
 
                 stream.on('error', function (streamError) {
                     assert.equal(streamError.message, 'getrows');
 
                     done();
+                });
+
+                stream.on('data', function () {
+                    assert.fail();
                 });
             });
         });
