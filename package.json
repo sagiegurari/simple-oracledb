@@ -26,7 +26,7 @@
     "test": "test/spec"
   },
   "scripts": {
-    "test": "grunt -verbose test",
+    "test": "grunt test",
     "clean": "grunt cleanup",
     "lint": "grunt lint",
     "docs": "grunt docs",
@@ -48,6 +48,7 @@
     "grunt-contrib-jshint": "latest",
     "grunt-coveralls": "latest",
     "grunt-eslint": "latest",
+    "grunt-force-task": "latest",
     "grunt-jscs": "latest",
     "grunt-jsdoc-to-markdown": "latest",
     "grunt-jslint": "latest",

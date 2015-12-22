@@ -7,7 +7,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', 'Continues integration related tasks.', [
         'lint',
-        'coverage-ci'
+        'mochaTest:full',
+        'force:coverage-ci'
     ]);
 
     grunt.registerTask('docs', 'Generate docs.', [
