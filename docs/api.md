@@ -9,6 +9,8 @@
 <dd></dd>
 <dt><a href="#RecordWriter">RecordWriter</a></dt>
 <dd></dd>
+<dt><a href="#ResultSetReadStream">ResultSetReadStream</a></dt>
+<dd></dd>
 <dt><a href="#ResultSetReader">ResultSetReader</a></dt>
 <dd></dd>
 <dt><a href="#RowsReader">RowsReader</a></dt>
@@ -89,8 +91,9 @@ The function arguments used to execute the 'query' are exactly as defined in the
 | sql | <code>string</code> |  | The SQL to execute |
 | [bindParams] | <code>object</code> |  | Optional bind parameters |
 | [options] | <code>object</code> |  | Optional execute options |
-| [options.splitResults] | <code>object</code> |  | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results) |
-| [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for streaming, thats the max rows that the callback will get for each streaming invocation) |
+| [options.splitResults] | <code>object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results). See also bulkRowsAmount option. |
+| [options.streamResults] | <code>object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
+| [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs |
 
 **Example**  
@@ -105,7 +108,7 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
   }
 });
 
-//read all rows in bulks (split results)
+//read all rows in bulks (split results via option.splitResults)
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   splitResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
@@ -116,6 +119,22 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
     //handle next bulk of results
   } else {
     //all rows read
+  }
+});
+
+//stream all rows (options.streamResults)
+connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
+  streamResults: true
+}, function onResults(error, stream) {
+  if (error) {
+    //handle error...
+  } else {
+    //listen to fetched rows via data event or just pipe to another handler
+    stream.on('data', function (row) {
+      //use row object
+    });
+
+    //listen to other events such as end/close/error....
   }
 });
 ```
@@ -564,6 +583,30 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 | lobData | <code>object</code> | The LOB data holder (key column name, value column value) |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the row is fully written to or in case of an error |
 
+<a name="ResultSetReadStream"></a>
+## ResultSetReadStream
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [ResultSetReadStream](#ResultSetReadStream)
+    * [new ResultSetReadStream(next)](#new_ResultSetReadStream_new)
+    * [#_read()](#ResultSetReadStream+_read) ℗
+
+<a name="new_ResultSetReadStream_new"></a>
+### new ResultSetReadStream(next)
+A node.js read stream for resultsets.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| next | <code>function</code> | The read next row function |
+
+<a name="ResultSetReadStream+_read"></a>
+### ResultSetReadStream#_read() ℗
+The stream _read implementation which fetches the next row from the resultset.
+
+**Access:** private  
 <a name="ResultSetReader"></a>
 ## ResultSetReader
 **Kind**: global class  
@@ -572,20 +615,21 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 
 * [ResultSetReader](#ResultSetReader)
     * [new ResultSetReader()](#new_ResultSetReader_new)
-    * [#readNextRows(columnNames, resultSet, [options], callback)](#ResultSetReader+readNextRows) ℗
+    * [#readNextRows(columnNames, resultSet, [options], callback)](#ResultSetReader+readNextRows)
     * [#readAllRows(columnNames, resultSet, options, callback, [jsRowsBuffer])](#ResultSetReader+readAllRows) ℗
     * [#readFully(columnNames, resultSet, options, callback)](#ResultSetReader+readFully)
     * [#readBulks(columnNames, resultSet, options, callback)](#ResultSetReader+readBulks)
+    * [#stream(columnNames, resultSet, callback)](#ResultSetReader+stream)
 
 <a name="new_ResultSetReader_new"></a>
 ### new ResultSetReader()
 ResultSet object reading helper functions.
 
 <a name="ResultSetReader+readNextRows"></a>
-### ResultSetReader#readNextRows(columnNames, resultSet, [options], callback) ℗
+### ResultSetReader#readNextRows(columnNames, resultSet, [options], callback)
 Reads the next rows data from the provided oracle ResultSet object.
 
-**Access:** private  
+**Access:** public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -634,6 +678,19 @@ The last callback call will have an empty result.
 | columnNames | <code>Array</code> | Array of strings holding the column names of the results |
 | resultSet | <code>Array</code> | The oracle ResultSet object |
 | options | <code>object</code> | Any options |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called for each read bulk of rows or in case of an error |
+
+<a name="ResultSetReader+stream"></a>
+### ResultSetReader#stream(columnNames, resultSet, callback)
+Reads all data from the provided oracle ResultSet object to the callback in bulks.<br>
+The last callback call will have an empty result.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
+| resultSet | <code>Array</code> | The oracle ResultSet object |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called for each read bulk of rows or in case of an error |
 
 <a name="RowsReader"></a>

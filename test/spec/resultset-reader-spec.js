@@ -779,4 +779,208 @@ describe('ResultSetReader Tests', function () {
             });
         });
     });
+
+    describe('stream tests', function () {
+        it('empty', function (done) {
+            ResultSetReader.stream(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+                    callback(null, []);
+                }
+            }, function (error, stream) {
+                assert.isNull(error);
+
+                stream.on('data', function () {
+                    assert.fail();
+                });
+
+                stream.on('end', done);
+            });
+        });
+
+        it('array - all types', function (done) {
+            var date = new Date();
+            var lob1 = helper.createCLOB();
+            var lob2 = helper.createCLOB();
+
+            var dbData = [
+                [
+                    ['first row', 1, false, date]
+                ],
+                [
+                    [1, 'test', 50, lob1]
+                ],
+                [
+                    ['a', date, undefined, null]
+                ],
+                [
+                    [10, true, lob2, 100]
+                ]
+            ];
+            var dbEvents = [null, function () {
+                lob1.emit('data', 'test1');
+                lob1.emit('data', '\ntest2');
+                lob1.emit('end');
+            }, function () {
+                lob2.emit('data', '123');
+                lob2.emit('data', '456');
+                lob2.emit('end');
+            }];
+
+            var resultData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date
+                },
+                {
+                    COL1: 1,
+                    COL2: 'test',
+                    COL3: 50,
+                    COL4: 'test1\ntest2'
+                },
+                {
+                    COL1: 'a',
+                    COL2: date,
+                    COL3: undefined,
+                    COL4: undefined
+                },
+                {
+                    COL1: 10,
+                    COL2: true,
+                    COL3: '123456',
+                    COL4: 100
+                }
+            ];
+
+            ResultSetReader.stream(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+
+                    var events = dbEvents.shift();
+                    if (events) {
+                        setTimeout(events, 10);
+                    }
+
+                    callback(null, dbData.shift());
+                }
+            }, function (error, stream) {
+                assert.isNull(error);
+
+                var eventCounter = 0;
+                stream.on('data', function (row) {
+                    assert.deepEqual(resultData[eventCounter], row);
+                    eventCounter++;
+                });
+
+                stream.on('end', function () {
+                    assert.equal(eventCounter, resultData.length);
+
+                    done();
+                });
+            });
+        });
+
+        it('array - error', function (done) {
+            var date = new Date();
+            var lob1 = helper.createCLOB();
+            var lob2 = helper.createCLOB();
+
+            var dbData = [
+                [
+                    ['first row', 1, false, date]
+                ],
+                [
+                    [1, 'test', 50, lob1]
+                ],
+                [
+                    ['a', date, undefined, null]
+                ],
+                [
+                    [10, true, lob2, 100]
+                ]
+            ];
+            var dbEvents = [null, function () {
+                lob1.emit('data', 'test1');
+                lob1.emit('data', '\ntest2');
+                lob1.emit('end');
+            }, function () {
+                lob2.emit('data', '123');
+                lob2.emit('data', '456');
+                lob2.emit('error', new Error('lob2 error'));
+            }];
+
+            var resultData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date
+                },
+                {
+                    COL1: 1,
+                    COL2: 'test',
+                    COL3: 50,
+                    COL4: 'test1\ntest2'
+                },
+                {
+                    COL1: 'a',
+                    COL2: date,
+                    COL3: undefined,
+                    COL4: undefined
+                }
+            ];
+
+            ResultSetReader.stream(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+
+                    var events = dbEvents.shift();
+                    if (events) {
+                        setTimeout(events, 10);
+                    }
+
+                    callback(null, dbData.shift());
+                }
+            }, function (error, stream) {
+                assert.isNull(error);
+
+                var eventCounter = 0;
+                stream.on('data', function (row) {
+                    assert.deepEqual(resultData[eventCounter], row);
+                    eventCounter++;
+                });
+
+                stream.on('error', function (streamError) {
+                    assert.equal(eventCounter, resultData.length);
+                    assert.equal(streamError.message, 'lob2 error');
+
+                    done();
+                });
+            });
+        });
+
+        it('error getRows', function (done) {
+            ResultSetReader.stream(columnNames, {
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+
+                    callback(new Error('getrows'));
+                }
+            }, function (error, stream) {
+                assert.isNull(error);
+
+                stream.on('data', function () {
+                    assert.fail();
+                });
+
+                stream.on('error', function (streamError) {
+                    assert.equal(streamError.message, 'getrows');
+
+                    done();
+                });
+            });
+        });
+    });
 });

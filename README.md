@@ -199,6 +199,28 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
 });
 ```
 
+In order to stream results into a read stream, you can provide the streamResults = true option.<br>
+The callback will be called with a read stream instance which can be used to fetch/pipe the data.<br>
+Once all rows are read, the proper stream events will be called.
+
+```js
+//stream all rows (options.streamResults)
+connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
+  streamResults: true
+}, function onResults(error, stream) {
+  if (error) {
+    //handle error...
+  } else {
+    //listen to fetched rows via data event or just pipe to another handler
+    stream.on('data', function (row) {
+      //use row object
+    });
+
+    //listen to other events such as end/close/error....
+  }
+});
+```
+
 <a name="usage-insert"></a>
 ## 'connection.insert(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
@@ -369,6 +391,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-22  | v0.1.2  | Added streaming of query results with new option streamResults=true |
 | 2015-12-21  | v0.1.1  | Rename streamResults to splitResults |
 | 2015-12-21  | v0.0.36 | Maintenance |
 | 2015-12-21  | v0.0.35 | New bulkRowsAmount option to manage query resultset behaviour |
