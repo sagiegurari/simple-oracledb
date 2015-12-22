@@ -20,20 +20,11 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            var readable = false;
-            stream.on('readable', function () {
-                readable = true;
-            });
-
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('end', function () {
-                assert.isTrue(readable);
-
-                done();
-            });
+            stream.on('end', done);
         });
 
         it('undefined data', function (done) {
@@ -43,20 +34,11 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            var readable = false;
-            stream.on('readable', function () {
-                readable = true;
-            });
-
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('end', function () {
-                assert.isTrue(readable);
-
-                done();
-            });
+            stream.on('end', done);
         });
 
         it('null data', function (done) {
@@ -66,20 +48,11 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            var readable = false;
-            stream.on('readable', function () {
-                readable = true;
-            });
-
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('end', function () {
-                assert.isTrue(readable);
-
-                done();
-            });
+            stream.on('end', done);
         });
 
         it('invalid data', function (done) {
@@ -89,7 +62,7 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            ['readable', 'data', 'end', 'close'].forEach(function (eventName) {
+            ['data', 'end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
@@ -107,7 +80,7 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            ['readable', 'data', 'end', 'close'].forEach(function (eventName) {
+            ['data', 'end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
@@ -140,15 +113,12 @@ describe('ResultSetReadStream Tests', function () {
                 }
             });
 
-            ['readable', 'end', 'close'].forEach(function (eventName) {
+            ['end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
             stream.on('data', function (data) {
                 assert.isTrue(data.id < 5);
-                assert.deepEqual(data, {
-                    id: counter
-                });
             });
 
             stream.on('error', function (error) {
@@ -184,23 +154,14 @@ describe('ResultSetReadStream Tests', function () {
                 stream.on(eventName, failListener(eventName));
             });
 
-            var readable = false;
-            stream.on('readable', function () {
-                readable = true;
-            });
-
             var dataFound = 0;
             stream.on('data', function (data) {
                 dataFound++;
 
                 assert.isTrue(data.id < 5);
-                assert.deepEqual(data, {
-                    id: counter
-                });
             });
 
             stream.on('end', function () {
-                assert.isTrue(readable);
                 assert.equal(dataFound, 4);
 
                 done();
