@@ -57,6 +57,7 @@
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
     * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
     * [#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback)](#Connection+batchInsertOrUpdate) ℗
+    * [#transaction(actions, callback)](#Connection+transaction)
     * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
     * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
     * _static_
@@ -405,6 +406,43 @@ Internal function to run batch INSERT/UPDATE commands.
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert/update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) ``` |
 
+<a name="Connection+transaction"></a>
+### Connection#transaction(actions, callback)
+Enables to run multiple oracle operations in a single transaction.<br>
+This function basically allows to automatically commit or rollback once all your actions are done.<br>
+Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+All provided actions are executed in parallel.<br>
+Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>.
+Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
+It is important inside the actions to call any operation (such as update or insert) with an option autoCommit=false or to set the oracledb.autoCommit=false,
+otherwise there will be no way to rollback in case of errors.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| actions | <code>Array</code> &#124; <code>function</code> | A single action function or an array of action functions. |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the transaction results |
+
+**Example**  
+```js
+connection.transaction([
+  function insertSomeRows(callback) {
+    connection.insert(...., callback);
+  },
+  function insertSomeMoreRows(callback) {
+    connection.insert(...., callback);
+  },
+  function doSomeUpdates(callback) {
+    connection.update(...., callback);
+  },
+  function runBatchUpdates(callback) {
+    connection.batchUpdate(...., callback);
+  }
+], function onTransactionResults(error, output) {
+  //continue flow...
+});
+```
 <a name="Connection+modifyParams"></a>
 ### Connection#modifyParams(argumentsArray) ⇒ <code>object</code> ℗
 Internal function used to modify the INSERT/UPDATE SQL arguments.<br>

@@ -20,6 +20,7 @@
     * [queryJSON](#usage-queryJSON)
     * [batchInsert](#usage-batchInsert)
     * [batchUpdate](#usage-batchUpdate)
+    * [transaction](#usage-transaction)
     * [release](#usage-release)
     * [rollback](#usage-rollback)
 * [Installation](#installation)
@@ -358,6 +359,48 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 });
 ```
 
+<a name="usage-transaction"></a>
+## 'connection.transaction(actions, callback)'
+Enables to run multiple oracle operations in a single transaction.<br>
+This function basically allows to automatically commit or rollback once all your actions are done.<br>
+Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+All provided actions are executed in parallel.<br>
+Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>.
+Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
+It is important inside the actions to call any operation (such as update or insert) with an option autoCommit=false or to set the oracledb.autoCommit=false,
+otherwise there will be no way to rollback in case of errors.
+
+```js
+connection.transaction([
+  function insertSomeRows(callback) {
+    connection.insert(...., {
+      autoCommit: false
+      //more options....
+    }, callback);
+  },
+  function insertSomeMoreRows(callback) {
+    connection.insert(...., {
+      autoCommit: false
+      //more options....
+    }, callback);
+  },
+  function doSomeUpdates(callback) {
+    connection.update(...., {
+      autoCommit: false
+      //more options....
+    }, callback);
+  },
+  function runBatchUpdates(callback) {
+    connection.batchUpdate(...., {
+      autoCommit: false
+      //more options....
+    }, callback);
+  }
+], function onTransactionResults(error, output) {
+  //continue flow...
+});
+```
+
 <a name="usage-release"></a>
 ## 'connection.release([callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
@@ -424,6 +467,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-29  | v0.1.4  | Added connection.transaction |
 | 2015-12-29  | v0.1.3  | Added connection.batchUpdate |
 | 2015-12-22  | v0.1.2  | Added streaming of query results with new option streamResults=true |
 | 2015-12-21  | v0.1.1  | Rename streamResults to splitResults |

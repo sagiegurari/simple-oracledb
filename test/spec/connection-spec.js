@@ -823,7 +823,11 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {};
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                }
+            };
             Connection.extend(connection);
 
             connection.commit = function (callback) {
@@ -1853,7 +1857,11 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {};
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                }
+            };
             Connection.extend(connection);
 
             connection.commit = function (callback) {
@@ -1927,7 +1935,6 @@ describe('Connection Tests', function () {
             });
         });
     });
-
 
     describe('batchUpdate', function () {
         it('no lobs', function (done) {
@@ -2312,7 +2319,11 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {};
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                }
+            };
             Connection.extend(connection);
 
             connection.commit = function (callback) {
@@ -2381,6 +2392,138 @@ describe('Connection Tests', function () {
                 assert.isDefined(error);
                 assert.equal(error.message, 'commit error');
                 assert.equal(lobsWritten, 6);
+
+                done();
+            });
+        });
+    });
+
+    describe('transaction', function () {
+        it('single action', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            connection.transaction(function (callback) {
+                assert.isFalse(commitDone);
+
+                callback(null, 'my result');
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual(['my result'], results);
+                assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('multiple actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my first');
+                },
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my second');
+                }
+            ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+                assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('error in actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            var rollbackDone = false;
+            connection.rollback = function (callback) {
+                rollbackDone = true;
+                callback();
+            };
+
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my first');
+                },
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(new Error('test error'));
+                }
+            ], function (error) {
+                assert.isDefined(error);
+                assert.equal('test error', error.message);
+                assert.isFalse(commitDone);
+                assert.isTrue(rollbackDone);
+
+                done();
+            });
+        });
+
+        it('error in commit', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback(new Error('commit error'));
+            };
+
+            var rollbackDone = false;
+            connection.rollback = function (callback) {
+                rollbackDone = true;
+                callback();
+            };
+
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my first');
+                },
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my second');
+                }
+            ], function (error) {
+                assert.isDefined(error);
+                assert.equal('commit error', error.message);
+                assert.isTrue(commitDone);
+                assert.isTrue(rollbackDone);
 
                 done();
             });
