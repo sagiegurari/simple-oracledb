@@ -884,5 +884,127 @@ describe('Integration Tests', function () {
                 });
             });
         });
+
+        describe('batchUpdate', function () {
+            it('batchUpdate - LOB data', function (done) {
+                var table = 'TEST_ORA_BTCH_UPD1';
+
+                var longClobText = 'this is a really long line of test data\n';
+                var index;
+                var buffer = [];
+                for (index = 0; index < 1000; index++) {
+                    buffer.push(longClobText);
+                }
+                longClobText = buffer.join('');
+
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                            {
+                                value1: 'test',
+                                value2: 123,
+                                clob1: longClobText,
+                                blob2: new Buffer('blob text here')
+                            },
+                            {
+                                value1: 'test2',
+                                value2: 455,
+                                clob1: longClobText,
+                                blob2: new Buffer('second row')
+                            }
+                        ], {
+                            autoCommit: true,
+                            lobMetaInfo: {
+                                LOB1: 'clob1',
+                                LOB2: 'blob2'
+                            }
+                        }, function (error, results) {
+                            assert.isNull(error);
+                            assert.equal(2, results.length);
+                            assert.equal(1, results[0].rowsAffected);
+                            assert.equal(1, results[1].rowsAffected);
+
+                            connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                resultSet: false
+                            }, function (queryError, jsRows) {
+                                assert.isNull(queryError);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'test',
+                                        COL2: 123,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: longClobText,
+                                        LOB2: new Buffer('blob text here')
+                                    },
+                                    {
+                                        COL1: 'test2',
+                                        COL2: 455,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: longClobText,
+                                        LOB2: new Buffer('second row')
+                                    }
+                                ], jsRows);
+
+                                connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
+                                    {
+                                        value1: 'testU1',
+                                        value2: 123,
+                                        clob1: 'NEW CLOB1',
+                                        blob2: new Buffer('NEW BLOB')
+                                    },
+                                    {
+                                        value1: 'testU2',
+                                        value2: 455,
+                                        clob1: 'NEW CLOB2',
+                                        blob2: new Buffer('AND ANOTHER NEW BLOB')
+                                    }
+                                ], {
+                                    autoCommit: true,
+                                    lobMetaInfo: {
+                                        LOB1: 'clob1',
+                                        LOB2: 'blob2'
+                                    }
+                                }, function (updateError, updateResults) {
+                                    assert.isNull(updateError);
+                                    assert.equal(2, updateResults.length);
+                                    assert.equal(1, updateResults[0].rowsAffected);
+                                    assert.equal(1, updateResults[1].rowsAffected);
+
+                                    connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                        resultSet: false
+                                    }, function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.deepEqual([
+                                            {
+                                                COL1: 'testU1',
+                                                COL2: 123,
+                                                COL3: undefined,
+                                                COL4: undefined,
+                                                LOB1: 'NEW CLOB1',
+                                                LOB2: new Buffer('NEW BLOB')
+                                            },
+                                            {
+                                                COL1: 'testU2',
+                                                COL2: 455,
+                                                COL3: undefined,
+                                                COL4: undefined,
+                                                LOB1: 'NEW CLOB2',
+                                                LOB2: new Buffer('AND ANOTHER NEW BLOB')
+                                            }
+                                        ], jsRows);
+
+                                        end(done, connection);
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
 });

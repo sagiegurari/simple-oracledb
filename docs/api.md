@@ -55,6 +55,8 @@
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
+    * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
+    * [#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback)](#Connection+batchInsertOrUpdate) ℗
     * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
     * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
     * _static_
@@ -344,6 +346,65 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
   //continue flow...
 });
 ```
+<a name="Connection+batchUpdate"></a>
+### Connection#batchUpdate(sql, bindParamsArray, options, callback)
+Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
+This allows to update to same table multiple different rows with one single call.<br>
+The callback output will be an array of objects of same as oracledb conection.execute (per row).<br>
+All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
+the bind params is now an array of bind params (one per row).
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>string</code> | The SQL to execute |
+| bindParamsArray | <code>object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>object</code> | Any execute options |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+
+**Example**  
+```js
+connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', [ //no need to specify the RETURNING clause in the SQL
+  { //first row values
+    id: 110,
+    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  },
+  { //second row values
+    id: 111,
+    clobText1: 'second row',
+    blobBuffer2: new Buffer('second rows')
+  }
+], {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
+});
+```
+<a name="Connection+batchInsertOrUpdate"></a>
+### Connection#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback) ℗
+Internal function to run batch INSERT/UPDATE commands.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| insert | <code>boolean</code> | True for insert, false for update |
+| sql | <code>string</code> | The SQL to execute |
+| bindParamsArray | <code>object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>object</code> | Any execute options |
+| [options.autoCommit] | <code>object</code> | If you wish to commit after the insert/update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert/update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) ``` |
+
 <a name="Connection+modifyParams"></a>
 ### Connection#modifyParams(argumentsArray) ⇒ <code>object</code> ℗
 Internal function used to modify the INSERT/UPDATE SQL arguments.<br>

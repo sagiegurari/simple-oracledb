@@ -19,6 +19,7 @@
     * [update](#usage-update)
     * [queryJSON](#usage-queryJSON)
     * [batchInsert](#usage-batchInsert)
+    * [batchUpdate](#usage-batchUpdate)
     * [release](#usage-release)
     * [rollback](#usage-rollback)
 * [Installation](#installation)
@@ -325,6 +326,38 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 });
 ```
 
+<a name="usage-batchUpdate"></a>
+## 'connection.batchUpdate(sql, bindVariablesArray, options, callback)'
+Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
+This allows to update to same table multiple different rows with one single call.<br>
+The callback output will be an array of objects of same as oracledb conection.execute (per row).<br>
+All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
+The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
+the bind params is now an array of bind params (one per row).
+
+```js
+connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', [ //no need to specify the RETURNING clause in the SQL
+  { //first row values
+    id: 110,
+    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  },
+  { //second row values
+    id: 111,
+    clobText1: 'second row',
+    blobBuffer2: new Buffer('second rows')
+  }
+], {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}, function onResults(error, output) {
+  //continue flow...
+});
+```
+
 <a name="usage-release"></a>
 ## 'connection.release([callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
@@ -391,6 +424,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-29  | v0.1.3  | Added connection.batchUpdate |
 | 2015-12-22  | v0.1.2  | Added streaming of query results with new option streamResults=true |
 | 2015-12-21  | v0.1.1  | Rename streamResults to splitResults |
 | 2015-12-21  | v0.0.36 | Maintenance |
