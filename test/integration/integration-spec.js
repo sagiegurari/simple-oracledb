@@ -6,6 +6,8 @@ var chai = require('chai');
 var assert = chai.assert;
 
 describe('Integration Tests', function () {
+    var self = this;
+
     var oracledb;
     var integrated = true;
     try {
@@ -106,6 +108,8 @@ describe('Integration Tests', function () {
                 }
             });
         };
+
+        self.timeout(5000);
 
         describe('query', function () {
             it('error', function (done) {
@@ -1039,7 +1043,6 @@ describe('Integration Tests', function () {
                                         blob2: new Buffer('second row')
                                     }
                                 ], {
-                                    autoCommit: false,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
@@ -1061,7 +1064,6 @@ describe('Integration Tests', function () {
                                         blob2: new Buffer('second row')
                                     }
                                 ], {
-                                    autoCommit: false,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
@@ -1148,7 +1150,6 @@ describe('Integration Tests', function () {
                                         blob2: new Buffer('second row')
                                     }
                                 ], {
-                                    autoCommit: false,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
@@ -1170,7 +1171,6 @@ describe('Integration Tests', function () {
                                         blob2: new Buffer('second row')
                                     }
                                 ], {
-                                    autoCommit: false,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'

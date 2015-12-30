@@ -47,11 +47,13 @@
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
     * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
+    * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
     * [#query(sql, [bindParams], [options], callback)](#Connection+query)
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
     * [#insertOrUpdate(insert, argumentsArray)](#Connection+insertOrUpdate) ℗
     * [#release([callback])](#Connection+release)
+    * [#commit(callback)](#Connection+commit)
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
@@ -79,6 +81,19 @@ Empty function.
 
 **Returns**: <code>undefined</code> - Empty return  
 **Access:** private  
+<a name="Connection+execute"></a>
+### Connection#execute(sql, [bindParams], [options], callback)
+Extends the original oracledb connection.execute to provide additional behavior.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>string</code> | The SQL to execute |
+| [bindParams] | <code>object</code> | Optional bind parameters |
+| [options] | <code>object</code> | Optional execute options |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
+
 <a name="Connection+query"></a>
 ### Connection#query(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
@@ -246,6 +261,16 @@ connection.release(function onRelease(error) {
   }
 });
 ```
+<a name="Connection+commit"></a>
+### Connection#commit(callback)
+Extends the connection.commit to prevent commit being invoked while in the middle of a transaction.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | The commit callback function (see oracledb docs) |
+
 <a name="Connection+rollback"></a>
 ### Connection#rollback([callback])
 This function modifies the existing connection.rollback function by enabling the input
@@ -414,8 +439,9 @@ Actions are basically javascript functions which get a callback when invoked, an
 All provided actions are executed in parallel.<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
-It is important inside the actions to call any operation (such as update or insert) with an option autoCommit=false or to set the oracledb.autoCommit=false,
-otherwise there will be no way to rollback in case of errors.
+When calling any connection operation (execute, insert, update, ...) the connection will automatically set the autoCommit=false and will ignore the value provided.<br>
+This is done to prevent commits in the middle of the transaction.<br>
+In addition, you can not start a transaction while another transaction is in progress.
 
 **Access:** public  
 
@@ -428,28 +454,19 @@ otherwise there will be no way to rollback in case of errors.
 ```js
 connection.transaction([
   function insertSomeRows(callback) {
-    connection.insert(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.insert(...., function (error, results) {
+      //some more inserts....
+      connection.insert(...., callback);
+    });
   },
   function insertSomeMoreRows(callback) {
-    connection.insert(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.insert(...., callback);
   },
   function doSomeUpdates(callback) {
-    connection.update(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.update(...., callback);
   },
   function runBatchUpdates(callback) {
-    connection.batchUpdate(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.batchUpdate(...., callback);
   }
 ], function onTransactionResults(error, output) {
   //continue flow...

@@ -367,34 +367,26 @@ Actions are basically javascript functions which get a callback when invoked, an
 All provided actions are executed in parallel.<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
-It is important inside the actions to call any operation (such as update or insert) with an option autoCommit=false or to set the oracledb.autoCommit=false,
-otherwise there will be no way to rollback in case of errors.
+When calling any connection operation (execute, insert, update, ...) the connection will automatically set the autoCommit=false and will ignore the value provided.<br>
+This is done to prevent commits in the middle of the transaction.<br>
+In addition, you can not start a transaction while another transaction is in progress.
 
 ```js
 connection.transaction([
   function insertSomeRows(callback) {
-    connection.insert(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.insert(...., function (error, results) {
+      //some more inserts....
+      connection.insert(...., callback);
+    });
   },
   function insertSomeMoreRows(callback) {
-    connection.insert(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.insert(...., callback);
   },
   function doSomeUpdates(callback) {
-    connection.update(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.update(...., callback);
   },
   function runBatchUpdates(callback) {
-    connection.batchUpdate(...., {
-      autoCommit: false
-      //more options....
-    }, callback);
+    connection.batchUpdate(...., callback);
   }
 ], function onTransactionResults(error, output) {
   //continue flow...
@@ -467,6 +459,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2015-12-30  | v0.1.6  | connection.transaction disables commit/rollback while running |
 | 2015-12-29  | v0.1.5  | Maintenance |
 | 2015-12-29  | v0.1.4  | Added connection.transaction |
 | 2015-12-29  | v0.1.3  | Added connection.batchUpdate |
