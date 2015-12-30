@@ -1153,7 +1153,8 @@ describe('Integration Tests', function () {
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
-                                    }
+                                    },
+                                    autoCommit: true
                                 }, cb);
                             },
                             function (cb) {

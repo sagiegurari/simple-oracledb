@@ -42,7 +42,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(new Error('test error'));
@@ -58,7 +58,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
@@ -82,7 +82,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
@@ -111,7 +111,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 5);
@@ -145,7 +145,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             var date = new Date();
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
@@ -210,7 +210,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             var date = new Date();
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
@@ -324,7 +324,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             var date = new Date();
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
@@ -452,7 +452,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             var date = new Date();
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
@@ -582,7 +582,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
                 assert.deepEqual(bindVars, {
                     id1: 1,
@@ -612,17 +612,17 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var connection = {};
+            var commitCalled = false;
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                }
+            };
             Connection.extend(connection);
 
-            var commitCalled = false;
-            connection.commit = function (callback) {
-                commitCalled = true;
-                callback();
-            };
-
             var lobsWritten = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -700,7 +700,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -773,7 +773,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -835,7 +835,7 @@ describe('Connection Tests', function () {
             };
 
             var lobsWritten = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -914,7 +914,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2');
                 assert.deepEqual(bindVars, {
                     id1: 1,
@@ -948,7 +948,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             var lobsWritten = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -1024,7 +1024,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -1097,7 +1097,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, {
                     id: 1,
@@ -1220,7 +1220,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(new Error('test error'));
@@ -1236,7 +1236,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.execute = function () {
+            connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(null, [{
@@ -1494,7 +1494,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -1539,14 +1539,14 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var connection = {};
-            Connection.extend(connection);
-
             var commitCalled = false;
-            connection.commit = function (callback) {
-                commitCalled = true;
-                callback();
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                }
             };
+            Connection.extend(connection);
 
             var lobsWritten = 0;
             var vars = [
@@ -1582,7 +1582,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -1694,7 +1694,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -1803,7 +1803,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -1869,7 +1869,7 @@ describe('Connection Tests', function () {
             };
 
             var lobsWritten = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -1954,7 +1954,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -2001,14 +2001,14 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var connection = {};
-            Connection.extend(connection);
-
             var commitCalled = false;
-            connection.commit = function (callback) {
-                commitCalled = true;
-                callback();
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                }
             };
+            Connection.extend(connection);
 
             var lobsWritten = 0;
             var vars = [
@@ -2044,7 +2044,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -2156,7 +2156,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -2265,7 +2265,7 @@ describe('Connection Tests', function () {
                 }
             ];
             var counter = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(bindVars, vars[counter]);
                 counter++;
@@ -2331,7 +2331,7 @@ describe('Connection Tests', function () {
             };
 
             var lobsWritten = 0;
-            connection.execute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindVars, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -2450,6 +2450,133 @@ describe('Connection Tests', function () {
                     'my second'
                 ], results);
                 assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('prevent autoCommit', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+            connection.baseExecute = function (sql, bindParams, options, cb) {
+                assert.deepEqual({
+                    autoCommit: false,
+                    otherOption: 'test123'
+                }, options);
+
+                cb();
+            };
+
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    connection.execute('sql', [], {
+                        autoCommit: true,
+                        otherOption: 'test123'
+                    }, function () {
+                        callback(null, 'my first');
+                    });
+                },
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    connection.batchInsert('sql', [{}], {
+                        autoCommit: true,
+                        otherOption: 'test123'
+                    }, function () {
+                        callback(null, 'my second');
+                    });
+                }
+            ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+                assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('rollback in middle of transaction', function (done) {
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                }
+            };
+
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            connection.transaction(function (callback) {
+                connection.rollback(callback);
+            }, function (error) {
+                assert.isDefined(error);
+                assert.isFalse(commitDone);
+
+                done();
+            });
+        });
+
+        it('commit in middle of transaction', function (done) {
+            var commitDone = false;
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                },
+                commit: function (cb) {
+                    commitDone = true;
+                    cb();
+                }
+            };
+
+            Connection.extend(connection);
+
+            connection.transaction(function (callback) {
+                connection.commit(callback);
+            }, function (error) {
+                assert.isDefined(error);
+                assert.isFalse(commitDone);
+
+                done();
+            });
+        });
+
+        it('transaction in transaction', function (done) {
+            var connection = {
+                rollback: function (cb) {
+                    cb();
+                }
+            };
+
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            connection.transaction(function (callback) {
+                connection.transaction(function (cb) {
+                    cb();
+                }, callback);
+            }, function (error) {
+                assert.isDefined(error);
+                assert.isFalse(commitDone);
 
                 done();
             });
