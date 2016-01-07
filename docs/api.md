@@ -715,17 +715,39 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 
 * [ResultSetReadStream](#ResultSetReadStream)
     * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
+    * [.nextRow.set(nextRow)](#ResultSetReadStream.nextRow.set) ℗
     * [#_read()](#ResultSetReadStream+_read) ℗
+    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow) ℗
 
 <a name="new_ResultSetReadStream_new"></a>
 ### new ResultSetReadStream()
 A node.js read stream for resultsets.
+
+<a name="ResultSetReadStream.nextRow.set"></a>
+### ResultSetReadStream.nextRow.set(nextRow) ℗
+Sets the nextRow value.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| nextRow | <code>function</code> | The next row callback function |
 
 <a name="ResultSetReadStream+_read"></a>
 ### ResultSetReadStream#_read() ℗
 The stream _read implementation which fetches the next row from the resultset.
 
 **Access:** private  
+<a name="ResultSetReadStream.nextRow"></a>
+### ResultSetReadStream.nextRow(streamCallback) ℗
+Reads the next rows from the resultset and pushes via events.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| streamCallback | <code>function</code> | The callback function |
+
 <a name="ResultSetReader"></a>
 ## ResultSetReader
 **Kind**: global class  
