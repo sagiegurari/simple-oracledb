@@ -4,9 +4,10 @@
 var chai = require('chai');
 var assert = chai.assert;
 var helper = require('../helpers/test-oracledb');
-var ResultSetReader = require('../../lib/resultset-reader');
+var resultSetReader = require('../../lib/resultset-reader');
+var ResultSetReadStream = require('../../lib/resultset-read-stream');
 
-describe('ResultSetReader Tests', function () {
+describe('resultSetReader Tests', function () {
     var columnNames = [
         {
             name: 'COL1'
@@ -49,7 +50,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.readNextRows(columnNames, {
+            resultSetReader.readNextRows(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -102,7 +103,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.readNextRows(columnNames, {
+            resultSetReader.readNextRows(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 5);
 
@@ -133,7 +134,7 @@ describe('ResultSetReader Tests', function () {
 
     describe('readFully tests', function () {
         it('empty', function (done) {
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -173,7 +174,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -264,7 +265,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('end');
             }];
 
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -335,7 +336,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('error', new Error('lob2 error'));
             }];
 
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -401,7 +402,7 @@ describe('ResultSetReader Tests', function () {
                 lob2.emit('error', new Error('lob2 error'));
             }];
 
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -421,7 +422,7 @@ describe('ResultSetReader Tests', function () {
         });
 
         it('error getRows', function (done) {
-            ResultSetReader.readFully(columnNames, {
+            resultSetReader.readFully(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -438,7 +439,7 @@ describe('ResultSetReader Tests', function () {
 
     describe('readBulks tests', function () {
         it('empty', function (done) {
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -511,7 +512,7 @@ describe('ResultSetReader Tests', function () {
                 ]
             ];
 
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -614,7 +615,7 @@ describe('ResultSetReader Tests', function () {
                 ]
             ];
 
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -665,7 +666,7 @@ describe('ResultSetReader Tests', function () {
             }];
 
             var counter = 0;
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -739,7 +740,7 @@ describe('ResultSetReader Tests', function () {
             }];
 
             var counter = 0;
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -765,7 +766,7 @@ describe('ResultSetReader Tests', function () {
         });
 
         it('error getRows', function (done) {
-            ResultSetReader.readBulks(columnNames, {
+            resultSetReader.readBulks(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -782,20 +783,20 @@ describe('ResultSetReader Tests', function () {
 
     describe('stream tests', function () {
         it('empty', function (done) {
-            ResultSetReader.stream(columnNames, {
+            var stream = new ResultSetReadStream();
+
+            resultSetReader.stream(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
                     callback(null, []);
                 }
-            }, function (error, stream) {
-                assert.isNull(error);
+            }, stream);
 
-                stream.on('data', function () {
-                    assert.fail();
-                });
-
-                stream.on('end', done);
+            stream.on('data', function () {
+                assert.fail();
             });
+
+            stream.on('end', done);
         });
 
         it('array - all types', function (done) {
@@ -854,7 +855,8 @@ describe('ResultSetReader Tests', function () {
                 }
             ];
 
-            ResultSetReader.stream(columnNames, {
+            var stream = new ResultSetReadStream();
+            resultSetReader.stream(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -865,20 +867,18 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, stream) {
-                assert.isNull(error);
+            }, stream);
 
-                var eventCounter = 0;
-                stream.on('data', function (row) {
-                    assert.deepEqual(resultData[eventCounter], row);
-                    eventCounter++;
-                });
+            var eventCounter = 0;
+            stream.on('data', function (row) {
+                assert.deepEqual(resultData[eventCounter], row);
+                eventCounter++;
+            });
 
-                stream.on('end', function () {
-                    assert.equal(eventCounter, resultData.length);
+            stream.on('end', function () {
+                assert.equal(eventCounter, resultData.length);
 
-                    done();
-                });
+                done();
             });
         });
 
@@ -932,7 +932,8 @@ describe('ResultSetReader Tests', function () {
                 }
             ];
 
-            ResultSetReader.stream(columnNames, {
+            var stream = new ResultSetReadStream();
+            resultSetReader.stream(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -943,26 +944,25 @@ describe('ResultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, function (error, stream) {
-                assert.isNull(error);
+            }, stream);
 
-                var eventCounter = 0;
-                stream.on('data', function (row) {
-                    assert.deepEqual(resultData[eventCounter], row);
-                    eventCounter++;
-                });
+            var eventCounter = 0;
+            stream.on('data', function (row) {
+                assert.deepEqual(resultData[eventCounter], row);
+                eventCounter++;
+            });
 
-                stream.on('error', function (streamError) {
-                    assert.equal(eventCounter, resultData.length);
-                    assert.equal(streamError.message, 'lob2 error');
+            stream.on('error', function (streamError) {
+                assert.equal(eventCounter, resultData.length);
+                assert.equal(streamError.message, 'lob2 error');
 
-                    done();
-                });
+                done();
             });
         });
 
         it('error getRows', function (done) {
-            ResultSetReader.stream(columnNames, {
+            var stream = new ResultSetReadStream();
+            resultSetReader.stream(columnNames, {
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -970,18 +970,16 @@ describe('ResultSetReader Tests', function () {
                         callback(new Error('getrows'));
                     });
                 }
-            }, function (error, stream) {
-                assert.isNull(error);
+            }, stream);
 
-                stream.on('error', function (streamError) {
-                    assert.equal(streamError.message, 'getrows');
+            stream.on('error', function (streamError) {
+                assert.equal(streamError.message, 'getrows');
 
-                    done();
-                });
+                done();
+            });
 
-                stream.on('data', function () {
-                    assert.fail();
-                });
+            stream.on('data', function () {
+                assert.fail();
             });
         });
     });

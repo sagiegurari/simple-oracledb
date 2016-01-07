@@ -48,7 +48,7 @@
     * [.simplified](#Connection.simplified) : <code>boolean</code>
     * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
     * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
-    * [#query(sql, [bindParams], [options], callback)](#Connection+query)
+    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
     * [#insertOrUpdate(insert, argumentsArray)](#Connection+insertOrUpdate) ℗
@@ -95,13 +95,14 @@ Extends the original oracledb connection.execute to provide additional behavior.
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 <a name="Connection+query"></a>
-### Connection#query(sql, [bindParams], [options], callback)
+### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
+**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> - The stream to read the results from (if streamResults=true in options)  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -112,7 +113,7 @@ The function arguments used to execute the 'query' are exactly as defined in the
 | [options.splitResults] | <code>object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results). See also bulkRowsAmount option. |
 | [options.streamResults] | <code>object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
 | [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs (optional if streamResults=true) |
 
 **Example**  
 ```js
@@ -141,19 +142,14 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
 });
 
 //stream all rows (options.streamResults)
-connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
+//if callback is provided, the stream is provided in the result as well
+var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true
-}, function onResults(error, stream) {
-  if (error) {
-    //handle error...
-  } else {
-    //listen to fetched rows via data event or just pipe to another handler
-    stream.on('data', function (row) {
-      //use row object
-    });
+});
 
-    //listen to other events such as end/close/error....
-  }
+//listen to fetched rows via data event or just pipe to another handler
+stream.on('data', function (row) {
+  //use row object
 });
 ```
 <a name="Connection+insert"></a>
@@ -718,17 +714,12 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 **Author:** Sagie Gur-Ari  
 
 * [ResultSetReadStream](#ResultSetReadStream)
-    * [new ResultSetReadStream(next)](#new_ResultSetReadStream_new)
+    * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
     * [#_read()](#ResultSetReadStream+_read) ℗
 
 <a name="new_ResultSetReadStream_new"></a>
-### new ResultSetReadStream(next)
+### new ResultSetReadStream()
 A node.js read stream for resultsets.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| next | <code>function</code> | The read next row function |
 
 <a name="ResultSetReadStream+_read"></a>
 ### ResultSetReadStream#_read() ℗
@@ -747,7 +738,7 @@ The stream _read implementation which fetches the next row from the resultset.
     * [#readAllRows(columnNames, resultSet, options, callback, [jsRowsBuffer])](#ResultSetReader+readAllRows) ℗
     * [#readFully(columnNames, resultSet, options, callback)](#ResultSetReader+readFully)
     * [#readBulks(columnNames, resultSet, options, callback)](#ResultSetReader+readBulks)
-    * [#stream(columnNames, resultSet, callback)](#ResultSetReader+stream)
+    * [#stream(columnNames, resultSet, stream)](#ResultSetReader+stream)
 
 <a name="new_ResultSetReader_new"></a>
 ### new ResultSetReader()
@@ -809,7 +800,7 @@ The last callback call will have an empty result.
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | called for each read bulk of rows or in case of an error |
 
 <a name="ResultSetReader+stream"></a>
-### ResultSetReader#stream(columnNames, resultSet, callback)
+### ResultSetReader#stream(columnNames, resultSet, stream)
 Reads all data from the provided oracle ResultSet object to the callback in bulks.<br>
 The last callback call will have an empty result.
 
@@ -819,7 +810,7 @@ The last callback call will have an empty result.
 | --- | --- | --- |
 | columnNames | <code>Array</code> | Array of strings holding the column names of the results |
 | resultSet | <code>Array</code> | The oracle ResultSet object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called for each read bulk of rows or in case of an error |
+| stream | <code>[ResultSetReadStream](#ResultSetReadStream)</code> | The stream used to read the results from |
 
 <a name="RowsReader"></a>
 ## RowsReader

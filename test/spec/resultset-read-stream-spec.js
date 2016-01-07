@@ -14,11 +14,12 @@ describe('ResultSetReadStream Tests', function () {
 
     describe('read tests', function () {
         it('no data', function (done) {
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(null, []);
                 });
-            });
+            };
 
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -28,11 +29,12 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('undefined data', function (done) {
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback();
                 });
-            });
+            };
 
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -42,11 +44,12 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('null data', function (done) {
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback();
                 });
-            });
+            };
 
             ['data', 'error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -56,11 +59,12 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('invalid data', function (done) {
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(null, [{}, {}]);
                 });
-            });
+            };
 
             ['data', 'end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -74,11 +78,12 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('error on start', function (done) {
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(new Error('test'));
                 });
-            });
+            };
 
             ['data', 'end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -93,7 +98,8 @@ describe('ResultSetReadStream Tests', function () {
 
         it('error after few data events', function (done) {
             var counter = 0;
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 counter++;
 
                 if (counter < 5) {
@@ -111,7 +117,7 @@ describe('ResultSetReadStream Tests', function () {
                         callback(new Error('fail'));
                     });
                 }
-            });
+            };
 
             ['end', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
@@ -130,7 +136,8 @@ describe('ResultSetReadStream Tests', function () {
 
         it('all data read', function (done) {
             var counter = 0;
-            var stream = new ResultSetReadStream(function (callback) {
+            var stream = new ResultSetReadStream();
+            stream.nextRow = function (callback) {
                 counter++;
 
                 if (counter < 5) {
@@ -148,7 +155,7 @@ describe('ResultSetReadStream Tests', function () {
                         callback(new Error('fail'));
                     });
                 }
-            });
+            };
 
             ['close', 'error'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));

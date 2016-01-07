@@ -362,8 +362,57 @@ describe('Integration Tests', function () {
                 });
             });
 
-            it('rows - lob data', function (done) {
+            it('resultset - stream no callback', function (done) {
                 var table = 'TEST_ORA8';
+
+                var dbData = [
+                    {
+                        COL1: 'PK1',
+                        COL2: 2,
+                        COL3: 30,
+                        COL4: '123'
+                    },
+                    {
+                        COL1: 'PK2',
+                        COL2: 200,
+                        COL3: 30,
+                        COL4: 'SOME TEST HERE'
+                    },
+                    {
+                        COL1: 'PK3',
+                        COL2: 5000,
+                        COL3: 1,
+                        COL4: 'MORE DATA HERE!!!',
+                        LOB1: 'THIS IS SOME CLOB TEST TEXT',
+                        LOB2: new Buffer('BLOB - 123456')
+                    }
+                ];
+
+                initDB(table, dbData, function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        var stream = connection.query('SELECT * FROM ' + table, [], {
+                            streamResults: true
+                        });
+
+                        var eventCounter = 0;
+                        stream.on('data', function (row) {
+                            assert.deepEqual(dbData[eventCounter], row);
+                            eventCounter++;
+                        });
+
+                        stream.on('end', function () {
+                            assert.equal(eventCounter, dbData.length);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+
+            it('rows - lob data', function (done) {
+                var table = 'TEST_ORA9';
                 initDB(table, [
                     {
                         COL1: 'PK1',

@@ -54,6 +54,20 @@ describe('Connection Tests', function () {
             });
         });
 
+        it('no callback (without streaming)', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            try {
+                connection.query('sql', [], {
+                    splitResults: true
+                });
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
         it('rows - empty', function () {
             var connection = {};
             Connection.extend(connection);
@@ -558,7 +572,7 @@ describe('Connection Tests', function () {
             ];
 
             connection.query(1, 2, 3, {
-                streamResults: true,
+                streamResults: true
             }, function (error, stream) {
                 assert.isNull(error);
 
@@ -573,6 +587,163 @@ describe('Connection Tests', function () {
 
                     done();
                 });
+            });
+        });
+
+        it('resultset - data stream no callback', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var date = new Date();
+            connection.baseExecute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                setTimeout(function () {
+                    var lob1 = helper.createCLOB();
+                    var lob2 = helper.createCLOB();
+
+                    var dbData = [
+                        [
+                            {
+                                COL1: 'first row',
+                                COL2: 1,
+                                COL3: false,
+                                COL4: date,
+                                LOB1: undefined,
+                                LOB2: undefined
+                            }
+                        ],
+                        [
+                            {
+                                COL1: 1,
+                                COL2: 'test',
+                                COL3: 50,
+                                COL4: lob1
+                            }
+                        ],
+                        [
+                            {
+                                COL1: 'a',
+                                COL2: date,
+                                COL3: undefined,
+                                COL4: undefined
+                            }
+                        ],
+                        [
+                            {
+                                COL1: 10,
+                                COL2: true,
+                                COL3: lob2,
+                                COL4: 100,
+                                LOB1: undefined,
+                                LOB2: undefined
+                            }
+                        ]
+                    ];
+                    var dbEvents = [null, function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    }, function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }];
+
+                    argumentsArray.pop()(null, {
+                        metaData: columnNames,
+                        resultSet: {
+                            getRows: function (number, callback) {
+                                assert.equal(number, 1);
+
+                                var events = dbEvents.shift();
+                                if (events) {
+                                    setTimeout(events, 10);
+                                }
+
+                                callback(null, dbData.shift());
+                            }
+                        }
+                    });
+                }, 10);
+            };
+
+            var outputData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date,
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 1,
+                    COL2: 'test',
+                    COL3: 50,
+                    COL4: 'test1\ntest2',
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 'a',
+                    COL2: date,
+                    COL3: undefined,
+                    COL4: undefined,
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 10,
+                    COL2: true,
+                    COL3: '123456',
+                    COL4: 100,
+                    LOB1: undefined,
+                    LOB2: undefined
+                }
+            ];
+
+            var stream = connection.query('sql', [], {
+                streamResults: true
+            });
+
+            var eventCounter = 0;
+            stream.on('data', function (row) {
+                assert.deepEqual(outputData[eventCounter], row);
+                eventCounter++;
+            });
+
+            stream.on('end', function () {
+                assert.equal(eventCounter, outputData.length);
+
+                done();
+            });
+        });
+
+        it('resultset - error stream no callback', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.baseExecute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                setTimeout(function () {
+                    argumentsArray.pop()(new Error('test error'));
+                }, 10)
+            };
+
+            var stream = connection.query('sql', [], {
+                streamResults: true
+            });
+
+            stream.on('data', function () {
+                assert.fail();
+            });
+
+            stream.on('error', function (error) {
+                assert.equal(error.message, 'test error');
+
+                done();
             });
         });
     });

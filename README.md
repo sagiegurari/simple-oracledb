@@ -207,20 +207,17 @@ Once all rows are read, the proper stream events will be called.
 
 ```js
 //stream all rows (options.streamResults)
-connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
+//if callback is provided, the stream is provided in the result as well
+var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true
-}, function onResults(error, stream) {
-  if (error) {
-    //handle error...
-  } else {
-    //listen to fetched rows via data event or just pipe to another handler
-    stream.on('data', function (row) {
-      //use row object
-    });
-
-    //listen to other events such as end/close/error....
-  }
 });
+
+//listen to fetched rows via data event or just pipe to another handler
+stream.on('data', function (row) {
+  //use row object
+});
+
+//listen to other events such as end/close/error....
 ```
 
 <a name="usage-insert"></a>
@@ -459,6 +456,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-01-07  | v0.1.7  | connection.query with streamResults=true returns a readable stream |
 | 2015-12-30  | v0.1.6  | connection.transaction disables commit/rollback while running |
 | 2015-12-29  | v0.1.5  | Maintenance |
 | 2015-12-29  | v0.1.4  | Added connection.transaction |
