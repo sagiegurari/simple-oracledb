@@ -470,6 +470,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
+                assert.isUndefined(arguments[2].stream);
+                assert.isTrue(arguments[2].streamResults);
+
                 var dbData = [
                     [
                         {
@@ -571,8 +574,9 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            connection.query(1, 2, 3, {
-                streamResults: true
+            connection.query('my sql', [1, 2, 3], {
+                streamResults: true,
+                stream: true
             }, function (error, stream) {
                 assert.isNull(error);
 
