@@ -35,7 +35,7 @@
     "synclibs": "npm install && npm update"
   },
   "dependencies": {
-    "async": "^1.5.1"
+    "async": "^1.5.2"
   },
   "devDependencies": {
     "blanket": "latest",
