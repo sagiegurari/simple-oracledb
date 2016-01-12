@@ -223,7 +223,7 @@ stream.on('data', function (row) {
 <a name="usage-insert"></a>
 ## 'connection.insert(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
-The callback output will be the same as oracledb conection.execute.<br>
+The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
@@ -246,7 +246,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 <a name="usage-update"></a>
 ## 'connection.update(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
-The callback output will be the same as oracledb conection.execute.<br>
+The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
@@ -296,7 +296,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ## 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
-The callback output will be an array of objects of same as oracledb conection.execute (per row).<br>
+The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
 All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
@@ -328,7 +328,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 ## 'connection.batchUpdate(sql, bindVariablesArray, options, callback)'
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
-The callback output will be an array of objects of same as oracledb conection.execute (per row).<br>
+The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
 All LOBs for all rows will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
