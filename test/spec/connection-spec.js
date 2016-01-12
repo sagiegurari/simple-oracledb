@@ -342,6 +342,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
+                assert.isUndefined(arguments[2].stream);
+                assert.isTrue(arguments[2].splitResults);
+
                 var dbData = [
                     [
                         {
@@ -447,8 +450,9 @@ describe('Connection Tests', function () {
                 ]
             ];
 
-            connection.query(1, 2, 3, {
+            connection.query('sql', [1, 2, 3], {
                 splitResults: true,
+                stream: true
             }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);
