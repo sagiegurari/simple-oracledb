@@ -730,13 +730,24 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 
 * [ResultSetReadStream](#ResultSetReadStream)
     * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
+    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow(2)) ℗
     * [.nextRow.set(nextRow)](#ResultSetReadStream.nextRow.set) ℗
     * [#_read()](#ResultSetReadStream+_read) ℗
-    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow) ℗
+    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow(1)) ℗
 
 <a name="new_ResultSetReadStream_new"></a>
 ### new ResultSetReadStream()
 A node.js read stream for resultsets.
+
+<a name="ResultSetReadStream.nextRow(2)"></a>
+### ResultSetReadStream.nextRow(streamCallback) ℗
+Pushes error event to the stream.
+
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| streamCallback | <code>function</code> | The callback function |
 
 <a name="ResultSetReadStream.nextRow.set"></a>
 ### ResultSetReadStream.nextRow.set(nextRow) ℗
@@ -753,7 +764,7 @@ Sets the nextRow value.
 The stream _read implementation which fetches the next row from the resultset.
 
 **Access:** private  
-<a name="ResultSetReadStream.nextRow"></a>
+<a name="ResultSetReadStream.nextRow(1)"></a>
 ### ResultSetReadStream.nextRow(streamCallback) ℗
 Reads the next rows from the resultset and pushes via events.
 
