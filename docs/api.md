@@ -61,7 +61,8 @@
     * [#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback)](#Connection+batchInsertOrUpdate) ℗
     * [#transaction(actions, callback)](#Connection+transaction)
     * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
-    * [#createCallback(callback, commit, [output])](#Connection+createCallback) ⇒ <code>function</code> ℗
+    * [#createQueryCallback(callback, [options], handleType, [stream])](#Connection+createQueryCallback) ⇒ <code>function</code> ℗
+    * [#createModifyCallback(callback, commit, [output])](#Connection+createModifyCallback) ⇒ <code>function</code> ℗
     * _static_
         * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
         * [.extend(connection)](#Connection.extend)
@@ -481,8 +482,22 @@ In addition it will modify the bind variables to specify the OUT bind to enable 
 | --- | --- | --- |
 | argumentsArray | <code>Array</code> | Array of arguments provided in the insert/update functions |
 
-<a name="Connection+createCallback"></a>
-### Connection#createCallback(callback, commit, [output]) ⇒ <code>function</code> ℗
+<a name="Connection+createQueryCallback"></a>
+### Connection#createQueryCallback(callback, [options], handleType, [stream]) ⇒ <code>function</code> ℗
+Internal function used to wrap the original callback.
+
+**Returns**: <code>function</code> - A wrapper callback  
+**Access:** private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | The callback function to invoke |
+| [options] | <code>object</code> | Optional execute options |
+| handleType | <code>number</code> | 1 to split results, 2 to stream results, else default behaviour |
+| [stream] | <code>[ResultSetReadStream](#ResultSetReadStream)</code> | The stream to read the results from (if streamResults=true in options) |
+
+<a name="Connection+createModifyCallback"></a>
+### Connection#createModifyCallback(callback, commit, [output]) ⇒ <code>function</code> ℗
 Internal function used to wrap the original callback.
 
 **Returns**: <code>function</code> - A wrapper callback  
