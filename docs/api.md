@@ -46,23 +46,17 @@
 * [Connection](#Connection)
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
-    * [#noop()](#Connection+noop) ⇒ <code>undefined</code> ℗
     * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
-    * [#insertOrUpdate(insert, argumentsArray)](#Connection+insertOrUpdate) ℗
     * [#release([callback])](#Connection+release)
     * [#commit(callback)](#Connection+commit)
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
     * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
-    * [#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback)](#Connection+batchInsertOrUpdate) ℗
     * [#transaction(actions, callback)](#Connection+transaction)
-    * [#modifyParams(argumentsArray)](#Connection+modifyParams) ⇒ <code>object</code> ℗
-    * [#createQueryCallback(callback, [options], handleType, [stream])](#Connection+createQueryCallback) ⇒ <code>function</code> ℗
-    * [#createModifyCallback(callback, commit, [output])](#Connection+createModifyCallback) ⇒ <code>function</code> ℗
     * _static_
         * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
         * [.extend(connection)](#Connection.extend)
@@ -76,12 +70,6 @@ This class holds all the extended capabilities added the oracledb connection.
 Marker property.
 
 **Access:** public  
-<a name="Connection+noop"></a>
-### Connection#noop() ⇒ <code>undefined</code> ℗
-Empty function.
-
-**Returns**: <code>undefined</code> - Empty return  
-**Access:** private  
 <a name="Connection+execute"></a>
 ### Connection#execute(sql, [bindParams], [options], callback)
 Extends the original oracledb connection.execute to provide additional behavior.
@@ -222,17 +210,6 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
   //continue flow...
 });
 ```
-<a name="Connection+insertOrUpdate"></a>
-### Connection#insertOrUpdate(insert, argumentsArray) ℗
-Internal function which handles both INSERT and UPDATE commands.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| insert | <code>boolean</code> | True for insert, false for update |
-| argumentsArray | <code>Array</code> | The original arguments array |
-
 <a name="Connection+release"></a>
 ### Connection#release([callback])
 This function modifies the existing connection.release function by enabling the input
@@ -412,22 +389,6 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
   //continue flow...
 });
 ```
-<a name="Connection+batchInsertOrUpdate"></a>
-### Connection#batchInsertOrUpdate(insert, sql, bindParamsArray, options, callback) ℗
-Internal function to run batch INSERT/UPDATE commands.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| insert | <code>boolean</code> | True for insert, false for update |
-| sql | <code>string</code> | The SQL to execute |
-| bindParamsArray | <code>object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
-| options | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the insert/update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert/update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) ``` |
-
 <a name="Connection+transaction"></a>
 ### Connection#transaction(actions, callback)
 Enables to run multiple oracle operations in a single transaction.<br>
@@ -469,46 +430,6 @@ connection.transaction([
   //continue flow...
 });
 ```
-<a name="Connection+modifyParams"></a>
-### Connection#modifyParams(argumentsArray) ⇒ <code>object</code> ℗
-Internal function used to modify the INSERT/UPDATE SQL arguments.<br>
-This function will add the RETURNING clause to the SQL to support LOBs modification after the INSERT/UPDATE finished.<br>
-In addition it will modify the bind variables to specify the OUT bind to enable access to the LOB object.
-
-**Returns**: <code>object</code> - LOB information used for SQL execution processing  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| argumentsArray | <code>Array</code> | Array of arguments provided in the insert/update functions |
-
-<a name="Connection+createQueryCallback"></a>
-### Connection#createQueryCallback(callback, [options], handleType, [stream]) ⇒ <code>function</code> ℗
-Internal function used to wrap the original callback.
-
-**Returns**: <code>function</code> - A wrapper callback  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | The callback function to invoke |
-| [options] | <code>object</code> | Optional execute options |
-| handleType | <code>number</code> | 1 to split results, 2 to stream results, else default behaviour |
-| [stream] | <code>[ResultSetReadStream](#ResultSetReadStream)</code> | The stream to read the results from (if streamResults=true in options) |
-
-<a name="Connection+createModifyCallback"></a>
-### Connection#createModifyCallback(callback, commit, [output]) ⇒ <code>function</code> ℗
-Internal function used to wrap the original callback.
-
-**Returns**: <code>function</code> - A wrapper callback  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | The callback function to invoke |
-| commit | <code>boolean</code> | True to run commit |
-| [output] | <code>object</code> | Optional output to pass to the callback |
-
 <a name="Connection.wrapOnConnection"></a>
 ### Connection.wrapOnConnection(callback) ⇒ <code>function</code>
 Returns a getConnection callback wrapper which extends the connection and
@@ -542,7 +463,6 @@ Extends the provided oracledb connection instance.
 * [Pool](#Pool)
     * [new Pool()](#new_Pool_new)
     * [.simplified](#Pool.simplified) : <code>boolean</code>
-    * [#noop()](#Pool+noop) ⇒ <code>undefined</code> ℗
     * [#getConnection(callback)](#Pool+getConnection)
     * [#terminate([callback])](#Pool+terminate)
     * _static_
@@ -557,12 +477,6 @@ This class holds all the extended capabilities added the oracledb pool.
 Marker property.
 
 **Access:** public  
-<a name="Pool+noop"></a>
-### Pool#noop() ⇒ <code>undefined</code> ℗
-Empty function.
-
-**Returns**: <code>undefined</code> - Empty return  
-**Access:** private  
 <a name="Pool+getConnection"></a>
 ### Pool#getConnection(callback)
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
@@ -626,38 +540,12 @@ Extends the provided oracledb pool instance.
 
 * [RecordReader](#RecordReader)
     * [new RecordReader()](#new_RecordReader_new)
-    * [#getValue(field, callback)](#RecordReader+getValue) ℗
-    * [#createFieldHandler(jsObject, columnName, value)](#RecordReader+createFieldHandler) ⇒ <code>function</code> ℗
     * [#read(columnNames, row, callback)](#RecordReader+read)
     * [#readJSON(jsRow, column)](#RecordReader+readJSON) ⇒ <code>object</code>
 
 <a name="new_RecordReader_new"></a>
 ### new RecordReader()
 Record reading helper functions.
-
-<a name="RecordReader+getValue"></a>
-### RecordReader#getValue(field, callback) ℗
-Returns the value of the field from the row.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| field | <code>object</code> | The field value |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when the value is fully read or in case of an error |
-
-<a name="RecordReader+createFieldHandler"></a>
-### RecordReader#createFieldHandler(jsObject, columnName, value) ⇒ <code>function</code> ℗
-Returns a handler function.
-
-**Returns**: <code>function</code> - The handler function  
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| jsObject | <code>object</code> | The result object holder to populate |
-| columnName | <code>string</code> | The field name |
-| value | <code>object</code> | The field value |
 
 <a name="RecordReader+read"></a>
 ### RecordReader#read(columnNames, row, callback)
@@ -727,52 +615,9 @@ Writes all LOBs columns via out bindings of the INSERT/UPDATE command with suppo
 **Kind**: global class  
 **Access:** public  
 **Author:** Sagie Gur-Ari  
-
-* [ResultSetReadStream](#ResultSetReadStream)
-    * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
-    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow(2)) ℗
-    * [.nextRow.set(nextRow)](#ResultSetReadStream.nextRow.set) ℗
-    * [#_read()](#ResultSetReadStream+_read) ℗
-    * [.nextRow(streamCallback)](#ResultSetReadStream.nextRow(1)) ℗
-
 <a name="new_ResultSetReadStream_new"></a>
 ### new ResultSetReadStream()
 A node.js read stream for resultsets.
-
-<a name="ResultSetReadStream.nextRow(2)"></a>
-### ResultSetReadStream.nextRow(streamCallback) ℗
-Pushes error event to the stream.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| streamCallback | <code>function</code> | The callback function |
-
-<a name="ResultSetReadStream.nextRow.set"></a>
-### ResultSetReadStream.nextRow.set(nextRow) ℗
-Sets the nextRow value.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| nextRow | <code>function</code> | The next row callback function |
-
-<a name="ResultSetReadStream+_read"></a>
-### ResultSetReadStream#_read() ℗
-The stream _read implementation which fetches the next row from the resultset.
-
-**Access:** private  
-<a name="ResultSetReadStream.nextRow(1)"></a>
-### ResultSetReadStream.nextRow(streamCallback) ℗
-Reads the next rows from the resultset and pushes via events.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| streamCallback | <code>function</code> | The callback function |
 
 <a name="ResultSetReader"></a>
 ## ResultSetReader
@@ -783,7 +628,6 @@ Reads the next rows from the resultset and pushes via events.
 * [ResultSetReader](#ResultSetReader)
     * [new ResultSetReader()](#new_ResultSetReader_new)
     * [#readNextRows(columnNames, resultSet, [options], callback)](#ResultSetReader+readNextRows)
-    * [#readAllRows(columnNames, resultSet, options, callback, [jsRowsBuffer])](#ResultSetReader+readAllRows) ℗
     * [#readFully(columnNames, resultSet, options, callback)](#ResultSetReader+readFully)
     * [#readBulks(columnNames, resultSet, options, callback)](#ResultSetReader+readBulks)
     * [#stream(columnNames, resultSet, stream)](#ResultSetReader+stream)
@@ -805,20 +649,6 @@ Reads the next rows data from the provided oracle ResultSet object.
 | [options] | <code>object</code> |  | Any options |
 | [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | called when the next rows have been read |
-
-<a name="ResultSetReader+readAllRows"></a>
-### ResultSetReader#readAllRows(columnNames, resultSet, options, callback, [jsRowsBuffer]) ℗
-Reads all data from the provided oracle ResultSet object into the provided buffer.
-
-**Access:** private  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| columnNames | <code>Array</code> | Array of strings holding the column names of the results |
-| resultSet | <code>Array</code> | The oracle ResultSet object |
-| options | <code>object</code> | Any options |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | called when all rows are fully read or in case of an error |
-| [jsRowsBuffer] | <code>Array</code> | The result buffer, if not provided, the callback will be called for each bulk |
 
 <a name="ResultSetReader+readFully"></a>
 ### ResultSetReader#readFully(columnNames, resultSet, options, callback)
