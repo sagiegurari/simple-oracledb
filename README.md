@@ -456,7 +456,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-01-13  | v0.1.11 | Maintenance |
+| 2016-01-15  | v0.1.12 | Maintenance |
 | 2016-01-12  | v0.1.8  | Avoid issues with oracledb stream option which is based on this library |
 | 2016-01-07  | v0.1.7  | connection.query with streamResults=true returns a readable stream |
 | 2015-12-30  | v0.1.6  | connection.transaction disables commit/rollback while running |
