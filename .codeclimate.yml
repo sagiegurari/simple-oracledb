@@ -26,7 +26,8 @@ exclude_paths:
   - LICENSE
   - README.md
   - package.json
-  - *lint*.json
+  - eslintrc-common.json
+  - jshintrc-common.json
   - .*.json
   - .*.yml
   - .*rc
