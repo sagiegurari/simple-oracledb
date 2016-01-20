@@ -936,6 +936,54 @@ describe('Integration Tests', function () {
                     });
                 });
             });
+
+            it('batchInsert - arrays', function (done) {
+                var table = 'TEST_ORA_BTCH_INST2';
+
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2) values (:0, :1)', [
+                            ['test', 123],
+                            ['test2', 455]
+                        ], {
+                            autoCommit: true
+                        }, function (error, results) {
+                            assert.isNull(error);
+                            assert.equal(2, results.length);
+                            assert.equal(1, results[0].rowsAffected);
+                            assert.equal(1, results[1].rowsAffected);
+
+                            connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                resultSet: false
+                            }, function (queryError, jsRows) {
+                                assert.isNull(queryError);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'test',
+                                        COL2: 123,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    },
+                                    {
+                                        COL1: 'test2',
+                                        COL2: 455,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
+                        });
+                    });
+                });
+            });
         });
 
         describe('batchUpdate', function () {
