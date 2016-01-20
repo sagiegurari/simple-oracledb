@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "author": {
     "name": "Sagie Gur-Ari",
@@ -59,6 +59,12 @@
     "load-grunt-tasks": "latest",
     "mocha": "latest",
     "mocha-lcov-reporter": "latest",
-    "time-grunt": "latest"
+    "time-grunt": "latest",
+    "travis-cov": "latest"
+  },
+  "config": {
+    "travis-cov": {
+      "threshold": 100
+    }
   }
 }
