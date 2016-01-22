@@ -1185,7 +1185,9 @@ describe('resultSetReader Tests', function () {
 
             resultSetReader.stream(columnNames, {
                 close: function (releaseCallback) {
-                    releaseCallback(new Error('test close'));
+                    setTimeout(function () {
+                        releaseCallback(new Error('test close'));
+                    }, 10);
                 },
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
