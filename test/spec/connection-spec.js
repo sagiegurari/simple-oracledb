@@ -107,6 +107,9 @@ describe('Connection Tests', function () {
                 argumentsArray.shift()(null, {
                     metaData: columnNames,
                     resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
                         getRows: function (number, callback) {
                             assert.equal(number, 100);
                             callback(null, []);
@@ -138,6 +141,9 @@ describe('Connection Tests', function () {
                 argumentsArray.shift()(null, {
                     metaData: columnNames,
                     resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
                         getRows: function (number, callback) {
                             assert.equal(number, 100);
                             callback(null, []);
@@ -278,6 +284,9 @@ describe('Connection Tests', function () {
                 argumentsArray.pop()(null, {
                     metaData: columnNames,
                     resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
                         getRows: function (number, callback) {
                             assert.equal(number, 100);
 
@@ -529,6 +538,9 @@ describe('Connection Tests', function () {
                 argumentsArray.pop()(null, {
                     metaData: columnNames,
                     resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
                         getRows: function (number, callback) {
                             assert.equal(number, 1);
 
@@ -661,6 +673,9 @@ describe('Connection Tests', function () {
                     argumentsArray.pop()(null, {
                         metaData: columnNames,
                         resultSet: {
+                            close: function (releaseCallback) {
+                                releaseCallback();
+                            },
                             getRows: function (number, callback) {
                                 assert.equal(number, 1);
 

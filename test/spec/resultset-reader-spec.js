@@ -22,6 +22,52 @@ describe('resultSetReader Tests', function () {
         }
     ];
 
+    describe('releaseResultSet tests', function () {
+        it('no resultset', function (done) {
+            resultSetReader.releaseResultSet(undefined, true, function (error) {
+                assert.isUndefined(error);
+
+                done();
+            });
+        });
+
+        it('valid', function (done) {
+            resultSetReader.releaseResultSet({
+                close: function (releaseCallback) {
+                    releaseCallback();
+                }
+            }, true, function (error) {
+                assert.isUndefined(error);
+
+                done();
+            });
+        });
+
+        it('error no ignore', function (done) {
+            resultSetReader.releaseResultSet({
+                close: function (releaseCallback) {
+                    releaseCallback(new Error('test'));
+                }
+            }, false, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('error ignore', function (done) {
+            resultSetReader.releaseResultSet({
+                close: function (releaseCallback) {
+                    releaseCallback(new Error('test'));
+                }
+            }, true, function (error) {
+                assert.isUndefined(error);
+
+                done();
+            });
+        });
+    });
+
     describe('readNextRows tests', function () {
         it('array - all types without bulk size', function (done) {
             var date = new Date();
@@ -135,6 +181,9 @@ describe('resultSetReader Tests', function () {
     describe('readFully tests', function () {
         it('empty', function (done) {
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -142,6 +191,23 @@ describe('resultSetReader Tests', function () {
             }, null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
+
+                done();
+            });
+        });
+
+        it('empty error in close', function (done) {
+            resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback(new Error('test close'));
+                },
+                getRows: function (number, callback) {
+                    assert.equal(number, 100);
+                    callback(null, []);
+                }
+            }, null, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'test close');
 
                 done();
             });
@@ -175,6 +241,9 @@ describe('resultSetReader Tests', function () {
             }];
 
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -266,6 +335,9 @@ describe('resultSetReader Tests', function () {
             }];
 
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -337,6 +409,9 @@ describe('resultSetReader Tests', function () {
             }];
 
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -403,6 +478,9 @@ describe('resultSetReader Tests', function () {
             }];
 
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -423,6 +501,9 @@ describe('resultSetReader Tests', function () {
 
         it('error getRows', function (done) {
             resultSetReader.readFully(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -440,6 +521,9 @@ describe('resultSetReader Tests', function () {
     describe('readBulks tests', function () {
         it('empty', function (done) {
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
@@ -513,6 +597,9 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -616,6 +703,9 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -667,6 +757,9 @@ describe('resultSetReader Tests', function () {
 
             var counter = 0;
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -741,6 +834,9 @@ describe('resultSetReader Tests', function () {
 
             var counter = 0;
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -767,6 +863,9 @@ describe('resultSetReader Tests', function () {
 
         it('error getRows', function (done) {
             resultSetReader.readBulks(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 100);
 
@@ -786,6 +885,9 @@ describe('resultSetReader Tests', function () {
             var stream = new ResultSetReadStream();
 
             resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
                     callback(null, []);
@@ -857,6 +959,9 @@ describe('resultSetReader Tests', function () {
 
             var stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -934,6 +1039,9 @@ describe('resultSetReader Tests', function () {
 
             var stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -963,6 +1071,9 @@ describe('resultSetReader Tests', function () {
         it('error getRows', function (done) {
             var stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback();
+                },
                 getRows: function (number, callback) {
                     assert.equal(number, 1);
 
@@ -980,6 +1091,116 @@ describe('resultSetReader Tests', function () {
 
             stream.on('data', function () {
                 assert.fail();
+            });
+        });
+
+        it('error in close after data read', function (done) {
+            var date = new Date();
+            var lob1 = helper.createCLOB();
+            var lob2 = helper.createCLOB();
+
+            var dbData = [
+                [
+                    ['first row', 1, false, date]
+                ],
+                [
+                    [1, 'test', 50, lob1]
+                ],
+                [
+                    ['a', date, undefined, null]
+                ],
+                [
+                    [10, true, lob2, 100]
+                ]
+            ];
+            var dbEvents = [null, function () {
+                lob1.emit('data', 'test1');
+                lob1.emit('data', '\ntest2');
+                lob1.emit('end');
+            }, function () {
+                lob2.emit('data', '123');
+                lob2.emit('data', '456');
+                lob2.emit('end');
+            }];
+
+            var resultData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date
+                },
+                {
+                    COL1: 1,
+                    COL2: 'test',
+                    COL3: 50,
+                    COL4: 'test1\ntest2'
+                },
+                {
+                    COL1: 'a',
+                    COL2: date,
+                    COL3: undefined,
+                    COL4: undefined
+                },
+                {
+                    COL1: 10,
+                    COL2: true,
+                    COL3: '123456',
+                    COL4: 100
+                }
+            ];
+
+            var stream = new ResultSetReadStream();
+            resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback(new Error('test close'));
+                },
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+
+                    var events = dbEvents.shift();
+                    if (events) {
+                        setTimeout(events, 10);
+                    }
+
+                    callback(null, dbData.shift());
+                }
+            }, stream);
+
+            var eventCounter = 0;
+            stream.on('data', function (row) {
+                assert.deepEqual(resultData[eventCounter], row);
+                eventCounter++;
+            });
+
+            stream.on('error', function (streamError) {
+                assert.equal(streamError.message, 'test close');
+
+                done();
+            });
+        });
+
+        it('empty error in close', function (done) {
+            var stream = new ResultSetReadStream();
+
+            resultSetReader.stream(columnNames, {
+                close: function (releaseCallback) {
+                    releaseCallback(new Error('test close'));
+                },
+                getRows: function (number, callback) {
+                    assert.equal(number, 1);
+                    callback(null, []);
+                }
+            }, stream);
+
+            stream.on('data', function () {
+                assert.fail();
+            });
+
+            stream.on('error', function (streamError) {
+                assert.equal(streamError.message, 'test close');
+
+                done();
             });
         });
     });

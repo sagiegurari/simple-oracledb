@@ -456,6 +456,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-01-22  | v0.1.18 | Fixed missing call to resultset.close after done reading |
 | 2016-01-20  | v0.1.17 | Maintenance |
 | 2016-01-12  | v0.1.8  | Avoid issues with oracledb stream option which is based on this library |
 | 2016-01-07  | v0.1.7  | connection.query with streamResults=true returns a readable stream |
