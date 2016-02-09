@@ -391,16 +391,30 @@ connection.transaction([
 ```
 
 <a name="usage-release"></a>
-## 'connection.release([callback])'
-This function modifies the existing connection.release function by enabling the input callback to be an optional parameter.<br>
-Since there is no real way to release a connection that fails to be released, all that you can do in the callback is just log the error and continue.<br>
-Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+## 'connection.release([options], [callback])'
+This function modifies the existing connection.release function by enabling the input callback to be an optional parameter and providing ability to auto retry in case of any errors during release.
 
 ```js
 connection.release(); //no callback needed
 
 //still possible to call with a release callback function
 connection.release(function onRelease(error) {
+  if (error) {
+    //now what?
+  }
+});
+
+//retry release in case of errors is enabled if options are provided
+connection.release({
+  retryCount: 20, //retry max 20 times in case of errors (default is 10 if not provided)
+  retryInterval: 1000 //retry every 1 second (default is 250 millies if not provided)
+});
+
+//you can provide both retry options and callback (callback will be called only after all retries are done or in case connection was released)
+connection.release({
+  retryCount: 10,
+  retryInterval: 250
+}, function onRelease(error) {
   if (error) {
     //now what?
   }
@@ -456,7 +470,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-02-09  | v0.1.20 | connection.release now supports retry options |
+| 2016-02-09  | v0.1.21 | connection.release now supports retry options |
 | 2016-02-02  | v0.1.19 | Maintenance |
 | 2016-01-22  | v0.1.18 | Fixed missing call to resultset.close after done reading |
 | 2016-01-20  | v0.1.17 | Maintenance |
