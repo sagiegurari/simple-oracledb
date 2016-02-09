@@ -213,10 +213,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 <a name="Connection+release"></a>
 ### Connection#release([options], [callback])
 This function modifies the existing connection.release function by enabling the input
-callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
-Since there is no real way to release a connection that fails to be released, all that you can do in the callback
-is just log the error and continue.<br>
-Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+callback to be an optional parameter and providing ability to auto retry in case of any errors during release.
 
 **Access:** public  
 
