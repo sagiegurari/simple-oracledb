@@ -50,7 +50,7 @@
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
-    * [#release([callback])](#Connection+release)
+    * [#release([options], [callback])](#Connection+release)
     * [#commit(callback)](#Connection+commit)
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
@@ -211,18 +211,21 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 });
 ```
 <a name="Connection+release"></a>
-### Connection#release([callback])
+### Connection#release([options], [callback])
 This function modifies the existing connection.release function by enabling the input
-callback to be an optional parameter.<br>
+callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 Since there is no real way to release a connection that fails to be released, all that you can do in the callback
 is just log the error and continue.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
 
 **Access:** public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| [callback] | <code>function</code> | An optional release callback function (see oracledb docs) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
+| [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
+| [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
+| [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 **Example**  
 ```js
@@ -230,6 +233,22 @@ connection.release(); //no callback needed
 
 //still possible to call with a release callback function
 connection.release(function onRelease(error) {
+  if (error) {
+    //now what?
+  }
+});
+
+//retry release in case of errors is enabled if options are provided
+connection.release({
+  retryCount: 20, //retry max 20 times in case of errors (default is 10 if not provided)
+  retryInterval: 1000 //retry every 1 second (default is 250 millies if not provided)
+});
+
+//you can provide both retry options and callback (callback will be called only after all retries are done or in case connection was released)
+connection.release({
+  retryCount: 10,
+  retryInterval: 250
+}, function onRelease(error) {
   if (error) {
     //now what?
   }

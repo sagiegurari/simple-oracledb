@@ -456,6 +456,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-09  | v0.1.20 | connection.release now supports retry options |
 | 2016-02-02  | v0.1.19 | Maintenance |
 | 2016-01-22  | v0.1.18 | Fixed missing call to resultset.close after done reading |
 | 2016-01-20  | v0.1.17 | Maintenance |

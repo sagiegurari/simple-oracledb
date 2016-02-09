@@ -1373,6 +1373,97 @@ describe('Connection Tests', function () {
             assert.isFunction(connection.baseRelease);
             connection.release();
         });
+
+        it('only options provided', function (done) {
+            var releaseCalled = false;
+            var connection = {
+                release: function (cb) {
+                    if (releaseCalled) {
+                        assert.fail();
+                    } else {
+                        assert.isFunction(cb);
+                        cb();
+
+                        done();
+                    }
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({});
+        });
+
+        it('options and callback provided', function (done) {
+            var counter = 0;
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    counter++;
+                    if (counter > 1) {
+                        cb();
+                    } else {
+                        cb(new Error('test'));
+                    }
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({
+                retryCount: 5
+            }, function (error) {
+                assert.isUndefined(error);
+                assert.equal(counter, 2);
+
+                done();
+            });
+        });
+
+        it('retries maxed out', function (done) {
+            var counter = 0;
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    counter++;
+                    cb(new Error('test'));
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({
+                retryCount: 5,
+                retryInterval: 10
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(counter, 5);
+
+                done();
+            });
+        });
+
+        it('default retry count validation', function (done) {
+            var counter = 0;
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    counter++;
+                    cb(new Error('test'));
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({
+                retryInterval: 10
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(counter, 10);
+
+                done();
+            });
+        });
     });
 
     describe('rollback', function () {
