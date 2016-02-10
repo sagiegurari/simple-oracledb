@@ -478,6 +478,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-10  | v0.1.24 | Maintenance |
 | 2016-02-10  | v0.1.23 | Adding debug logs via NODE_DEBUG=simple-oracledb |
 | 2016-02-09  | v0.1.22 | Maintenance |
 | 2016-02-09  | v0.1.20 | connection.release now supports retry options |
