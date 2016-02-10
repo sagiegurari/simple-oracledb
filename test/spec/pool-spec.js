@@ -30,7 +30,7 @@ describe('Pool Tests', function () {
                 assert.isTrue(connection.simplified);
 
                 done();
-            })
+            });
         });
 
         it('getConnection error', function (done) {
@@ -46,7 +46,7 @@ describe('Pool Tests', function () {
                 assert.isUndefined(connection);
 
                 done();
-            })
+            });
         });
 
         it('getConnection error with valid retry', function (done) {
@@ -77,7 +77,7 @@ describe('Pool Tests', function () {
                 assert.isTrue(connection.simplified);
 
                 done();
-            })
+            });
         });
 
         it('getConnection error with error retry', function (done) {
@@ -104,7 +104,7 @@ describe('Pool Tests', function () {
                 assert.isDefined(error);
 
                 done();
-            })
+            });
         });
 
         it('getConnection sql error', function (done) {
@@ -128,7 +128,34 @@ describe('Pool Tests', function () {
                 assert.isUndefined(connection);
 
                 done();
-            })
+            });
+        });
+
+        it('getConnection sql and release error', function (done) {
+            var testPool = oracledb.createPool();
+            var orgGetConnection = testPool.getConnection;
+
+            testPool.getConnection = function (callback) {
+                orgGetConnection.call(testPool, function (connError, connection) {
+                    connection.throwError = true;
+                    connection.release = function (cb) {
+                        cb(new Error('test'));
+                    };
+
+                    callback(null, connection);
+                });
+            };
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.getConnection(function (error, connection) {
+                assert.isDefined(error);
+                assert.isUndefined(connection);
+
+                done();
+            });
         });
 
         it('getConnection sql error with valid retry', function (done) {
@@ -163,7 +190,7 @@ describe('Pool Tests', function () {
                 assert.isTrue(connection.simplified);
 
                 done();
-            })
+            });
         });
     });
 
