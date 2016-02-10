@@ -22,7 +22,8 @@ TestConnection.prototype.execute = function () {
     }
 };
 
-TestConnection.prototype.release = function (callback) {
+TestConnection.prototype.release = function () {
+    var callback = arguments[arguments.length - 1];
     callback();
 };
 

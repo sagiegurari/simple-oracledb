@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "author": {
     "name": "Sagie Gur-Ari",
@@ -35,7 +35,8 @@
     "synclibs": "npm install && npm update"
   },
   "dependencies": {
-    "async": "^1.5.2"
+    "async": "^1.5.2",
+    "debuglog": "^1.0.1"
   },
   "devDependencies": {
     "blanket": "latest",

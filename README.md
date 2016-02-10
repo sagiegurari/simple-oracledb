@@ -23,6 +23,7 @@
     * [transaction](#usage-transaction)
     * [release](#usage-release)
     * [rollback](#usage-rollback)
+* [Debug](#debug)
 * [Installation](#installation)
 * [Limitations](#limitations)
 * [API Documentation](docs/api.md)
@@ -441,6 +442,13 @@ connection.rollback(function onRollback(error) {
 <br>
 **The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
+<a name="debug"></a>
+## Debug
+In order to turn on debug messages, use the standard nodejs NODE_DEBUG environment variable.
+````
+NODE_DEBUG=simple-oracledb
+````
+
 <a name="installation"></a>
 ## Installation
 In order to use this library, just run the following npm install command:
@@ -470,6 +478,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-10  | v0.1.23 | Adding debug logs via NODE_DEBUG=simple-oracledb |
 | 2016-02-09  | v0.1.22 | Maintenance |
 | 2016-02-09  | v0.1.20 | connection.release now supports retry options |
 | 2016-02-02  | v0.1.19 | Maintenance |
