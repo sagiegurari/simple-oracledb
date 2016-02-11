@@ -111,6 +111,23 @@ describe('Integration Tests', function () {
 
         self.timeout(5000);
 
+        describe('pool.getConnection error', function () {
+            it('error', function (done) {
+                var table = 'TEST_ORA_POOL1';
+                initDB(table, null, function (pool) {
+                    var sql = pool.poolAttributes.validationSQL;
+                    pool.poolAttributes.validationSQL = 'SOME BAD SQL';
+                    pool.getConnection(function (err, connection) {
+                        assert.isDefined(err);
+
+                        pool.poolAttributes.validationSQL = sql;
+
+                        end(done, connection);
+                    });
+                });
+            });
+        });
+
         describe('query', function () {
             it('error', function (done) {
                 var table = 'TEST_ORA1';
