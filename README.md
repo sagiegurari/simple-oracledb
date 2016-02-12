@@ -13,6 +13,7 @@
   * [Pool](#usage-pool)
     * [getConnection](#usage-getconnection)
     * [terminate](#usage-terminate)
+    * [close](#usage-terminate)
   * [Connection](#usage-connection)
     * [query](#usage-query)
     * [insert](#usage-insert)
@@ -22,6 +23,7 @@
     * [batchUpdate](#usage-batchUpdate)
     * [transaction](#usage-transaction)
     * [release](#usage-release)
+    * [close](#usage-release)
     * [rollback](#usage-rollback)
 * [Debug](#debug)
 * [Installation](#installation)
@@ -146,11 +148,13 @@ oracledb.createPool({
 
 <a name="usage-terminate"></a>
 ## 'pool.terminate([callback])'
+## 'pool.close([callback])'
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
 is just log the error and continue.<br>
-Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.<br>
+The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
 ```js
 pool.terminate(); //no callback needed
@@ -161,6 +165,9 @@ pool.terminate(function onTerminate(error) {
     //now what?
   }
 });
+
+//can also use close
+pool.close();
 ```
 
 <a name="usage-connection"></a>
@@ -362,7 +369,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
-All provided actions are executed in parallel.<br>
+All provided actions are executed in parallel unless options.sequence=true is provided.<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
 When calling any connection operation (execute, insert, update, ...) the connection will automatically set the autoCommit=false and will ignore the value provided.<br>
@@ -370,6 +377,7 @@ This is done to prevent commits in the middle of the transaction.<br>
 In addition, you can not start a transaction while another transaction is in progress.
 
 ```js
+//run all actions in parallel
 connection.transaction([
   function insertSomeRows(callback) {
     connection.insert(...., function (error, results) {
@@ -389,11 +397,27 @@ connection.transaction([
 ], function onTransactionResults(error, output) {
   //continue flow...
 });
+
+//run all actions in sequence
+connection.transaction([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}, function onTransactionResults(error, output) {
+  //continue flow...
+});
 ```
 
 <a name="usage-release"></a>
 ## 'connection.release([options], [callback])'
-This function modifies the existing connection.release function by enabling the input callback to be an optional parameter and providing ability to auto retry in case of any errors during release.
+## 'connection.close([options], [callback])'
+This function modifies the existing connection.release function by enabling the input callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
+The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
 ```js
 connection.release(); //no callback needed
@@ -413,6 +437,16 @@ connection.release({
 
 //you can provide both retry options and callback (callback will be called only after all retries are done or in case connection was released)
 connection.release({
+  retryCount: 10,
+  retryInterval: 250
+}, function onRelease(error) {
+  if (error) {
+    //now what?
+  }
+});
+
+//can also use close instead of release
+connection.close({
   retryCount: 10,
   retryInterval: 250
 }, function onRelease(error) {
@@ -478,6 +512,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-12  | v0.1.26 | Added sequence option for connection.transaction and added pool.close=pool.terminate, connection.close=connection.release aliases |
 | 2016-02-11  | v0.1.25 | Maintenance |
 | 2016-02-10  | v0.1.23 | Adding debug logs via NODE_DEBUG=simple-oracledb |
 | 2016-02-09  | v0.1.22 | Maintenance |

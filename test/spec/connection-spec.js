@@ -1466,6 +1466,73 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('close', function () {
+        it('callback provided', function (done) {
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.close(function () {
+                return undefined;
+            });
+        });
+
+        it('options and callback provided', function (done) {
+            var counter = 0;
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    counter++;
+                    if (counter > 1) {
+                        cb();
+                    } else {
+                        cb(new Error('test'));
+                    }
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.close({
+                retryCount: 5
+            }, function (error) {
+                assert.isUndefined(error);
+                assert.equal(counter, 2);
+
+                done();
+            });
+        });
+
+        it('default retry count validation', function (done) {
+            var counter = 0;
+            var connection = {
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    counter++;
+                    cb(new Error('test'));
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.close({
+                retryInterval: 10
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(counter, 10);
+
+                done();
+            });
+        });
+    });
+
     describe('rollback', function () {
         it('callback provided', function (done) {
             var connection = {
@@ -2717,18 +2784,106 @@ describe('Connection Tests', function () {
                 callback();
             };
 
+            var secondStarted = false;
             connection.transaction([
                 function (callback) {
                     assert.isFalse(commitDone);
 
-                    callback(null, 'my first');
+                    setTimeout(function () {
+                        assert.isTrue(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
                 },
                 function (callback) {
+                    secondStarted = true;
                     assert.isFalse(commitDone);
 
                     callback(null, 'my second');
                 }
             ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+                assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('parallel', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            var secondStarted = false;
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    setTimeout(function () {
+                        assert.isTrue(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function (callback) {
+                    secondStarted = true;
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my second');
+                }
+            ], {
+                sequence: false
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+                assert.isTrue(commitDone);
+
+                done();
+            });
+        });
+
+        it('sequence', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            var secondStarted = false;
+            connection.transaction([
+                function (callback) {
+                    assert.isFalse(commitDone);
+
+                    setTimeout(function () {
+                        assert.isFalse(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function (callback) {
+                    secondStarted = true;
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my second');
+                }
+            ], {
+                sequence: true
+            }, function (error, results) {
                 assert.isNull(error);
                 assert.deepEqual([
                     'my first',

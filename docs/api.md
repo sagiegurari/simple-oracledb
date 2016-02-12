@@ -51,12 +51,13 @@
     * [#insert(sql, bindParams, options, callback)](#Connection+insert)
     * [#update(sql, bindParams, options, callback)](#Connection+update)
     * [#release([options], [callback])](#Connection+release)
+    * [#close([options], [callback])](#Connection+close)
     * [#commit(callback)](#Connection+commit)
     * [#rollback([callback])](#Connection+rollback)
     * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
     * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
-    * [#transaction(actions, callback)](#Connection+transaction)
+    * [#transaction(actions, [options], callback)](#Connection+transaction)
     * _static_
         * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
         * [.extend(connection)](#Connection.extend)
@@ -213,7 +214,8 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 <a name="Connection+release"></a>
 ### Connection#release([options], [callback])
 This function modifies the existing connection.release function by enabling the input
-callback to be an optional parameter and providing ability to auto retry in case of any errors during release.
+callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
+The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
 **Access:** public  
 
@@ -250,7 +252,30 @@ connection.release({
     //now what?
   }
 });
+
+//can also use close instead of release
+connection.close({
+  retryCount: 10,
+  retryInterval: 250
+}, function onRelease(error) {
+  if (error) {
+    //now what?
+  }
+});
 ```
+<a name="Connection+close"></a>
+### Connection#close([options], [callback])
+Alias for connection.release, see connection.release for more info.
+
+**Access:** public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
+| [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
+| [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
+| [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
+
 <a name="Connection+commit"></a>
 ### Connection#commit(callback)
 Extends the connection.commit to prevent commit being invoked while in the middle of a transaction.
@@ -406,11 +431,11 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 });
 ```
 <a name="Connection+transaction"></a>
-### Connection#transaction(actions, callback)
+### Connection#transaction(actions, [options], callback)
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
-All provided actions are executed in parallel.<br>
+All provided actions are executed in parallel unless options.sequence=true is provided.<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
 When calling any connection operation (execute, insert, update, ...) the connection will automatically set the autoCommit=false and will ignore the value provided.<br>
@@ -419,13 +444,16 @@ In addition, you can not start a transaction while another transaction is in pro
 
 **Access:** public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| actions | <code>Array</code> &#124; <code>function</code> | A single action function or an array of action functions. |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the transaction results |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| actions | <code>Array</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| [options] | <code>object</code> |  | Any transaction options |
+| [options.sequence] | <code>boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the transaction results |
 
 **Example**  
 ```js
+//run all actions in parallel
 connection.transaction([
   function insertSomeRows(callback) {
     connection.insert(...., function (error, results) {
@@ -443,6 +471,20 @@ connection.transaction([
     connection.batchUpdate(...., callback);
   }
 ], function onTransactionResults(error, output) {
+  //continue flow...
+});
+
+//run all actions in sequence
+connection.transaction([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}, function onTransactionResults(error, output) {
   //continue flow...
 });
 ```
@@ -481,6 +523,7 @@ Extends the provided oracledb connection instance.
     * [.simplified](#Pool.simplified) : <code>boolean</code>
     * [#getConnection(callback)](#Pool+getConnection)
     * [#terminate([callback])](#Pool+terminate)
+    * [#close([callback])](#Pool+close)
     * _static_
         * [.extend(pool, [poolAttributes])](#Pool.extend)
 
@@ -513,7 +556,8 @@ This function modifies the existing pool.terminate function by enabling the inpu
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
 is just log the error and continue.<br>
-Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
+Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.<br>
+The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
 **Access:** public  
 
@@ -531,7 +575,20 @@ pool.terminate(function onTerminate(error) {
     //now what?
   }
 });
+
+//can also use close
+pool.close();
 ```
+<a name="Pool+close"></a>
+### Pool#close([callback])
+Alias for pool.terminate, see pool.terminate for more info.
+
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [callback] | <code>function</code> | An optional terminate callback function (see oracledb docs) |
+
 <a name="Pool.extend"></a>
 ### Pool.extend(pool, [poolAttributes])
 Extends the provided oracledb pool instance.

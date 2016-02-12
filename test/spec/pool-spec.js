@@ -227,4 +227,38 @@ describe('Pool Tests', function () {
             pool.terminate();
         });
     });
+
+    describe('close', function () {
+        it('callback provided', function (done) {
+            var pool = {
+                terminate: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Pool.extend(pool);
+
+            assert.isFunction(pool.baseTerminate);
+            pool.close(function () {
+                return undefined;
+            });
+        });
+
+        it('callback undefined', function (done) {
+            var pool = {
+                terminate: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+
+                    done();
+                }
+            };
+            Pool.extend(pool);
+
+            assert.isFunction(pool.baseTerminate);
+            pool.close();
+        });
+    });
 });
