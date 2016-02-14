@@ -512,6 +512,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-14  | v0.1.27 | Maintenance |
 | 2016-02-12  | v0.1.26 | Added sequence option for connection.transaction and added pool.close=pool.terminate, connection.close=connection.release aliases |
 | 2016-02-11  | v0.1.25 | Maintenance |
 | 2016-02-10  | v0.1.23 | Adding debug logs via NODE_DEBUG=simple-oracledb |
