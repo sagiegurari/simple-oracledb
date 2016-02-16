@@ -265,12 +265,9 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
   },
-  returningInfo: [ //all items in this array will be added to the generated RETURNING clause
-    {
-      columnName: 'id',
-      bindVarName: 'myid'
-    }
-  ]
+  returningInfo: { //all items in this column/bind variable object will be added to the generated RETURNING clause
+    id: 'myid'
+  }
 }, function onResults(error, output) {
   //continue flow...
 });
@@ -537,6 +534,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-16  | v0.1.29 | new optional options.returningInfo to insert/update/batch to enable to modify the returning/into clause when using LOBs |
 | 2016-02-16  | v0.1.28 | Maintenance |
 | 2016-02-12  | v0.1.26 | Added sequence option for connection.transaction and added pool.close=pool.terminate, connection.close=connection.release aliases |
 | 2016-02-11  | v0.1.25 | Maintenance |

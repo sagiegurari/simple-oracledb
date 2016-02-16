@@ -929,12 +929,9 @@ describe('Connection Tests', function () {
                         c2: 'lob2',
                         b: 'lob3'
                     },
-                    returningInfo: [
-                        {
-                            columnName: 'id',
-                            bindVarName: 'myid'
-                        }
-                    ]
+                    returningInfo: {
+                        id: 'myid'
+                    }
                 });
 
                 var lob1 = helper.createCLOB();
@@ -979,12 +976,9 @@ describe('Connection Tests', function () {
                     c2: 'lob2',
                     b: 'lob3'
                 },
-                returningInfo: [
-                    {
-                        columnName: 'id',
-                        bindVarName: 'myid'
-                    }
-                ]
+                returningInfo: {
+                    id: 'myid'
+                }
             }, function (error, results) {
                 assert.isNull(error);
                 assert.equal(results.rowsAffected, 1);

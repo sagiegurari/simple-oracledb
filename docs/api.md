@@ -158,7 +158,7 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | options | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Array</code> | Array of objects holding columnName and bindVarName which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
+| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -192,12 +192,9 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
     clob_column1: 'clobText1', //map oracle column name to bind variable name
     blob_column2: 'blobBuffer2'
   },
-  returningInfo: [ //all items in this array will be added to the generated RETURNING clause
-    {
-      columnName: 'id',
-      bindVarName: 'myid'
-    }
-  ]
+  returningInfo: { //all items in this column/bind variable object will be added to the generated RETURNING clause
+    id: 'myid'
+  }
 }, function onResults(error, output) {
   //continue flow...
 });
@@ -218,7 +215,7 @@ The function arguments used to execute the 'update' are exactly as defined in th
 | options | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Array</code> | Array of objects holding columnName and bindVarName which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -389,7 +386,7 @@ the bind params is now an array of bind params (one per row).
 | options | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Array</code> | Array of objects holding columnName and bindVarName which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -433,7 +430,7 @@ the bind params is now an array of bind params (one per row).
 | options | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Array</code> | Array of objects holding columnName and bindVarName which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
