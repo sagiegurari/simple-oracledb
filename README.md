@@ -249,6 +249,31 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 }, function onResults(error, output) {
   //continue flow...
 });
+
+//add few more items to the RETURNING clause (only used if lobMetaInfo is provided)
+connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:myid, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
+  myid: {
+    type: oracledb.NUMBER,
+    dir: oracledb.BIND_INOUT,
+    val: 1234
+  },
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  },
+  returningInfo: [ //all items in this array will be added to the generated RETURNING clause
+    {
+      columnName: 'id',
+      bindVarName: 'myid'
+    }
+  ]
+}, function onResults(error, output) {
+  //continue flow...
+});
 ```
 
 <a name="usage-update"></a>
@@ -365,7 +390,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 ```
 
 <a name="usage-transaction"></a>
-## 'connection.transaction(actions, callback)'
+## 'connection.transaction(actions, [options], callback)'
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
@@ -512,7 +537,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-02-14  | v0.1.27 | Maintenance |
+| 2016-02-16  | v0.1.28 | Maintenance |
 | 2016-02-12  | v0.1.26 | Added sequence option for connection.transaction and added pool.close=pool.terminate, connection.close=connection.release aliases |
 | 2016-02-11  | v0.1.25 | Maintenance |
 | 2016-02-10  | v0.1.23 | Adding debug logs via NODE_DEBUG=simple-oracledb |
