@@ -569,6 +569,64 @@ describe('Integration Tests', function () {
                     });
                 });
             });
+
+            it('insert - returning info', function (done) {
+                var table = 'TEST_ORA_INST4';
+
+                var longClobText = 'this is a really long line of test data\n';
+                var index;
+                var buffer = [];
+                for (index = 0; index < 1000; index++) {
+                    buffer.push(longClobText);
+                }
+                longClobText = buffer.join('');
+
+                initDB(table, [], function (pool) {
+                    pool.getConnection(function (err, connection) {
+                        assert.isUndefined(err);
+
+                        connection.insert('INSERT INTO ' + table + ' (COL1, LOB1, LOB2) values (:value1, EMPTY_CLOB(), EMPTY_BLOB())', {
+                            value1: '123',
+                            value2: {
+                                type: oracledb.NUMBER,
+                                dir: oracledb.BIND_OUT
+                            },
+                            clob1: longClobText,
+                            blob2: new Buffer('blob text here')
+                        }, {
+                            autoCommit: true,
+                            lobMetaInfo: {
+                                LOB1: 'clob1',
+                                LOB2: 'blob2'
+                            },
+                            returningInfo: {
+                                COL2: 'value2'
+                            }
+                        }, function (error, results) {
+                            assert.isNull(error);
+                            assert.equal(1, results.rowsAffected);
+
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: false
+                            }, function (queryError, jsRows) {
+                                assert.isNull(queryError);
+                                assert.deepEqual([
+                                    {
+                                        COL1: '123',
+                                        COL2: undefined,
+                                        COL3: undefined,
+                                        COL4: undefined,
+                                        LOB1: longClobText,
+                                        LOB2: new Buffer('blob text here')
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
+                        });
+                    });
+                });
+            });
         });
 
         describe('update', function () {
