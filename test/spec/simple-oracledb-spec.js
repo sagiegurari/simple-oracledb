@@ -66,7 +66,7 @@ describe('simple oracledb tests', function () {
 
     describe('createPool tests', function () {
         it('createPool valid', function () {
-            oracledb.createPool(false, function (error, pool) {
+            oracledb.createPool(function (error, pool) {
                 assert.isNull(error);
                 assert.isDefined(pool);
                 assert.isTrue(pool.simplified);

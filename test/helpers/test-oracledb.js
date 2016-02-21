@@ -39,6 +39,11 @@ module.exports = {
     create: function () {
         return {
             createPool: function (invalid, callback) {
+                if (callback === undefined) {
+                    callback = invalid;
+                    invalid = false;
+                }
+
                 if (invalid) {
                     callback(new Error());
                 } else {

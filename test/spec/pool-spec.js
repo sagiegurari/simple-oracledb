@@ -8,13 +8,17 @@ var Pool = require('../../lib/pool');
 
 describe('Pool Tests', function () {
     describe('extend tests', function () {
-        it('extend', function () {
+        it('valid', function () {
             var testPool = oracledb.createPool();
 
             Pool.extend(testPool);
 
             assert.isTrue(testPool.simplified);
             assert.isFunction(testPool.getConnectionOrg);
+        });
+
+        it('no input', function () {
+            Pool.extend(); //ensure no error
         });
     });
 

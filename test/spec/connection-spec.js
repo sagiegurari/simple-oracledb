@@ -9,11 +9,15 @@ var Connection = require('../../lib/connection');
 
 describe('Connection Tests', function () {
     describe('extend', function () {
-        it('extend', function () {
+        it('valid', function () {
             var testConnection = {};
             Connection.extend(testConnection);
 
             assert.isTrue(testConnection.simplified);
+        });
+
+        it('no input', function () {
+            Connection.extend(); //ensure no error
         });
     });
 
@@ -124,7 +128,7 @@ describe('Connection Tests', function () {
             });
         });
 
-        it('resultset - empty with stream', function () {
+        it('resultset - empty with split', function () {
             var connection = {};
             Connection.extend(connection);
 
@@ -157,6 +161,30 @@ describe('Connection Tests', function () {
             }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
+            });
+        });
+
+        it('resultset - no result with stream', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.baseExecute = function () {
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+
+                assert.equal(argumentsArray.length, 4);
+                assert.equal(argumentsArray.shift(), 'sql');
+                assert.deepEqual(argumentsArray.shift(), [1, 2, 3]);
+
+                argumentsArray.shift();
+
+                argumentsArray.shift()();
+            };
+
+            var stream = connection.query('sql', [1, 2, 3], {
+                streamResults: true
+            }, function (error) {
+                assert.isDefined(error);
+                done();
             });
         });
 
@@ -202,7 +230,7 @@ describe('Connection Tests', function () {
                 }, 10);
             };
 
-            connection.query(1, 2, 3, function (error, jsRows) {
+            connection.query('sql', [], {}, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -592,6 +620,141 @@ describe('Connection Tests', function () {
 
             connection.query('my sql', [1, 2, 3], {
                 streamResults: true,
+                stream: true
+            }, function (error, stream) {
+                assert.isNull(error);
+
+                var eventCounter = 0;
+                stream.on('data', function (row) {
+                    assert.deepEqual(outputData[eventCounter], row);
+                    eventCounter++;
+                });
+
+                stream.on('end', function () {
+                    assert.equal(eventCounter, outputData.length);
+
+                    done();
+                });
+            });
+        });
+
+        it('resultset - data stream (core flag)', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var date = new Date();
+            connection.baseExecute = function () {
+                var lob1 = helper.createCLOB();
+                var lob2 = helper.createCLOB();
+
+                assert.isUndefined(arguments[2].stream);
+                assert.isUndefined(arguments[2].streamResults);
+
+                var dbData = [
+                    [
+                        {
+                            COL1: 'first row',
+                            COL2: 1,
+                            COL3: false,
+                            COL4: date,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        }
+                    ],
+                    [
+                        {
+                            COL1: 1,
+                            COL2: 'test',
+                            COL3: 50,
+                            COL4: lob1
+                        }
+                    ],
+                    [
+                        {
+                            COL1: 'a',
+                            COL2: date,
+                            COL3: undefined,
+                            COL4: undefined
+                        }
+                    ],
+                    [
+                        {
+                            COL1: 10,
+                            COL2: true,
+                            COL3: lob2,
+                            COL4: 100,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        }
+                    ]
+                ];
+                var dbEvents = [null, function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                }, function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }];
+
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                argumentsArray.pop()(null, {
+                    metaData: columnNames,
+                    resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
+                        getRows: function (number, callback) {
+                            assert.equal(number, 1);
+
+                            var events = dbEvents.shift();
+                            if (events) {
+                                setTimeout(events, 10);
+                            }
+
+                            callback(null, dbData.shift());
+                        }
+                    }
+                });
+            };
+
+            var outputData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date,
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 1,
+                    COL2: 'test',
+                    COL3: 50,
+                    COL4: 'test1\ntest2',
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 'a',
+                    COL2: date,
+                    COL3: undefined,
+                    COL4: undefined,
+                    LOB1: undefined,
+                    LOB2: undefined
+                },
+                {
+                    COL1: 10,
+                    COL2: true,
+                    COL3: '123456',
+                    COL4: 100,
+                    LOB1: undefined,
+                    LOB2: undefined
+                }
+            ];
+
+            connection.query('my sql', [1, 2, 3], {
                 stream: true
             }, function (error, stream) {
                 assert.isNull(error);
@@ -1308,6 +1471,61 @@ describe('Connection Tests', function () {
                 assert.isNull(error);
                 assert.equal(results.rowsAffected, 3);
                 assert.equal(lobsWritten, 9);
+
+                done();
+            });
+        });
+
+        it('multiple lobs, no rows', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var lobsWritten = 0;
+            connection.baseExecute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                });
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                callback(null, {
+                    rowsAffected: 0
+                });
+            };
+
+            connection.update('UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB()', {
+                id: 1,
+                lob1: 'clob text',
+                lob2: 'second clob text',
+                lob3: new Buffer('binary data')
+            }, {
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.equal(results.rowsAffected, 0);
 
                 done();
             });
@@ -2850,6 +3068,52 @@ describe('Connection Tests', function () {
     });
 
     describe('transaction', function () {
+        it('ensure autocommit false', function (done) {
+            var connection = {
+                baseExecute: function (sql, bindings, options, cb) {
+                    assert.equal(sql, 'sql');
+                    assert.deepEqual(bindings, []);
+                    assert.deepEqual(options, {
+                        autoCommit: false
+                    });
+
+                    cb();
+                }
+            };
+            Connection.extend(connection);
+
+            connection.inTransaction = true;
+            connection.execute('sql', [], {
+                autoCommit: true
+            }, done);
+        });
+
+        it('no options', function (done) {
+            var connection = {
+                baseExecute: function (sql, bindings, cb) {
+                    assert.equal(sql, 'sql');
+                    assert.deepEqual(bindings, []);
+
+                    cb();
+                }
+            };
+            Connection.extend(connection);
+
+            connection.inTransaction = true;
+            connection.execute('sql', [], done);
+        });
+
+        it('no actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.transaction(undefined, function () {
+                assert.fail();
+            });
+
+            setTimeout(done, 50);
+        });
+
         it('single action', function (done) {
             var connection = {};
             Connection.extend(connection);

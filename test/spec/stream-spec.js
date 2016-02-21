@@ -57,6 +57,7 @@ describe('stream Tests', function () {
             assert.equal(1, testStream.listeners('end').length);
             assert.equal(1, testStream.listeners('error').length);
 
+            testStream.emit('data'); //empty data
             testStream.emit('data', 'first line\n');
             testStream.emit('data', 'second line');
             testStream.emit('data', ', second part.');
