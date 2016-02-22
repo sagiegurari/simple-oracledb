@@ -7,6 +7,10 @@ var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
 
 describe('Pool Tests', function () {
+    var noop = function () {
+        return undefined;
+    };
+
     describe('extend tests', function () {
         it('valid', function () {
             var testPool = oracledb.createPool();
@@ -192,6 +196,376 @@ describe('Pool Tests', function () {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
+
+                done();
+            });
+        });
+    });
+
+    describe('run', function () {
+        it('missing callback with options', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            try {
+                pool.run(noop, {});
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('missing callback without options', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            try {
+                pool.run(noop);
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('missing action with options', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            try {
+                pool.run(null, {}, noop);
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('action not a function', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            try {
+                pool.run('test', {}, noop);
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+        });
+
+        it('get connection error', function (done) {
+            var pool = {
+                getConnection: function (cb) {
+                    cb(new Error('test connection'));
+                }
+            };
+            Pool.extend(pool, {
+                retryCount: 1,
+                retryInterval: 1
+            });
+
+            pool.run(function (connection, cb) {
+                cb();
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'test connection');
+
+                done();
+            });
+        });
+
+        it('sync action error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function () {
+                throw new Error('test sync');
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'test sync');
+
+                done();
+            });
+        });
+
+        it('async action error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                setTimeout(function () {
+                    callback(new Error('test async'));
+                }, 5);
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'test async');
+
+                done();
+            });
+        });
+
+        it('async action error and release error with no options', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback(new Error('test async2'));
+                }, 5);
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'test async2');
+
+                done();
+            });
+        });
+
+        it('async action error and release error with options and ignore release error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback(new Error('test async2'));
+                }, 5);
+            }, {
+                ignoreReleaseErrors: true
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'test async2');
+
+                done();
+            });
+        });
+
+        it('async action error and release error with options and not ignore release error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback(new Error('test async2'));
+                }, 5);
+            }, {
+                ignoreReleaseErrors: false
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'test async2');
+
+                done();
+            });
+        });
+
+        it('release error with no options', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback();
+                }, 5);
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'release error');
+
+                done();
+            });
+        });
+
+        it('release error with options and ignore release error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback(null, 'my output');
+                }, 5);
+            }, {
+                ignoreReleaseErrors: true
+            }, function (error, result) {
+                assert.isTrue(releaseCalled);
+                assert.isNull(error);
+                assert.equal(result, 'my output');
+
+                done();
+            });
+        });
+
+        it('release error with options and not ignore release error', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+                connection.release = function (options, callback) {
+                    assert.isDefined(options);
+                    releaseCalled = true;
+                    callback(new Error('release error'));
+                };
+
+                setTimeout(function () {
+                    callback();
+                }, 5);
+            }, {
+                ignoreReleaseErrors: false
+            }, function (error) {
+                assert.isTrue(releaseCalled);
+                assert.isDefined(error);
+                assert.equal(error.message, 'release error');
+
+                done();
+            });
+        });
+
+        it('valid', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+
+                setTimeout(function () {
+                    callback(null, 'valid output');
+                }, 5);
+            }, {
+                ignoreReleaseErrors: false
+            }, function (error, result) {
+                assert.isTrue(releaseCalled);
+                assert.isNull(error);
+                assert.equal(result, 'valid output');
 
                 done();
             });

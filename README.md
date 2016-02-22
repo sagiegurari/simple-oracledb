@@ -12,6 +12,7 @@
     * [createPool](#usage-createpool)
   * [Pool](#usage-pool)
     * [getConnection](#usage-getconnection)
+    * [run](#usage-run)
     * [terminate](#usage-terminate)
     * [close](#usage-terminate)
   * [Connection](#usage-connection)
@@ -143,6 +144,41 @@ oracledb.createPool({
   pool.getConnection(function onConnection(poolError, connection) {
     //continue flow (connection, if provided, has been tested to ensure it is valid)
   });
+});
+```
+
+<a name="usage-run"></a>
+## 'pool.run(action, [options], callback)'
+This function invokes the provided action (function) with a valid connection object and a callback.<br>
+The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
+must call the callback with an error (if any) and result.<br>
+The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
+This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.
+
+```js
+pool.run(function (connection, callback) {
+  //run some query and the output will be available in the 'run' callback
+  connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
+}, function onActionDone(error, result) {
+  //do something with the result/error
+});
+
+pool.run(function (connection, callback) {
+  //run some database operations in a transaction
+  connection.transaction([
+    function firstAction(callback) {
+      connection.insert(...., callback);
+    },
+    function secondAction(callback) {
+      connection.update(...., callback);
+    }
+  ], {
+    sequence: true
+  }, callback); //at end of transaction, call the pool provided callback
+}, {
+  ignoreReleaseErrors: false //enable/disable ignoring any release error (default not to ignore
+}, function onActionDone(error, result) {
+  //do something with the result/error
 });
 ```
 
@@ -534,6 +570,7 @@ See [contributing guide](docs/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-22  | v0.1.32 | Added new pool.run operation |
 | 2016-02-21  | v0.1.31 | Maintenance |
 | 2016-02-16  | v0.1.29 | new optional options.returningInfo to insert/update/batch to enable to modify the returning/into clause when using LOBs |
 | 2016-02-16  | v0.1.28 | Maintenance |

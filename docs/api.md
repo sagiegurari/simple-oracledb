@@ -12,6 +12,9 @@
 ## Typedefs
 
 <dl>
+<dt><a href="#ConnectionAction">ConnectionAction</a> : <code>function</code></dt>
+<dd><p>An action requested by the pool to be invoked.</p>
+</dd>
 <dt><a href="#AsyncCallback">AsyncCallback</a> : <code>function</code></dt>
 <dd><p>Invoked when an async operation has finished.</p>
 </dd>
@@ -528,6 +531,7 @@ Extends the provided oracledb connection instance.
     * [new Pool()](#new_Pool_new)
     * [.simplified](#Pool.simplified) : <code>boolean</code>
     * [#getConnection(callback)](#Pool+getConnection)
+    * [#run(action, [options], callback)](#Pool+run)
     * [#terminate([callback])](#Pool+terminate)
     * [#close([callback])](#Pool+close)
     * _static_
@@ -556,6 +560,50 @@ See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#Simpl
 | --- | --- | --- |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
+<a name="Pool+run"></a>
+### Pool#run(action, [options], callback)
+This function invokes the provided action (function) with a valid connection object and a callback.<br>
+The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
+must call the callback with an error (if any) and result.<br>
+The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
+This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.
+
+**Access:** public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>[ConnectionAction](#ConnectionAction)</code> |  | An action requested by the pool to be invoked. |
+| [options] | <code>object</code> |  | Optional runtime options |
+| [options.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
+
+**Example**  
+```js
+pool.run(function (connection, callback) {
+  //run some query and the output will be available in the 'run' callback
+  connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
+}, function onActionDone(error, result) {
+  //do something with the result/error
+});
+
+pool.run(function (connection, callback) {
+  //run some database operations in a transaction
+  connection.transaction([
+    function firstAction(callback) {
+      connection.insert(...., callback);
+    },
+    function secondAction(callback) {
+      connection.update(...., callback);
+    }
+  ], {
+    sequence: true
+  }, callback); //at end of transaction, call the pool provided callback
+}, {
+  ignoreReleaseErrors: false //enable/disable ignoring any release error (default not to ignore)
+}, function onActionDone(error, result) {
+  //do something with the result/error
+});
+```
 <a name="Pool+terminate"></a>
 ### Pool#terminate([callback])
 This function modifies the existing pool.terminate function by enabling the input
@@ -691,6 +739,17 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
+
+<a name="ConnectionAction"></a>
+## ConnectionAction : <code>function</code>
+An action requested by the pool to be invoked.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | A valid connection to be used by the action |
+| callback | <code>[AsyncCallback](#AsyncCallback)</code> | The callback to invoke at the end of the action |
 
 <a name="AsyncCallback"></a>
 ## AsyncCallback : <code>function</code>
