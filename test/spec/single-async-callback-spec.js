@@ -8,12 +8,12 @@ var singleAsyncCallback = require('../../lib/single-async-callback');
 describe('SingleAsyncCallback Tests', function () {
     describe('wrap Tests', function () {
         it('undefined callback', function () {
-            var callback = singleAsyncCallback.wrap();
+            var callback = singleAsyncCallback();
             assert.isUndefined(callback);
         });
 
         it('null callback', function () {
-            var callback = singleAsyncCallback.wrap(null);
+            var callback = singleAsyncCallback(null);
             assert.isUndefined(callback);
         });
 
@@ -28,7 +28,7 @@ describe('SingleAsyncCallback Tests', function () {
                 called = true;
             };
 
-            var callback = singleAsyncCallback.wrap(cb);
+            var callback = singleAsyncCallback(cb);
             assert.isFunction(callback);
 
             callback(new Error('test1'), {});
