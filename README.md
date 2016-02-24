@@ -28,9 +28,8 @@
     * [rollback](#usage-rollback)
 * [Debug](#debug)
 * [Installation](#installation)
-* [Limitations](#limitations)
 * [API Documentation](docs/api.md)
-* [Contributing](docs/CONTRIBUTING.md)
+* [Contributing](.github/CONTRIBUTING.md)
 * [Release History](#history)
 * [License](#license)
 
@@ -552,25 +551,18 @@ npm install --save simple-oracledb
 This library doesn't define oracledb as a dependency and therefore it is not installed when installing simple-oracledb.<br>
 You should define oracledb in your package.json and install it based on the oracledb installation instructions found at: https://github.com/oracle/node-oracledb/blob/master/INSTALL.md
 
-<a name="limitations"></a>
-## Limitations
-The simpler API can lead to higher memory consumption and therefore might not be suitable in all cases.<br>
-<br>
-Also, since this is work in progress, only few capabilities currently were added.<br>
-However, in the near future more and more functionality will be added.
-
 ## API Documentation
 See full docs at: [API Docs](docs/api.md)
 
 ## Contributing
-See [contributing guide](docs/CONTRIBUTING.md)
+See [contributing guide](.github/CONTRIBUTING.md)
 
 <a name="history"></a>
 ## Release History
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-02-23  | v0.1.33 | Maintenance |
+| 2016-02-24  | v0.1.34 | Maintenance |
 | 2016-02-22  | v0.1.32 | Added new pool.run operation |
 | 2016-02-21  | v0.1.31 | Maintenance |
 | 2016-02-16  | v0.1.29 | new optional options.returningInfo to insert/update/batch to enable to modify the returning/into clause when using LOBs |
