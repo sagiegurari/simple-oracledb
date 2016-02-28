@@ -109,7 +109,7 @@ describe('Integration Tests', function () {
             });
         };
 
-        self.timeout(15000);
+        self.timeout(30000);
 
         describe('pool', function () {
             describe('getConnection', function () {

@@ -575,6 +575,7 @@ This function basically will remove the need of caller code to get and release a
 | action | <code>[ConnectionAction](#ConnectionAction)</code> |  | An action requested by the pool to be invoked. |
 | [options] | <code>object</code> |  | Optional runtime options |
 | [options.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
+| [options.releaseOptions] | <code>object</code> | <code>{}</code> | The connection.release options (see connection.release for more info) |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
 
 **Example**  
