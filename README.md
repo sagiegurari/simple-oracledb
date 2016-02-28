@@ -534,7 +534,7 @@ connection.rollback(function onRollback(error) {
 
 <a name="usage-extensions"></a>
 ## 'SimpleOracleDB.addExtension(type, name, extension)'
-Adds an extension to all newly created objects of the requested type.
+Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
 
