@@ -32,13 +32,15 @@ describe('Pool Tests', function () {
 
             Pool.extend(testPool);
 
-            testPool.getConnection(function (error, connection) {
+            var output = testPool.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
 
                 done();
             });
+
+            assert.isUndefined(output);
         });
 
         it('getConnection error', function (done) {
@@ -605,7 +607,7 @@ describe('Pool Tests', function () {
             };
             Pool.extend(pool);
 
-            pool.run(function (connection, callback) {
+            var output = pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
                 setTimeout(function () {
@@ -620,6 +622,8 @@ describe('Pool Tests', function () {
 
                 done();
             });
+
+            assert.isUndefined(output);
         });
     });
 
@@ -636,9 +640,11 @@ describe('Pool Tests', function () {
             Pool.extend(pool);
 
             assert.isFunction(pool.baseTerminate);
-            pool.terminate(function () {
+            var output = pool.terminate(function () {
                 return undefined;
             });
+
+            assert.isUndefined(output);
         });
 
         it('callback undefined', function (done) {
@@ -670,9 +676,11 @@ describe('Pool Tests', function () {
             Pool.extend(pool);
 
             assert.isFunction(pool.baseTerminate);
-            pool.close(function () {
+            var output = pool.close(function () {
                 return undefined;
             });
+
+            assert.isUndefined(output);
         });
 
         it('callback undefined', function (done) {

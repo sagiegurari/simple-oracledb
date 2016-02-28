@@ -562,7 +562,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-02-28  | v0.1.35 | Maintenance |
+| 2016-02-28  | v0.1.36 | Maintenance |
 | 2016-02-22  | v0.1.32 | Added new pool.run operation |
 | 2016-02-21  | v0.1.31 | Maintenance |
 | 2016-02-16  | v0.1.29 | new optional options.returningInfo to insert/update/batch to enable to modify the returning/into clause when using LOBs |
