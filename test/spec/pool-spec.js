@@ -5,6 +5,8 @@ var chai = require('chai');
 var assert = chai.assert;
 var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
+var SimpleOracleDB = require('../..');
+var extensions = require('../../lib/extensions');
 
 describe('Pool Tests', function () {
     var noop = function () {
@@ -19,6 +21,29 @@ describe('Pool Tests', function () {
 
             assert.isTrue(testPool.simplified);
             assert.isFunction(testPool.getConnectionOrg);
+        });
+
+        it('with extensions', function () {
+            SimpleOracleDB.addExtension('pool', 'testPoolFunc', function () {
+                return undefined;
+            });
+            SimpleOracleDB.addExtension('pool', 'coreFunc', function () {
+                return false;
+            });
+
+            var testPool = oracledb.createPool();
+            testPool.coreFunc = function () {
+                return true;
+            };
+
+            Pool.extend(testPool);
+
+            assert.isTrue(testPool.simplified);
+            assert.isFunction(testPool.getConnectionOrg);
+            assert.isFunction(testPool.testPoolFunc);
+            assert.isTrue(testPool.coreFunc());
+
+            extensions.extensions.pool = {};
         });
 
         it('no input', function () {

@@ -26,6 +26,7 @@
     * [release](#usage-release)
     * [close](#usage-release)
     * [rollback](#usage-rollback)
+  * [Extensions](#usage-extensions)
 * [Debug](#debug)
 * [Installation](#installation)
 * [API Documentation](docs/api.md)
@@ -530,6 +531,30 @@ connection.rollback(function onRollback(error) {
   }
 });
 ```
+
+<a name="usage-extensions"></a>
+## 'SimpleOracleDB.addExtension(type, name, extension)'
+Adds an extension to all newly created objects of the requested type.
+An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
+This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
+
+```js
+//define a new function for all new connection objects called 'myFunc' which accepts 2 arguments
+SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2) {
+  //implement some custom functionality
+});
+
+//get connection (via oracledb directly or via pool) and start using the new function
+connection.myConnFunc('test', 123);
+
+//define a new function for all new pool objects called 'myFunc'
+SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
+  //implement some custom functionality
+});
+
+//get pool and start using the new function
+pool.myPoolFunc();
+```
 <br>
 **The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
@@ -562,6 +587,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-02-28  | v0.1.37 | Added SimpleOracleDB.addExtension which allows to further extend oracledb |
 | 2016-02-28  | v0.1.36 | Maintenance |
 | 2016-02-22  | v0.1.32 | Added new pool.run operation |
 | 2016-02-21  | v0.1.31 | Maintenance |

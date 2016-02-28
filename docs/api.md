@@ -671,6 +671,7 @@ Extends the provided oracledb pool instance.
     * [#extend(oracledb)](#SimpleOracleDB+extend)
     * [#extend(pool)](#SimpleOracleDB+extend)
     * [#extend(connection)](#SimpleOracleDB+extend)
+    * [#addExtension(type, name, extension)](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
     * _static_
         * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
         * [.oracle.createPool([poolAttributes], callback)](#SimpleOracleDB.oracle.createPool)
@@ -713,6 +714,39 @@ the extended capabilities of this library.
 | --- | --- | --- |
 | connection | <code>[Connection](#Connection)</code> | The oracledb connection instance |
 
+<a name="SimpleOracleDB+addExtension"></a>
+### SimpleOracleDB#addExtension(type, name, extension) ⇒ <code>boolean</code>
+Adds an extension to all newly created objects of the requested type.<br>
+An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
+This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
+
+**Returns**: <code>boolean</code> - True if added, false if ignored  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | Either 'connection' or 'pool' |
+| name | <code>string</code> | The function name which will be added to the object |
+| extension | <code>function</code> | The function to be added |
+
+**Example**  
+```js
+//define a new function for all new connection objects called 'myFunc' which accepts 2 arguments
+SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2) {
+  //implement some custom functionality
+});
+
+//get connection (via oracledb directly or via pool) and start using the new function
+connection.myConnFunc('test', 123);
+
+//define a new function for all new pool objects called 'myFunc'
+SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
+  //implement some custom functionality
+});
+
+//get pool and start using the new function
+pool.myPoolFunc();
+```
 <a name="SimpleOracleDB.oracle.getConnection"></a>
 ### SimpleOracleDB.oracle.getConnection(connectionAttributes, callback)
 Wraps the original oracledb getConnection in order to provide an extended connection object.

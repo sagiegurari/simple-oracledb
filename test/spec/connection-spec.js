@@ -6,6 +6,8 @@ var assert = chai.assert;
 var helper = require('../helpers/test-oracledb');
 var constants = require('../../lib/constants');
 var Connection = require('../../lib/connection');
+var SimpleOracleDB = require('../..');
+var extensions = require('../../lib/extensions');
 
 describe('Connection Tests', function () {
     describe('extend', function () {
@@ -14,6 +16,27 @@ describe('Connection Tests', function () {
             Connection.extend(testConnection);
 
             assert.isTrue(testConnection.simplified);
+        });
+
+        it('with extensions', function () {
+            SimpleOracleDB.addExtension('connection', 'testConnFunc', function () {
+                return undefined;
+            });
+            SimpleOracleDB.addExtension('connection', 'coreFunc', function () {
+                return false;
+            });
+
+            var testConnection = {};
+            testConnection.coreFunc = function () {
+                return true;
+            };
+            Connection.extend(testConnection);
+
+            assert.isTrue(testConnection.simplified);
+            assert.isFunction(testConnection.testConnFunc);
+            assert.isTrue(testConnection.coreFunc());
+
+            extensions.extensions.connection = {};
         });
 
         it('no input', function () {
