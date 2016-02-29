@@ -6,6 +6,8 @@
 
 > Extend capabilities of oracledb with simplified API for quicker development.
 
+### IMPORTANT: oracledb 1.7 has a critical bug which prevents other libraries from extending it, therefore you must use oracledb 1.6 until this issue is resolved (this warning will be removed once that happens)
+
 * [Overview](#overview)
 * [Usage](#usage)
   * [OracleDB](#usage-oracledb)
