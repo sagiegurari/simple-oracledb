@@ -731,7 +731,7 @@ This function enables external libraries to further extend oracledb using a very
 
 **Example**  
 ```js
-//define a new function for all new connection objects called 'myFunc' which accepts 2 arguments
+//define a new function for all new connection objects called 'myConnFunc' which accepts 2 arguments
 SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2) {
   //implement some custom functionality
 });
@@ -739,7 +739,7 @@ SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myPa
 //get connection (via oracledb directly or via pool) and start using the new function
 connection.myConnFunc('test', 123);
 
-//define a new function for all new pool objects called 'myFunc'
+//define a new function for all new pool objects called 'myPoolFunc'
 SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
   //implement some custom functionality
 });
