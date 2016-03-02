@@ -593,6 +593,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
 | 2016-02-28  | v0.1.37 | Added SimpleOracleDB.addExtension which allows to further extend oracledb |
 | 2016-02-28  | v0.1.36 | Maintenance |

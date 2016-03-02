@@ -18,14 +18,12 @@ describe('Integration Tests', function () {
 
     var connAttrs = {};
     if (integrated && oracledb) {
-        if (integrated) {
-            connAttrs.user = process.env.TEST_ORACLE_USER;
-            connAttrs.password = process.env.TEST_ORACLE_PASSWORD;
-            connAttrs.connectString = process.env.TEST_ORACLE_CONNECTION_STRING;
+        connAttrs.user = process.env.TEST_ORACLE_USER;
+        connAttrs.password = process.env.TEST_ORACLE_PASSWORD;
+        connAttrs.connectString = process.env.TEST_ORACLE_CONNECTION_STRING;
 
-            if ((!connAttrs.user) || (!connAttrs.password) || (!connAttrs.connectString)) {
-                integrated = false;
-            }
+        if ((!connAttrs.user) || (!connAttrs.password) || (!connAttrs.connectString)) {
+            integrated = false;
         }
     }
 
