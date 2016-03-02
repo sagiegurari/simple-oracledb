@@ -231,6 +231,7 @@ The connection.release also has an alias connection.close for consistent close f
 | [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
 | [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
 | [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
+| [options.force] | <code>boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 **Example**  
@@ -253,7 +254,8 @@ connection.release({
 //you can provide both retry options and callback (callback will be called only after all retries are done or in case connection was released)
 connection.release({
   retryCount: 10,
-  retryInterval: 250
+  retryInterval: 250,
+  force: true //break any running operation before running release
 }, function onRelease(error) {
   if (error) {
     //now what?
@@ -575,7 +577,8 @@ This function basically will remove the need of caller code to get and release a
 | action | <code>[ConnectionAction](#ConnectionAction)</code> |  | An action requested by the pool to be invoked. |
 | [options] | <code>object</code> |  | Optional runtime options |
 | [options.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
-| [options.releaseOptions] | <code>object</code> | <code>{}</code> | The connection.release options (see connection.release for more info) |
+| [options.releaseOptions] | <code>object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
+| [options.releaseOptions.force] | <code>boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
 
 **Example**  

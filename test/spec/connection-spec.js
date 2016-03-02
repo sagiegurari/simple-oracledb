@@ -1764,6 +1764,11 @@ describe('Connection Tests', function () {
         it('options and callback provided', function (done) {
             var counter = 0;
             var connection = {
+                break: function (cb) {
+                    assert.fail();
+
+                    cb();
+                },
                 release: function (cb) {
                     assert.isFunction(cb);
                     counter++;
@@ -1778,9 +1783,10 @@ describe('Connection Tests', function () {
 
             assert.isFunction(connection.baseRelease);
             connection.release({
-                retryCount: 5
+                retryCount: 5,
+                force: false
             }, function (error) {
-                assert.isUndefined(error);
+                assert.isNull(error);
                 assert.equal(counter, 2);
 
                 done();
@@ -1831,6 +1837,81 @@ describe('Connection Tests', function () {
                 done();
             });
         });
+
+        it('force', function (done) {
+            var releaseCalled;
+            var breakCalled;
+            var connection = {
+                break: function (cb) {
+                    assert.isFunction(cb);
+
+                    if (breakCalled) {
+                        assert.fail();
+                    } else {
+                        breakCalled = true;
+
+                        cb();
+                    }
+                },
+                release: function (cb) {
+                    assert.isFunction(cb);
+
+                    if (releaseCalled) {
+                        assert.fail();
+                    } else {
+                        releaseCalled = true;
+
+                        cb();
+                    }
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({
+                retryCount: 5,
+                retryInterval: 10,
+                force: true
+            }, function (error) {
+                assert.isNull(error);
+                assert.isTrue(releaseCalled);
+                assert.isTrue(breakCalled);
+
+                done();
+            });
+        });
+
+        it('force maxed out', function (done) {
+            var releaseCounter = 0;
+            var breakCounter = 0;
+            var connection = {
+                break: function (cb) {
+                    breakCounter++;
+
+                    cb(new Error('test-break'));
+                },
+                release: function (cb) {
+                    assert.isFunction(cb);
+                    releaseCounter++;
+                    cb(new Error('test-release'));
+                }
+            };
+            Connection.extend(connection);
+
+            assert.isFunction(connection.baseRelease);
+            connection.release({
+                retryCount: 5,
+                retryInterval: 10,
+                force: true
+            }, function (error) {
+                assert.isDefined(error);
+                assert.equal(error.message, 'test-release');
+                assert.equal(breakCounter, 5);
+                assert.equal(releaseCounter, 5);
+
+                done();
+            });
+        });
     });
 
     describe('close', function () {
@@ -1875,7 +1956,7 @@ describe('Connection Tests', function () {
             connection.close({
                 retryCount: 5
             }, function (error) {
-                assert.isUndefined(error);
+                assert.isNull(error);
                 assert.equal(counter, 2);
 
                 done();

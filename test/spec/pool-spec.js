@@ -332,6 +332,9 @@ describe('Pool Tests', function () {
             var pool = {
                 getConnection: function (cb) {
                     cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
                         execute: function () {
                             arguments[arguments.length - 1]();
                         },
@@ -569,6 +572,9 @@ describe('Pool Tests', function () {
             var pool = {
                 getConnection: function (cb) {
                     cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
                         execute: function () {
                             arguments[arguments.length - 1]();
                         },
@@ -589,7 +595,8 @@ describe('Pool Tests', function () {
                 connection.release = function (options, cb) {
                     assert.deepEqual(options, {
                         retryCount: 270,
-                        test: 123
+                        test: 123,
+                        force: true
                     });
                     releaseOptionsFound = true;
 
@@ -615,11 +622,70 @@ describe('Pool Tests', function () {
             });
         });
 
+        it('release options - force false', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            var releaseOptionsFound = false;
+            pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+
+                var orgRelease = connection.release;
+                connection.release = function (options, cb) {
+                    assert.deepEqual(options, {
+                        retryCount: 270,
+                        test: 123,
+                        force: false
+                    });
+                    releaseOptionsFound = true;
+
+                    orgRelease.call(connection, options, cb);
+                };
+
+                setTimeout(function () {
+                    callback(null, 'valid output');
+                }, 5);
+            }, {
+                ignoreReleaseErrors: false,
+                releaseOptions: {
+                    retryCount: 270,
+                    test: 123,
+                    force: false
+                }
+            }, function (error, result) {
+                assert.isTrue(releaseCalled);
+                assert.isTrue(releaseOptionsFound);
+                assert.isNull(error);
+                assert.equal(result, 'valid output');
+
+                done();
+            });
+        });
+
         it('valid', function (done) {
             var releaseCalled = false;
             var pool = {
                 getConnection: function (cb) {
                     cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
                         execute: function () {
                             arguments[arguments.length - 1]();
                         },

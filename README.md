@@ -6,8 +6,6 @@
 
 > Extend capabilities of oracledb with simplified API for quicker development.
 
-### IMPORTANT: oracledb 1.7 has a critical bug which prevents other libraries from extending it, therefore you must use oracledb 1.6 until this issue is resolved (this warning will be removed once that happens)
-
 * [Overview](#overview)
 * [Usage](#usage)
   * [OracleDB](#usage-oracledb)
@@ -31,6 +29,7 @@
   * [Extensions](#usage-extensions)
 * [Debug](#debug)
 * [Installation](#installation)
+* [Known Issues](#issues)
 * [API Documentation](docs/api.md)
 * [Contributing](.github/CONTRIBUTING.md)
 * [Release History](#history)
@@ -498,7 +497,8 @@ connection.release({
 //you can provide both retry options and callback (callback will be called only after all retries are done or in case connection was released)
 connection.release({
   retryCount: 10,
-  retryInterval: 250
+  retryInterval: 250,
+  force: true //break any running operation before running release
 }, function onRelease(error) {
   if (error) {
     //now what?
@@ -578,6 +578,10 @@ npm install --save simple-oracledb
 This library doesn't define oracledb as a dependency and therefore it is not installed when installing simple-oracledb.<br>
 You should define oracledb in your package.json and install it based on the oracledb installation instructions found at: https://github.com/oracle/node-oracledb/blob/master/INSTALL.md
 
+<a name="issues"></a>
+## Known Issues
+* oracledb version 1.7.0 breaks the API and prevents the library from being extended. This was fixed in oracledb 1.7.1 ([oracledb case](https://github.com/oracle/node-oracledb/issues/369))
+
 ## API Documentation
 See full docs at: [API Docs](docs/api.md)
 
@@ -589,6 +593,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
 | 2016-02-28  | v0.1.37 | Added SimpleOracleDB.addExtension which allows to further extend oracledb |
 | 2016-02-28  | v0.1.36 | Maintenance |
 | 2016-02-22  | v0.1.32 | Added new pool.run operation |
