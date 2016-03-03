@@ -3,6 +3,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var EventEmitter = require('events').EventEmitter;
+var Connection = require('../../lib/connection');
 
 /*jslint debug: true */
 function TestConnection() {
@@ -22,6 +23,10 @@ TestConnection.prototype.execute = function () {
     }
 };
 
+TestConnection.prototype.break = function (callback) {
+    callback();
+};
+
 TestConnection.prototype.release = function () {
     var callback = arguments[arguments.length - 1];
     callback();
@@ -31,7 +36,13 @@ TestPool.prototype.getConnection = function (callback) {
     if (this.throwError) {
         callback(new Error());
     } else {
-        callback(null, new TestConnection());
+        var connection = new TestConnection();
+
+        if (this.extendConnection) {
+            Connection.extend(connection);
+        }
+
+        callback(null, connection);
     }
 };
 

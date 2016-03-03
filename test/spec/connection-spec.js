@@ -10,6 +10,10 @@ var SimpleOracleDB = require('../..');
 var extensions = require('../../lib/extensions');
 
 describe('Connection Tests', function () {
+    var noop = function () {
+        return undefined;
+    };
+
     describe('extend', function () {
         it('valid', function () {
             var testConnection = {};
@@ -41,6 +45,38 @@ describe('Connection Tests', function () {
 
         it('no input', function () {
             Connection.extend(); //ensure no error
+        });
+    });
+
+    describe('execute', function () {
+        it('keep sql', function () {
+            var testConnection = {
+                execute: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.execute('test sql');
+            assert.equal(testConnection.diagnosticInfo.lastSQL, 'test sql');
+        });
+
+        it('empty sql', function () {
+            var testConnection = {
+                execute: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.execute('');
+            assert.isUndefined(testConnection.diagnosticInfo.lastSQL);
+        });
+
+        it('no args', function () {
+            var testConnection = {
+                execute: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.execute();
+            assert.isUndefined(testConnection.diagnosticInfo.lastSQL);
         });
     });
 

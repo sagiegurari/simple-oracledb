@@ -51,9 +51,40 @@ describe('Pool Tests', function () {
         });
     });
 
+    describe('markConnection tests', function () {
+        it('undefined', function () {
+            var testPool = oracledb.createPool();
+            Pool.extend(testPool);
+
+            testPool.markConnection();
+        });
+
+        it('null', function () {
+            var testPool = oracledb.createPool();
+            Pool.extend(testPool);
+
+            testPool.markConnection(null);
+        });
+
+        it('valid', function () {
+            var testPool = oracledb.createPool();
+            Pool.extend(testPool);
+
+            var connection = {};
+            testPool.markConnection(connection);
+
+            var lastID = connection.diagnosticInfo.id;
+            assert.isDefined(connection.diagnosticInfo.id);
+
+            testPool.markConnection(connection);
+            assert.equal(connection.diagnosticInfo.id, (lastID + 1));
+        });
+    });
+
     describe('getConnection tests', function () {
         it('getConnection simple', function (done) {
             var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
@@ -61,8 +92,15 @@ describe('Pool Tests', function () {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
+                assert.isDefined(connection.diagnosticInfo.id);
 
-                done();
+                testPool.once('connection-released', function (releasedConnection) {
+                    assert.isTrue(releasedConnection === connection);
+
+                    done();
+                });
+
+                connection.release();
             });
 
             assert.isUndefined(output);

@@ -9,6 +9,20 @@
 <dd></dd>
 </dl>
 
+## Events
+
+<dl>
+<dt><a href="#event_release">"release"</a></dt>
+<dd><p>This events is triggered when the connection is released successfully.</p>
+</dd>
+<dt><a href="#event_connection-created">"connection-created"</a></dt>
+<dd><p>This events is triggered when a connection is created via pool.</p>
+</dd>
+<dt><a href="#event_connection-released">"connection-released"</a></dt>
+<dd><p>This events is triggered when a connection is released successfully.</p>
+</dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -23,6 +37,7 @@
 <a name="Connection"></a>
 ## Connection
 **Kind**: global class  
+**Emits**: <code>[release](#event_release)</code>  
 **Access:** public  
 **Author:** Sagie Gur-Ari  
 
@@ -224,6 +239,7 @@ This function modifies the existing connection.release function by enabling the 
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
+**Emits**: <code>[release](#event_release)</code>  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -276,6 +292,7 @@ connection.close({
 ### Connection#close([options], [callback])
 Alias for connection.release, see connection.release for more info.
 
+**Emits**: <code>[release](#event_release)</code>  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -283,6 +300,7 @@ Alias for connection.release, see connection.release for more info.
 | [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
 | [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
 | [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
+| [options.force] | <code>boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 <a name="Connection+commit"></a>
@@ -526,6 +544,7 @@ Extends the provided oracledb connection instance.
 <a name="Pool"></a>
 ## Pool
 **Kind**: global class  
+**Emits**: <code>[connection-created](#event_connection-created)</code>, <code>[connection-released](#event_connection-released)</code>  
 **Access:** public  
 **Author:** Sagie Gur-Ari  
 
@@ -556,6 +575,7 @@ It will also ensure the provided connection is valid by running a test SQL and i
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
 See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.<br>
 
+**Emits**: <code>[connection-created](#event_connection-created)</code>  
 **Access:** public  
 
 | Param | Type | Description |
@@ -778,6 +798,21 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
 
+<a name="event_release"></a>
+## "release"
+This events is triggered when the connection is released successfully.
+
+**Kind**: event emitted  
+<a name="event_connection-created"></a>
+## "connection-created"
+This events is triggered when a connection is created via pool.
+
+**Kind**: event emitted  
+<a name="event_connection-released"></a>
+## "connection-released"
+This events is triggered when a connection is released successfully.
+
+**Kind**: event emitted  
 <a name="ConnectionAction"></a>
 ## ConnectionAction : <code>function</code>
 An action requested by the pool to be invoked.

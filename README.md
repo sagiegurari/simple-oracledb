@@ -11,11 +11,16 @@
   * [OracleDB](#usage-oracledb)
     * [createPool](#usage-createpool)
   * [Pool](#usage-pool)
+    * [events](#pool-events)
+      * [connection-created](#event-connection-created)
+      * [connection-released](#event-connection-released)
     * [getConnection](#usage-getconnection)
     * [run](#usage-run)
     * [terminate](#usage-terminate)
     * [close](#usage-terminate)
   * [Connection](#usage-connection)
+    * [events](#connection-events)
+      * [release](#event-release)
     * [query](#usage-query)
     * [insert](#usage-insert)
     * [update](#usage-update)
@@ -108,8 +113,10 @@ function doSomething(connection, callback) {
 ```
 
 <a name="usage-oracledb"></a>
+## Class: OracleDB
+
 <a name="usage-createpool"></a>
-## 'oracledb.createPool(poolAttributes, callback)'
+### 'oracledb.createPool(poolAttributes, callback)'
 This function modifies the existing oracledb.createPool function by enhancing the returned pool to support retry in the getConnection function.<br>
 The pool.getConnection will retry configurable amount of times with configurable interval between attempts to return a connection in the getConnection function.<br>
 In case all attempts fail, the getConnection callback will receive the error object of the last attempt.
@@ -127,8 +134,19 @@ oracledb.createPool({
 ```
 
 <a name="usage-pool"></a>
+## Class: Pool
+
+<a name="pool-events"></a>
+<a name="event-connection-created"></a>
+### Event: 'connection-created'
+This events is triggered when a connection is created via pool.
+
+<a name="event-connection-released"></a>
+### Event: 'connection-released'
+This events is triggered when a connection is released successfully.
+
 <a name="usage-getconnection"></a>
-## 'pool.getConnection(callback)'
+### 'pool.getConnection(callback)'
 This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
@@ -149,7 +167,7 @@ oracledb.createPool({
 ```
 
 <a name="usage-run"></a>
-## 'pool.run(action, [options], callback)'
+### 'pool.run(action, [options], callback)'
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
@@ -184,8 +202,8 @@ pool.run(function (connection, callback) {
 ```
 
 <a name="usage-terminate"></a>
-## 'pool.terminate([callback])'
-## 'pool.close([callback])'
+### 'pool.terminate([callback])'
+### 'pool.close([callback])'
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
@@ -208,8 +226,15 @@ pool.close();
 ```
 
 <a name="usage-connection"></a>
+## Class: Connection
+
+<a name="connection-events"></a>
+<a name="event-release"></a>
+### Event: 'release'
+This events is triggered when the connection is released successfully.
+
 <a name="usage-query"></a>
-## 'connection.query(sql, bindVariables, [options], callback)'
+### 'connection.query(sql, bindVariables, [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -266,7 +291,7 @@ stream.on('data', function (row) {
 ```
 
 <a name="usage-insert"></a>
-## 'connection.insert(sql, bindVariables, options, callback)'
+### 'connection.insert(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -311,7 +336,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 ```
 
 <a name="usage-update"></a>
-## 'connection.update(sql, bindVariables, options, callback)'
+### 'connection.update(sql, bindVariables, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -335,7 +360,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 ```
 
 <a name="usage-queryJSON"></a>
-## 'connection.queryJSON(sql, [bindVariables], [options], callback)'
+### 'connection.queryJSON(sql, [bindVariables], [options], callback)'
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
 The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
 The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
@@ -360,7 +385,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ```
 
 <a name="usage-batchInsert"></a>
-## 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
+### 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -392,7 +417,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 ```
 
 <a name="usage-batchUpdate"></a>
-## 'connection.batchUpdate(sql, bindVariablesArray, options, callback)'
+### 'connection.batchUpdate(sql, bindVariablesArray, options, callback)'
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -424,7 +449,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 ```
 
 <a name="usage-transaction"></a>
-## 'connection.transaction(actions, [options], callback)'
+### 'connection.transaction(actions, [options], callback)'
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
@@ -473,8 +498,8 @@ connection.transaction([
 ```
 
 <a name="usage-release"></a>
-## 'connection.release([options], [callback])'
-## 'connection.close([options], [callback])'
+### 'connection.release([options], [callback])'
+### 'connection.close([options], [callback])'
 This function modifies the existing connection.release function by enabling the input callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
@@ -517,7 +542,7 @@ connection.close({
 ```
 
 <a name="usage-rollback"></a>
-## 'connection.rollback([callback])'
+### 'connection.rollback([callback])'
 This function modifies the existing connection.rollback function by enabling the input
 callback to be an optional parameter.<br>
 If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
@@ -535,7 +560,7 @@ connection.rollback(function onRollback(error) {
 ```
 
 <a name="usage-extensions"></a>
-## 'SimpleOracleDB.addExtension(type, name, extension)'
+### 'SimpleOracleDB.addExtension(type, name, extension)'
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
@@ -593,6 +618,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
 | 2016-02-28  | v0.1.37 | Added SimpleOracleDB.addExtension which allows to further extend oracledb |
