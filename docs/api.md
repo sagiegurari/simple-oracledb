@@ -15,10 +15,10 @@
 <dt><a href="#event_release">"release"</a></dt>
 <dd><p>This events is triggered when the connection is released successfully.</p>
 </dd>
-<dt><a href="#event_connection-created">"connection-created"</a></dt>
+<dt><a href="#event_connection-created">"connection-created" (connection)</a></dt>
 <dd><p>This events is triggered when a connection is created via pool.</p>
 </dd>
-<dt><a href="#event_connection-released">"connection-released"</a></dt>
+<dt><a href="#event_connection-released">"connection-released" (connection)</a></dt>
 <dd><p>This events is triggered when a connection is released successfully.</p>
 </dd>
 </dl>
@@ -804,15 +804,25 @@ This events is triggered when the connection is released successfully.
 
 **Kind**: event emitted  
 <a name="event_connection-created"></a>
-## "connection-created"
+## "connection-created" (connection)
 This events is triggered when a connection is created via pool.
 
 **Kind**: event emitted  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
 <a name="event_connection-released"></a>
-## "connection-released"
+## "connection-released" (connection)
 This events is triggered when a connection is released successfully.
 
 **Kind**: event emitted  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
 <a name="ConnectionAction"></a>
 ## ConnectionAction : <code>function</code>
 An action requested by the pool to be invoked.

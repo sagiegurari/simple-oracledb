@@ -139,10 +139,14 @@ oracledb.createPool({
 <a name="pool-events"></a>
 <a name="event-connection-created"></a>
 ### Event: 'connection-created'
+* connection - The connection instance
+
 This events is triggered when a connection is created via pool.
 
 <a name="event-connection-released"></a>
 ### Event: 'connection-released'
+* connection - The connection instance
+
 This events is triggered when a connection is released successfully.
 
 <a name="usage-getconnection"></a>
@@ -618,6 +622,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-03-03  | v0.1.41 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
