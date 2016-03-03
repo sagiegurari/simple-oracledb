@@ -238,7 +238,7 @@ pool.close();
 This events is triggered when the connection is released successfully.
 
 <a name="usage-query"></a>
-### 'connection.query(sql, bindVariables, [options], callback)'
+### 'connection.query(sql, bindParams, [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -295,7 +295,7 @@ stream.on('data', function (row) {
 ```
 
 <a name="usage-insert"></a>
-### 'connection.insert(sql, bindVariables, options, callback)'
+### 'connection.insert(sql, bindParams, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -340,7 +340,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 ```
 
 <a name="usage-update"></a>
-### 'connection.update(sql, bindVariables, options, callback)'
+### 'connection.update(sql, bindParams, options, callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -364,7 +364,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 ```
 
 <a name="usage-queryJSON"></a>
-### 'connection.queryJSON(sql, [bindVariables], [options], callback)'
+### 'connection.queryJSON(sql, [bindParams], [options], callback)'
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
 The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
 The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
@@ -389,7 +389,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ```
 
 <a name="usage-batchInsert"></a>
-### 'connection.batchInsert(sql, bindVariablesArray, options, callback)'
+### 'connection.batchInsert(sql, bindParamsArray, options, callback)'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -421,7 +421,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 ```
 
 <a name="usage-batchUpdate"></a>
-### 'connection.batchUpdate(sql, bindVariablesArray, options, callback)'
+### 'connection.batchUpdate(sql, bindParamsArray, options, callback)'
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -622,7 +622,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-03-03  | v0.1.41 | Maintenance |
+| 2016-03-03  | v0.1.42 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
