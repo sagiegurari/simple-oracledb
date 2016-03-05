@@ -243,8 +243,83 @@ describe('Connection Tests', function () {
                 streamResults: true
             }, function (error) {
                 assert.isDefined(error);
-                done();
+
+                setTimeout(function () {
+                    assert.isDefined(stream);
+
+                    done();
+                });
             });
+        });
+
+        it('rows - data no optional params', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var date = new Date();
+            connection.baseExecute = function () {
+                var lob1 = helper.createCLOB();
+                var lob2 = helper.createCLOB();
+
+                var cb = arguments[arguments.length - 1];
+                setTimeout(function () {
+                    cb(null, {
+                        metaData: columnNames,
+                        rows: [
+                            {
+                                COL1: lob1,
+                                COL2: 'test',
+                                COL3: 50,
+                                COL4: undefined,
+                                LOB1: undefined,
+                                LOB2: undefined
+                            },
+                            {
+                                COL1: 'a',
+                                COL2: date,
+                                COL3: undefined,
+                                COL4: lob2,
+                                LOB1: undefined,
+                                LOB2: undefined
+                            }
+                        ]
+                    });
+
+                    setTimeout(function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }, 10);
+                }, 5);
+            };
+
+            var output = connection.query('sql', function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        COL1: 'test1\ntest2',
+                        COL2: 'test',
+                        COL3: 50,
+                        COL4: undefined,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    },
+                    {
+                        COL1: 'a',
+                        COL2: date,
+                        COL3: undefined,
+                        COL4: '123456',
+                        LOB1: undefined,
+                        LOB2: undefined
+                    }
+                ], jsRows);
+            });
+
+            assert.isUndefined(output);
         });
 
         it('rows - data', function () {
@@ -1008,6 +1083,31 @@ describe('Connection Tests', function () {
     });
 
     describe('insert', function () {
+        it('no lobs no optional params', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.baseExecute = function (sql, callback) {
+                assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (1, 2)');
+
+                setTimeout(function () {
+                    callback(null, {
+                        rowsAffected: 1,
+                        outBinds: {}
+                    });
+                }, 5);
+            };
+
+            var output = connection.insert('INSERT INTO nolobs (id, id2) VALUES (1, 2)', function (error, results) {
+                assert.isNull(error);
+                assert.equal(results.rowsAffected, 1);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs', function (done) {
             var connection = {};
             Connection.extend(connection);
@@ -1443,6 +1543,31 @@ describe('Connection Tests', function () {
     });
 
     describe('update', function () {
+        it('no lobs no optional params', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.baseExecute = function (sql, callback) {
+                assert.equal(sql, 'UPDATE nolobs SET id = 1, id2 = 2');
+
+                setTimeout(function () {
+                    callback(null, {
+                        rowsAffected: 1,
+                        outBinds: {}
+                    });
+                }, 5);
+            };
+
+            var output = connection.update('UPDATE nolobs SET id = 1, id2 = 2', function (error, results) {
+                assert.isNull(error);
+                assert.equal(results.rowsAffected, 1);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs', function (done) {
             var connection = {};
             Connection.extend(connection);

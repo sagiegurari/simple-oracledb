@@ -46,8 +46,8 @@
     * [.simplified](#Connection.simplified) : <code>boolean</code>
     * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#new_ResultSetReadStream_new)</code>
-    * [#insert(sql, bindParams, options, callback)](#Connection+insert)
-    * [#update(sql, bindParams, options, callback)](#Connection+update)
+    * [#insert(sql, [bindParams], [options], callback)](#Connection+insert)
+    * [#update(sql, [bindParams], [options], callback)](#Connection+update)
     * [#release([options], [callback])](#Connection+release)
     * [#close([options], [callback])](#Connection+close)
     * [#commit(callback)](#Connection+commit)
@@ -141,7 +141,7 @@ stream.on('data', function (row) {
 });
 ```
 <a name="Connection+insert"></a>
-### Connection#insert(sql, bindParams, options, callback)
+### Connection#insert(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -152,8 +152,8 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | Param | Type | Description |
 | --- | --- | --- |
 | sql | <code>string</code> | The SQL to execute |
-| bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
-| options | <code>object</code> | Any execute options |
+| [bindParams] | <code>object</code> | The bind parameters used to specify the values for the columns |
+| [options] | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
@@ -198,7 +198,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 });
 ```
 <a name="Connection+update"></a>
-### Connection#update(sql, bindParams, options, callback)
+### Connection#update(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -209,8 +209,8 @@ The function arguments used to execute the 'update' are exactly as defined in th
 | Param | Type | Description |
 | --- | --- | --- |
 | sql | <code>string</code> | The SQL to execute |
-| bindParams | <code>object</code> | The bind parameters used to specify the values for the columns |
-| options | <code>object</code> | Any execute options |
+| [bindParams] | <code>object</code> | The bind parameters used to specify the values for the columns |
+| [options] | <code>object</code> | Any execute options |
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
@@ -697,7 +697,7 @@ Extends the provided oracledb pool instance.
     * [#addExtension(type, name, extension)](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
     * _static_
         * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
-        * [.oracle.createPool([poolAttributes], callback)](#SimpleOracleDB.oracle.createPool)
+        * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
 
 <a name="new_SimpleOracleDB_new"></a>
 ### new SimpleOracleDB()
@@ -783,7 +783,7 @@ Wraps the original oracledb getConnection in order to provide an extended connec
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the oracle connection instance |
 
 <a name="SimpleOracleDB.oracle.createPool"></a>
-### SimpleOracleDB.oracle.createPool([poolAttributes], callback)
+### SimpleOracleDB.oracle.createPool(poolAttributes, callback)
 Wraps the original oracledb createPool in order to provide an extended pool object.
 
 **Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
@@ -791,7 +791,7 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [poolAttributes] | <code>object</code> |  | The connection pool attributes object |
+| poolAttributes | <code>object</code> |  | The connection pool attributes object (see https://github.com/oracle/node-oracledb/blob/master/doc/api.md#createpool for more attributes) |
 | [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
 | [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |

@@ -11,16 +11,14 @@
   * [OracleDB](#usage-oracledb)
     * [createPool](#usage-createpool)
   * [Pool](#usage-pool)
-    * [events](#pool-events)
-      * [connection-created](#event-connection-created)
-      * [connection-released](#event-connection-released)
+    * [Event: connection-created](#event-connection-created)
+    * [Event: connection-released](#event-connection-released)
     * [getConnection](#usage-getconnection)
     * [run](#usage-run)
     * [terminate](#usage-terminate)
     * [close](#usage-terminate)
   * [Connection](#usage-connection)
-    * [events](#connection-events)
-      * [release](#event-release)
+    * [Event: release](#event-release)
     * [query](#usage-query)
     * [insert](#usage-insert)
     * [update](#usage-update)
@@ -136,7 +134,6 @@ oracledb.createPool({
 <a name="usage-pool"></a>
 ## Class: Pool
 
-<a name="pool-events"></a>
 <a name="event-connection-created"></a>
 ### Event: 'connection-created'
 * connection - The connection instance
@@ -232,13 +229,12 @@ pool.close();
 <a name="usage-connection"></a>
 ## Class: Connection
 
-<a name="connection-events"></a>
 <a name="event-release"></a>
 ### Event: 'release'
 This events is triggered when the connection is released successfully.
 
 <a name="usage-query"></a>
-### 'connection.query(sql, bindParams, [options], callback)'
+### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ReadStream]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -295,7 +291,7 @@ stream.on('data', function (row) {
 ```
 
 <a name="usage-insert"></a>
-### 'connection.insert(sql, bindParams, options, callback)'
+### 'connection.insert(sql, [bindParams], [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -340,7 +336,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 ```
 
 <a name="usage-update"></a>
-### 'connection.update(sql, bindParams, options, callback)'
+### 'connection.update(sql, [bindParams], [options], callback)'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
@@ -625,7 +621,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-03-04  | v0.1.43 | Maintenance |
+| 2016-03-05  | v0.1.44 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
