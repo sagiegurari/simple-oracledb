@@ -841,8 +841,9 @@ describe('Integration Tests', function () {
                                             }
                                         ], jsRows);
 
-                                        connection.update('UPDATE ' + table + ' SET COL3 = :newcol1 WHERE COL2 > :value', {
+                                        connection.update('UPDATE ' + table + ' SET COL3 = :newcol1, LOB1 = :newclob1 WHERE COL2 > :value', {
                                             newcol1: 7777,
+                                            newclob1: 'NEW CLOB TEXT VALUE',
                                             value: 5
                                         }, {}, function onUpdate(updateError, updateResults) {
                                             assert.isNull(updateError);
@@ -858,7 +859,7 @@ describe('Integration Tests', function () {
                                                         COL2: 123,
                                                         COL3: 7777,
                                                         COL4: undefined,
-                                                        LOB1: longClobText,
+                                                        LOB1: 'NEW CLOB TEXT VALUE',
                                                         LOB2: new Buffer('blob text here')
                                                     },
                                                     {
@@ -866,7 +867,7 @@ describe('Integration Tests', function () {
                                                         COL2: 333,
                                                         COL3: 7777,
                                                         COL4: undefined,
-                                                        LOB1: longClobText,
+                                                        LOB1: 'NEW CLOB TEXT VALUE',
                                                         LOB2: new Buffer('second blob text here')
                                                     }
                                                 ], jsRows2);
