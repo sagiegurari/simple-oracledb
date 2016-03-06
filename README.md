@@ -30,6 +30,7 @@
     * [close](#usage-release)
     * [rollback](#usage-rollback)
   * [Extensions](#usage-extensions)
+    * [connection.upsert](#usage-extension-connection.upsert)
 * [Debug](#debug)
 * [Installation](#installation)
 * [Known Issues](#issues)
@@ -585,6 +586,10 @@ pool.myPoolFunc();
 
 An example of an existing extension can be found at: [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) which adds the connection.upsert (insert/update) functionality.
 
+<a name="usage-extension-connection.upsert"></a>
+### 'connection.upsert(sqls, bindParams, [options], callback)'
+See [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) for more info.
+
 <br>
 **The rest of the API is the same as defined in the oracledb library: https://github.com/oracle/node-oracledb/blob/master/doc/api.md**
 
@@ -621,7 +626,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-03-06  | v0.1.46 | Maintenance |
+| 2016-03-06  | v0.1.47 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
