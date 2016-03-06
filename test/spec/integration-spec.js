@@ -841,11 +841,15 @@ describe('Integration Tests', function () {
                                             }
                                         ], jsRows);
 
-                                        connection.update('UPDATE ' + table + ' SET COL3 = :newcol1, LOB1 = :newclob1 WHERE COL2 > :value', {
+                                        connection.update('UPDATE ' + table + ' SET COL3 = :newcol1, LOB1 = EMPTY_CLOB() WHERE COL2 > :value', {
                                             newcol1: 7777,
                                             newclob1: 'NEW CLOB TEXT VALUE',
                                             value: 5
-                                        }, {}, function onUpdate(updateError, updateResults) {
+                                        }, {
+                                            lobMetaInfo: {
+                                                LOB1: 'newclob1'
+                                            }
+                                        }, function onUpdate(updateError, updateResults) {
                                             assert.isNull(updateError);
                                             assert.isDefined(updateResults);
 
