@@ -718,8 +718,6 @@ describe('Connection Tests', function () {
                             releaseCallback();
                         },
                         getRows: function (number, callback) {
-                            assert.equal(number, 1);
-
                             var events = dbEvents.shift();
                             if (events) {
                                 setTimeout(events, 10);
@@ -854,8 +852,6 @@ describe('Connection Tests', function () {
                             releaseCallback();
                         },
                         getRows: function (number, callback) {
-                            assert.equal(number, 1);
-
                             var events = dbEvents.shift();
                             if (events) {
                                 setTimeout(events, 10);
@@ -988,8 +984,6 @@ describe('Connection Tests', function () {
                                 releaseCallback();
                             },
                             getRows: function (number, callback) {
-                                assert.equal(number, 1);
-
                                 var events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);

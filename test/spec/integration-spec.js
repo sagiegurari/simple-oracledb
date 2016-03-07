@@ -81,7 +81,7 @@ describe('Integration Tests', function () {
                                 asyncLib.series(func, function (asynErr) {
                                     connection.release(function (rerr) {
                                         if (asynErr) {
-                                            console.error(asynErr);
+                                            console.error(data, asynErr);
                                             assert.fail('UNABLE TO CREATE DB POOL.');
                                         } else if (rerr) {
                                             console.error('release error: ', rerr);
@@ -107,7 +107,7 @@ describe('Integration Tests', function () {
             });
         };
 
-        self.timeout(30000);
+        self.timeout(60000);
 
         describe('pool', function () {
             describe('getConnection', function () {
@@ -380,35 +380,27 @@ describe('Integration Tests', function () {
                 it('resultset - stream', function (done) {
                     var table = 'TEST_ORA7';
 
-                    var dbData = [
-                        {
-                            COL1: 'PK1',
-                            COL2: 2,
-                            COL3: 30,
-                            COL4: '123'
-                        },
-                        {
-                            COL1: 'PK2',
-                            COL2: 200,
-                            COL3: 30,
-                            COL4: 'SOME TEST HERE'
-                        },
-                        {
-                            COL1: 'PK3',
-                            COL2: 5000,
-                            COL3: 1,
+                    var dbData = [];
+
+                    var index;
+                    for (index = 0; index < 100; index++) {
+                        dbData.push({
+                            COL1: 'PK' + index,
+                            COL2: index,
+                            COL3: index * 100,
                             COL4: 'MORE DATA HERE!!!',
-                            LOB1: 'THIS IS SOME CLOB TEST TEXT',
-                            LOB2: new Buffer('BLOB - 123456')
-                        }
-                    ];
+                            LOB1: 'THIS IS SOME CLOB TEST TEXT: ' + index,
+                            LOB2: new Buffer('BLOB - ' + index)
+                        });
+                    }
 
                     initDB(table, dbData, function (pool) {
                         pool.getConnection(function (err, connection) {
                             assert.isUndefined(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
-                                streamResults: true
+                                streamResults: true,
+                                bulkRowsAmount: 5
                             }, function (error, stream) {
                                 assert.isNull(error);
 

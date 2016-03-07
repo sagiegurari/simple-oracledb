@@ -58,20 +58,46 @@ describe('ResultSetReadStream Tests', function () {
             stream.on('end', done);
         });
 
-        it('invalid data', function (done) {
+        it('multiple rows', function (done) {
             var stream = new ResultSetReadStream();
+            var nextCounter = 0;
             stream.nextRow = function (callback) {
-                process.nextTick(function () {
-                    callback(null, [{}, {}]);
-                });
+                if (nextCounter >= 5) {
+                    process.nextTick(function () {
+                        callback(null, []);
+                    });
+                } else {
+                    process.nextTick(function () {
+                        var data = [];
+                        var index;
+                        for (index = 0; index < 4; index++) {
+                            data.push({
+                                row: index + nextCounter
+                            });
+                        }
+
+                        nextCounter = nextCounter + data.length;
+
+                        callback(null, data);
+                    });
+                }
             };
 
-            ['data', 'end', 'close'].forEach(function (eventName) {
+            ['error', 'close'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('error', function (error) {
-                assert.isDefined(error);
+            var dataFound = 0;
+            stream.on('data', function (data) {
+                assert.deepEqual(data, {
+                    row: dataFound
+                });
+
+                dataFound++;
+            });
+
+            stream.on('end', function () {
+                assert.equal(dataFound, 20);
 
                 done();
             });

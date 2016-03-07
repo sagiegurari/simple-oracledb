@@ -972,6 +972,8 @@ describe('resultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
+            }, {
+                bulkRowsAmount: 250
             }, stream);
 
             var eventCounter = 0;
