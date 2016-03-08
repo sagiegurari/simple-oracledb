@@ -398,22 +398,30 @@ describe('Integration Tests', function () {
                         pool.getConnection(function (err, connection) {
                             assert.isUndefined(err);
 
-                            connection.query('SELECT * FROM ' + table, [], {
-                                streamResults: true,
-                                bulkRowsAmount: 5
-                            }, function (error, stream) {
-                                assert.isNull(error);
+                            connection.query('SELECT COUNT(*) count FROM ' + table, function (countError, countResults) {
+                                assert.isNull(countError);
+                                assert.equal(countResults[0].COUNT, 100);
 
-                                var eventCounter = 0;
-                                stream.on('data', function (row) {
-                                    assert.deepEqual(dbData[eventCounter], row);
-                                    eventCounter++;
-                                });
+                                connection.query('SELECT * FROM ' + table + ' ORDER BY COL2', function (rowsError, rowsData) {
+                                    assert.isNull(rowsError);
+                                    assert.deepEqual(dbData, rowsData);
 
-                                stream.on('end', function () {
-                                    assert.equal(eventCounter, dbData.length);
+                                    var stream = connection.query('SELECT * FROM ' + table + ' ORDER BY COL2', [], {
+                                        streamResults: true,
+                                        bulkRowsAmount: 5
+                                    });
 
-                                    end(done, connection);
+                                    var eventCounter = 0;
+                                    stream.on('data', function (row) {
+                                        assert.deepEqual(dbData[eventCounter], row);
+                                        eventCounter++;
+                                    });
+
+                                    stream.on('end', function () {
+                                        assert.equal(eventCounter, dbData.length);
+
+                                        end(done, connection);
+                                    });
                                 });
                             });
                         });

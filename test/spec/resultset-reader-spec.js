@@ -601,7 +601,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 100);
+                    assert.equal(number, 2);
 
                     var events = dbEvents.shift();
                     if (events) {
@@ -610,7 +610,9 @@ describe('resultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, null, function (error, jsRows) {
+            }, {
+                bulkRowsAmount: 2
+            }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);
 
@@ -707,7 +709,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 100);
+                    assert.equal(number, 2);
 
                     var events = dbEvents.shift();
                     if (events) {
@@ -716,7 +718,9 @@ describe('resultSetReader Tests', function () {
 
                     callback(null, dbData.shift());
                 }
-            }, null, function (error, jsRows) {
+            }, {
+                bulkRowsAmount: 2
+            }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(outputData.shift(), jsRows);
 
@@ -889,7 +893,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 100);
                     callback(null, []);
                 }
             }, stream);
@@ -908,7 +912,8 @@ describe('resultSetReader Tests', function () {
 
             var dbData = [
                 [
-                    ['first row', 1, false, date]
+                    ['first row', 1, false, date],
+                    ['second row', 2, true, date]
                 ],
                 [
                     [1, 'test', 50, lob1]
@@ -938,6 +943,12 @@ describe('resultSetReader Tests', function () {
                     COL4: date
                 },
                 {
+                    COL1: 'second row',
+                    COL2: 2,
+                    COL3: true,
+                    COL4: date
+                },
+                {
                     COL1: 1,
                     COL2: 'test',
                     COL3: 50,
@@ -963,7 +974,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 250);
 
                     var events = dbEvents.shift();
                     if (events) {
@@ -1045,7 +1056,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 100);
 
                     var events = dbEvents.shift();
                     if (events) {
@@ -1077,7 +1088,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback();
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 100);
 
                     process.nextTick(function () {
                         callback(new Error('getrows'));
@@ -1158,7 +1169,7 @@ describe('resultSetReader Tests', function () {
                     releaseCallback(new Error('test close'));
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 100);
 
                     var events = dbEvents.shift();
                     if (events) {
@@ -1192,7 +1203,7 @@ describe('resultSetReader Tests', function () {
                     }, 10);
                 },
                 getRows: function (number, callback) {
-                    assert.equal(number, 1);
+                    assert.equal(number, 100);
                     callback(null, []);
                 }
             }, stream);
