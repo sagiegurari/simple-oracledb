@@ -17,21 +17,6 @@ describe('ResultSetReadStream Tests', function () {
             var stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
-                    callback(null, []);
-                });
-            };
-
-            ['data', 'error', 'close'].forEach(function (eventName) {
-                stream.on(eventName, failListener(eventName));
-            });
-
-            stream.on('end', done);
-        });
-
-        it('undefined data', function (done) {
-            var stream = new ResultSetReadStream();
-            stream.nextRow = function (callback) {
-                process.nextTick(function () {
                     callback();
                 });
             };
@@ -47,7 +32,7 @@ describe('ResultSetReadStream Tests', function () {
             var stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
-                    callback();
+                    callback(null, null);
                 });
             };
 
@@ -64,21 +49,15 @@ describe('ResultSetReadStream Tests', function () {
             stream.nextRow = function (callback) {
                 if (nextCounter >= 5) {
                     process.nextTick(function () {
-                        callback(null, []);
+                        callback();
                     });
                 } else {
                     process.nextTick(function () {
-                        var data = [];
-                        var index;
-                        for (index = 0; index < 4; index++) {
-                            data.push({
-                                row: index + nextCounter
-                            });
-                        }
+                        nextCounter++;
 
-                        nextCounter = nextCounter + data.length;
-
-                        callback(null, data);
+                        callback(null, {
+                            row: nextCounter
+                        });
                     });
                 }
             };
@@ -89,15 +68,15 @@ describe('ResultSetReadStream Tests', function () {
 
             var dataFound = 0;
             stream.on('data', function (data) {
+                dataFound++;
+
                 assert.deepEqual(data, {
                     row: dataFound
                 });
-
-                dataFound++;
             });
 
             stream.on('end', function () {
-                assert.equal(dataFound, 20);
+                assert.equal(dataFound, 5);
 
                 done();
             });
@@ -130,9 +109,9 @@ describe('ResultSetReadStream Tests', function () {
 
                 if (counter < 5) {
                     process.nextTick(function () {
-                        callback(null, [{
+                        callback(null, {
                             id: counter
-                        }]);
+                        });
                     });
                 } else if (counter === 5) {
                     process.nextTick(function () {
@@ -168,13 +147,13 @@ describe('ResultSetReadStream Tests', function () {
 
                 if (counter < 5) {
                     process.nextTick(function () {
-                        callback(null, [{
+                        callback(null, {
                             id: counter
-                        }]);
+                        });
                     });
                 } else if (counter === 5) {
                     process.nextTick(function () {
-                        callback(null, []);
+                        callback();
                     });
                 } else {
                     process.nextTick(function () {

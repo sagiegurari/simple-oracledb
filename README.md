@@ -626,7 +626,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-03-08  | v0.1.49 | Maintenance |
+| 2016-03-09  | v0.1.50 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |
 | 2016-03-02  | v0.1.38 | Added new force option for connection.release/close |
