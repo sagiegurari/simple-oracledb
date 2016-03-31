@@ -1162,7 +1162,7 @@ describe('Connection Tests', function () {
             });
 
             var dataFound = false;
-            stream.on('data', function (row) {
+            stream.once('data', function (row) {
                 stream.close();
 
                 assert.deepEqual(outputData[0], row);
