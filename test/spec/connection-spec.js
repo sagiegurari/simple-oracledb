@@ -1137,11 +1137,13 @@ describe('Connection Tests', function () {
                             releaseCallback();
                         },
                         getRows: function (number, callback) {
-                            dbEvents.forEach(function (events, index) {
-                                setTimeout(events, 10 * index);
-                            });
+                            process.nextTick(function () {
+                                dbEvents.forEach(function (events, index) {
+                                    setTimeout(events, 10 * index);
+                                });
 
-                            callback(null, dbData.shift());
+                                callback(null, dbData.shift());
+                            });
                         }
                     }
                 });
