@@ -235,7 +235,7 @@ pool.close();
 This events is triggered when the connection is released successfully.
 
 <a name="usage-query"></a>
-### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ReadStream]'
+### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ResultSetReadStream]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -286,6 +286,10 @@ var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id'
 //listen to fetched rows via data event or just pipe to another handler
 stream.on('data', function (row) {
   //use row object
+
+  if (row.MY_ID === 800) {
+    stream.close(); //optionally call the close function to prevent any more 'data' events and free the connection to execute other operations
+  }
 });
 
 //listen to other events such as end/close/error....
@@ -626,6 +630,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-03-31  | v0.1.51 | Added new stream.close function to stop streaming data and free the connection for more operations |
 | 2016-03-09  | v0.1.50 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
 | 2016-03-02  | v0.1.39 | Maintenance |

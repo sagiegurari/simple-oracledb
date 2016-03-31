@@ -5,6 +5,8 @@
 <dd></dd>
 <dt><a href="#Pool">Pool</a></dt>
 <dd></dd>
+<dt><a href="#ResultSetReadStream">ResultSetReadStream</a></dt>
+<dd></dd>
 <dt><a href="#SimpleOracleDB">SimpleOracleDB</a></dt>
 <dd></dd>
 </dl>
@@ -45,7 +47,7 @@
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
     * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
-    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#new_ResultSetReadStream_new)</code>
+    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, [bindParams], [options], callback)](#Connection+insert)
     * [#update(sql, [bindParams], [options], callback)](#Connection+update)
     * [#release([options], [callback])](#Connection+release)
@@ -83,14 +85,14 @@ Extends the original oracledb connection.execute to provide additional behavior.
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 <a name="Connection+query"></a>
-### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#new_ResultSetReadStream_new)</code>
+### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
-**Returns**: <code>[ResultSetReadStream](#new_ResultSetReadStream_new)</code> - The stream to read the results from (if streamResults=true in options)  
+**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> - The stream to read the results from (if streamResults=true in options)  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -138,7 +140,13 @@ var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id'
 //listen to fetched rows via data event or just pipe to another handler
 stream.on('data', function (row) {
   //use row object
+
+  if (row.MY_ID === 800) {
+    stream.close(); //optionally call the close function to prevent any more 'data' events and free the connection to execute other operations
+  }
 });
+
+//listen to other events such as end/close/error....
 ```
 <a name="Connection+insert"></a>
 ### Connection#insert(sql, [bindParams], [options], callback)
@@ -683,6 +691,26 @@ Extends the provided oracledb pool instance.
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 
+<a name="ResultSetReadStream"></a>
+## ResultSetReadStream
+**Kind**: global class  
+**Access:** public  
+**Author:** Sagie Gur-Ari  
+
+* [ResultSetReadStream](#ResultSetReadStream)
+    * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
+    * [#close()](#ResultSetReadStream+close)
+
+<a name="new_ResultSetReadStream_new"></a>
+### new ResultSetReadStream()
+A node.js read stream for resultsets.
+
+<a name="ResultSetReadStream+close"></a>
+### ResultSetReadStream#close()
+Closes the stream and prevent any more data events from being invoked.<br>
+It will also free the connection to enable using it to invoke more operations.
+
+**Access:** public  
 <a name="SimpleOracleDB"></a>
 ## SimpleOracleDB
 **Kind**: global class  

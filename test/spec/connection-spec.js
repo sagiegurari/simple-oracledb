@@ -1074,6 +1074,114 @@ describe('Connection Tests', function () {
                 done();
             });
         });
+
+        it('resultset - stream close', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var date = new Date();
+            connection.baseExecute = function () {
+                var lob1 = helper.createCLOB();
+                var lob2 = helper.createCLOB();
+
+                assert.isUndefined(arguments[2].stream);
+                assert.isTrue(arguments[2].streamResults);
+
+                var dbData = [
+                    [
+                        {
+                            COL1: 'first row',
+                            COL2: 1,
+                            COL3: false,
+                            COL4: date,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        },
+                        {
+                            COL1: 1,
+                            COL2: 'test',
+                            COL3: 50,
+                            COL4: lob1
+                        },
+                        {
+                            COL1: 'a',
+                            COL2: date,
+                            COL3: undefined,
+                            COL4: undefined
+                        },
+                        {
+                            COL1: 10,
+                            COL2: true,
+                            COL3: lob2,
+                            COL4: 100,
+                            LOB1: undefined,
+                            LOB2: undefined
+                        }
+                    ]
+                ];
+                var dbEvents = [null, function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                }, function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }];
+
+                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                argumentsArray.pop()(null, {
+                    metaData: columnNames,
+                    resultSet: {
+                        close: function (releaseCallback) {
+                            releaseCallback();
+                        },
+                        getRows: function (number, callback) {
+                            dbEvents.forEach(function (events, index) {
+                                setTimeout(events, 10 * index);
+                            });
+
+                            callback(null, dbData.shift());
+                        }
+                    }
+                });
+            };
+
+            var outputData = [
+                {
+                    COL1: 'first row',
+                    COL2: 1,
+                    COL3: false,
+                    COL4: date,
+                    LOB1: undefined,
+                    LOB2: undefined
+                }
+            ];
+
+            var stream = connection.query('my sql', [1, 2, 3], {
+                streamResults: true,
+                stream: true
+            });
+
+            stream.on('error', function (error) {
+                assert.fail(error);
+            });
+
+            var dataFound = false;
+            stream.on('data', function (row) {
+                assert.isFalse(dataFound);
+                assert.deepEqual(outputData[0], row);
+                dataFound = true;
+
+                stream.close();
+            });
+
+            stream.on('end', function () {
+                assert.isTrue(dataFound);
+
+                done();
+            });
+        });
     });
 
     describe('insert', function () {
