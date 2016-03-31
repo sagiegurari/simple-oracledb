@@ -37,6 +37,7 @@
 </dl>
 
 <a name="Connection"></a>
+
 ## Connection
 **Kind**: global class  
 **Emits**: <code>[release](#event_release)</code>  
@@ -63,15 +64,18 @@
         * [.extend(connection)](#Connection.extend)
 
 <a name="new_Connection_new"></a>
+
 ### new Connection()
 This class holds all the extended capabilities added the oracledb connection.
 
 <a name="Connection.simplified"></a>
+
 ### Connection.simplified : <code>boolean</code>
 Marker property.
 
 **Access:** public  
 <a name="Connection+execute"></a>
+
 ### Connection#execute(sql, [bindParams], [options], callback)
 Extends the original oracledb connection.execute to provide additional behavior.
 
@@ -85,6 +89,7 @@ Extends the original oracledb connection.execute to provide additional behavior.
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 <a name="Connection+query"></a>
+
 ### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
@@ -149,6 +154,7 @@ stream.on('data', function (row) {
 //listen to other events such as end/close/error....
 ```
 <a name="Connection+insert"></a>
+
 ### Connection#insert(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
@@ -206,6 +212,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 });
 ```
 <a name="Connection+update"></a>
+
 ### Connection#update(sql, [bindParams], [options], callback)
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
@@ -242,6 +249,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 });
 ```
 <a name="Connection+release"></a>
+
 ### Connection#release([options], [callback])
 This function modifies the existing connection.release function by enabling the input
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
@@ -297,6 +305,7 @@ connection.close({
 });
 ```
 <a name="Connection+close"></a>
+
 ### Connection#close([options], [callback])
 Alias for connection.release, see connection.release for more info.
 
@@ -312,6 +321,7 @@ Alias for connection.release, see connection.release for more info.
 | [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 <a name="Connection+commit"></a>
+
 ### Connection#commit(callback)
 Extends the connection.commit to prevent commit being invoked while in the middle of a transaction.
 
@@ -322,6 +332,7 @@ Extends the connection.commit to prevent commit being invoked while in the middl
 | callback | <code>function</code> | The commit callback function (see oracledb docs) |
 
 <a name="Connection+rollback"></a>
+
 ### Connection#rollback([callback])
 This function modifies the existing connection.rollback function by enabling the input
 callback to be an optional parameter.<br>
@@ -346,6 +357,7 @@ connection.rollback(function onRollback(error) {
 });
 ```
 <a name="Connection+queryJSON"></a>
+
 ### Connection#queryJSON(sql, [bindParams], [options], callback)
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
 The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
@@ -380,6 +392,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 });
 ```
 <a name="Connection+batchInsert"></a>
+
 ### Connection#batchInsert(sql, bindParamsArray, options, callback)
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
@@ -424,6 +437,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 });
 ```
 <a name="Connection+batchUpdate"></a>
+
 ### Connection#batchUpdate(sql, bindParamsArray, options, callback)
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
@@ -468,6 +482,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 });
 ```
 <a name="Connection+transaction"></a>
+
 ### Connection#transaction(actions, [options], callback)
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
@@ -526,6 +541,7 @@ connection.transaction([
 });
 ```
 <a name="Connection.wrapOnConnection"></a>
+
 ### Connection.wrapOnConnection(callback) ⇒ <code>function</code>
 Returns a getConnection callback wrapper which extends the connection and
 calls the original callback.
@@ -539,6 +555,7 @@ calls the original callback.
 | callback | <code>function</code> | The getConnection callback |
 
 <a name="Connection.extend"></a>
+
 ### Connection.extend(connection)
 Extends the provided oracledb connection instance.
 
@@ -550,6 +567,7 @@ Extends the provided oracledb connection instance.
 | connection | <code>object</code> | The oracledb connection instance |
 
 <a name="Pool"></a>
+
 ## Pool
 **Kind**: global class  
 **Emits**: <code>[connection-created](#event_connection-created)</code>, <code>[connection-released](#event_connection-released)</code>  
@@ -567,15 +585,18 @@ Extends the provided oracledb connection instance.
         * [.extend(pool, [poolAttributes])](#Pool.extend)
 
 <a name="new_Pool_new"></a>
+
 ### new Pool()
 This class holds all the extended capabilities added the oracledb pool.
 
 <a name="Pool.simplified"></a>
+
 ### Pool.simplified : <code>boolean</code>
 Marker property.
 
 **Access:** public  
 <a name="Pool+getConnection"></a>
+
 ### Pool#getConnection(callback)
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
 In addition, this function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
@@ -591,6 +612,7 @@ See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#Simpl
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
 <a name="Pool+run"></a>
+
 ### Pool#run(action, [options], callback)
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
@@ -637,6 +659,7 @@ pool.run(function (connection, callback) {
 });
 ```
 <a name="Pool+terminate"></a>
+
 ### Pool#terminate([callback])
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
@@ -666,6 +689,7 @@ pool.terminate(function onTerminate(error) {
 pool.close();
 ```
 <a name="Pool+close"></a>
+
 ### Pool#close([callback])
 Alias for pool.terminate, see pool.terminate for more info.
 
@@ -676,6 +700,7 @@ Alias for pool.terminate, see pool.terminate for more info.
 | [callback] | <code>function</code> | An optional terminate callback function (see oracledb docs) |
 
 <a name="Pool.extend"></a>
+
 ### Pool.extend(pool, [poolAttributes])
 Extends the provided oracledb pool instance.
 
@@ -692,6 +717,7 @@ Extends the provided oracledb pool instance.
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 
 <a name="ResultSetReadStream"></a>
+
 ## ResultSetReadStream
 **Kind**: global class  
 **Access:** public  
@@ -702,16 +728,19 @@ Extends the provided oracledb pool instance.
     * [#close()](#ResultSetReadStream+close)
 
 <a name="new_ResultSetReadStream_new"></a>
+
 ### new ResultSetReadStream()
 A node.js read stream for resultsets.
 
 <a name="ResultSetReadStream+close"></a>
+
 ### ResultSetReadStream#close()
 Closes the stream and prevent any more data events from being invoked.<br>
 It will also free the connection to enable using it to invoke more operations.
 
 **Access:** public  
 <a name="SimpleOracleDB"></a>
+
 ## SimpleOracleDB
 **Kind**: global class  
 **Access:** public  
@@ -728,11 +757,13 @@ It will also free the connection to enable using it to invoke more operations.
         * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
 
 <a name="new_SimpleOracleDB_new"></a>
+
 ### new SimpleOracleDB()
 Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
 See extend function for more info.
 
 <a name="SimpleOracleDB+extend"></a>
+
 ### SimpleOracleDB#extend(oracledb)
 Extends the oracledb library which from that point will allow fetching the modified
 connection objects via oracledb.getConnection or via pool.getConnection
@@ -744,6 +775,7 @@ connection objects via oracledb.getConnection or via pool.getConnection
 | oracledb | <code>oracledb</code> | The oracledb library |
 
 <a name="SimpleOracleDB+extend"></a>
+
 ### SimpleOracleDB#extend(pool)
 Extends the oracledb pool instance which from that point will allow fetching the modified
 connection objects via pool.getConnection
@@ -755,6 +787,7 @@ connection objects via pool.getConnection
 | pool | <code>[Pool](#Pool)</code> | The oracledb pool instance |
 
 <a name="SimpleOracleDB+extend"></a>
+
 ### SimpleOracleDB#extend(connection)
 Extends the oracledb connection instance which from that point will allow access to all
 the extended capabilities of this library.
@@ -766,6 +799,7 @@ the extended capabilities of this library.
 | connection | <code>[Connection](#Connection)</code> | The oracledb connection instance |
 
 <a name="SimpleOracleDB+addExtension"></a>
+
 ### SimpleOracleDB#addExtension(type, name, extension) ⇒ <code>boolean</code>
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
@@ -799,6 +833,7 @@ SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
 pool.myPoolFunc();
 ```
 <a name="SimpleOracleDB.oracle.getConnection"></a>
+
 ### SimpleOracleDB.oracle.getConnection(connectionAttributes, callback)
 Wraps the original oracledb getConnection in order to provide an extended connection object.
 
@@ -811,6 +846,7 @@ Wraps the original oracledb getConnection in order to provide an extended connec
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the oracle connection instance |
 
 <a name="SimpleOracleDB.oracle.createPool"></a>
+
 ### SimpleOracleDB.oracle.createPool(poolAttributes, callback)
 Wraps the original oracledb createPool in order to provide an extended pool object.
 
@@ -827,11 +863,13 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
 
 <a name="event_release"></a>
+
 ## "release"
 This events is triggered when the connection is released successfully.
 
 **Kind**: event emitted  
 <a name="event_connection-created"></a>
+
 ## "connection-created" (connection)
 This events is triggered when a connection is created via pool.
 
@@ -842,6 +880,7 @@ This events is triggered when a connection is created via pool.
 | connection | <code>[Connection](#Connection)</code> | The connection instance |
 
 <a name="event_connection-released"></a>
+
 ## "connection-released" (connection)
 This events is triggered when a connection is released successfully.
 
@@ -852,6 +891,7 @@ This events is triggered when a connection is released successfully.
 | connection | <code>[Connection](#Connection)</code> | The connection instance |
 
 <a name="ConnectionAction"></a>
+
 ## ConnectionAction : <code>function</code>
 An action requested by the pool to be invoked.
 
@@ -863,6 +903,7 @@ An action requested by the pool to be invoked.
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | The callback to invoke at the end of the action |
 
 <a name="AsyncCallback"></a>
+
 ## AsyncCallback : <code>function</code>
 Invoked when an async operation has finished.
 

@@ -1171,11 +1171,10 @@ describe('Connection Tests', function () {
 
             var dataFound = false;
             stream.on('data', function (row) {
-                assert.isFalse(dataFound);
+                stream.close();
+
                 assert.deepEqual(outputData[0], row);
                 dataFound = true;
-
-                stream.close();
             });
 
             stream.on('end', function () {
