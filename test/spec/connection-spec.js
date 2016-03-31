@@ -1075,7 +1075,7 @@ describe('Connection Tests', function () {
             });
         });
 
-        it.only('resultset - stream close', function (done) {
+        it('resultset - stream close', function (done) {
             var connection = {};
             Connection.extend(connection);
 
