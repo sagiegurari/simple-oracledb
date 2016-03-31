@@ -1075,7 +1075,7 @@ describe('Connection Tests', function () {
             });
         });
 
-        it('resultset - stream close', function (done) {
+        it.only('resultset - stream close', function (done) {
             var connection = {};
             Connection.extend(connection);
 
@@ -1088,46 +1088,40 @@ describe('Connection Tests', function () {
                 assert.isTrue(arguments[2].streamResults);
 
                 var dbData = [
-                    [
-                        {
-                            COL1: 'first row',
-                            COL2: 1,
-                            COL3: false,
-                            COL4: date,
-                            LOB1: undefined,
-                            LOB2: undefined
-                        },
-                        {
-                            COL1: 1,
-                            COL2: 'test',
-                            COL3: 50,
-                            COL4: lob1
-                        },
-                        {
-                            COL1: 'a',
-                            COL2: date,
-                            COL3: undefined,
-                            COL4: undefined
-                        },
-                        {
-                            COL1: 10,
-                            COL2: true,
-                            COL3: lob2,
-                            COL4: 100,
-                            LOB1: undefined,
-                            LOB2: undefined
-                        }
-                    ]
+                    {
+                        COL1: 'first row',
+                        COL2: 1,
+                        COL3: false,
+                        COL4: date,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    },
+                    {
+                        COL1: 1,
+                        COL2: 'test',
+                        COL3: 50,
+                        COL4: lob1
+                    },
+                    {
+                        COL1: 'a',
+                        COL2: date,
+                        COL3: undefined,
+                        COL4: undefined
+                    },
+                    {
+                        COL1: 10,
+                        COL2: true,
+                        COL3: lob2,
+                        COL4: 100,
+                        LOB1: undefined,
+                        LOB2: undefined
+                    }
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
+
+                var lobEvents = function () {
                     lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
                     lob2.emit('end');
-                }];
+                };
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
@@ -1138,11 +1132,9 @@ describe('Connection Tests', function () {
                         },
                         getRows: function (number, callback) {
                             process.nextTick(function () {
-                                dbEvents.forEach(function (events, index) {
-                                    setTimeout(events, 10 * index);
-                                });
+                                callback(null, dbData);
 
-                                callback(null, dbData.shift());
+                                setTimeout(lobEvents, 10);
                             });
                         }
                     }
