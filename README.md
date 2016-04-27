@@ -630,7 +630,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-04-08  | v0.1.53 | Maintenance |
+| 2016-04-27  | v0.1.54 | Maintenance |
 | 2016-03-31  | v0.1.51 | Added new stream.close function to stop streaming data and free the connection for more operations |
 | 2016-03-09  | v0.1.50 | Maintenance |
 | 2016-03-03  | v0.1.40 | Connection and Pool are now event emitters |
