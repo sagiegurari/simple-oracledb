@@ -805,7 +805,8 @@ This includes info of all live pools (including live time and create time) and a
 <a name="SimpleOracleDB.enableStats"></a>
 
 ### SimpleOracleDB.enableStats : <code>boolean</code>
-True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.
+True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
+By default this is set to false.
 
 **Access:** public  
 <a name="SimpleOracleDB+extend"></a>
