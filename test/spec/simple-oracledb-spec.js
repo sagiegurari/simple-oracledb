@@ -54,7 +54,6 @@ describe('simple oracledb tests', function () {
         });
 
         it('extend no input', function () {
-            var obj = {};
             try {
                 simpleOracleDB.extend();
                 assert.fail();
@@ -65,29 +64,87 @@ describe('simple oracledb tests', function () {
     });
 
     describe('createPool tests', function () {
-        it('createPool valid', function () {
+        it('createPool valid', function (done) {
+            var eventTriggered = false;
+            simpleOracleDB.once('pool-created', function (pool) {
+                assert.isDefined(pool);
+                assert.isTrue(pool.simplified);
+                eventTriggered = true;
+            });
+
             oracledb.createPool(function (error, pool) {
                 assert.isNull(error);
                 assert.isDefined(pool);
                 assert.isTrue(pool.simplified);
+
+                assert.isTrue(eventTriggered);
+
+                simpleOracleDB.once('pool-released', function (releasedPool) {
+                    assert.isTrue(releasedPool === pool);
+
+                    done();
+                });
+
+                pool.close();
             });
         });
 
-        it('createPool error', function () {
+        it('createPool error', function (done) {
             oracledb.createPool(true, function (error, pool) {
                 assert.isDefined(error);
                 assert.isUndefined(pool);
+
+                done();
             });
         });
     });
 
     describe('getConnection tests', function () {
-        it('getConnection valid', function () {
+        it('getConnection valid', function (done) {
+            var eventTriggered = false;
+            simpleOracleDB.once('connection-created', function (connection) {
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
+                eventTriggered = true;
+            });
+
             oracledb.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
+
+                assert.isTrue(eventTriggered);
+
+                simpleOracleDB.once('connection-released', function (releasedConnection) {
+                    assert.isTrue(releasedConnection === connection);
+
+                    done();
+                });
+
+                connection.release();
             });
+        });
+    });
+
+    describe('stats tests', function () {
+        it('stats', function () {
+            assert.isDefined(simpleOracleDB.stats);
+            assert.isDefined(simpleOracleDB.stats.pool);
+            assert.isDefined(simpleOracleDB.stats.connection);
+        });
+    });
+
+    describe('enableStats tests', function () {
+        it('enableStats', function () {
+            assert.isDefined(simpleOracleDB.enableStats);
+
+            simpleOracleDB.enableStats = true;
+            assert.isTrue(simpleOracleDB.enableStats);
+
+            simpleOracleDB.enableStats = false;
+            assert.isFalse(simpleOracleDB.enableStats);
+            assert.equal(Object.keys(simpleOracleDB.stats.pool).length, 0);
+            assert.equal(Object.keys(simpleOracleDB.stats.connection).length, 0);
         });
     });
 });

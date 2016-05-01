@@ -46,6 +46,11 @@ TestPool.prototype.getConnection = function (callback) {
     }
 };
 
+TestPool.prototype.terminate = function () {
+    var callback = arguments[arguments.length - 1];
+    callback();
+};
+
 module.exports = {
     create: function () {
         return {

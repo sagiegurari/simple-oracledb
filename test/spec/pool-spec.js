@@ -51,36 +51,6 @@ describe('Pool Tests', function () {
         });
     });
 
-    describe('markConnection tests', function () {
-        it('undefined', function () {
-            var testPool = oracledb.createPool();
-            Pool.extend(testPool);
-
-            testPool.markConnection();
-        });
-
-        it('null', function () {
-            var testPool = oracledb.createPool();
-            Pool.extend(testPool);
-
-            testPool.markConnection(null);
-        });
-
-        it('valid', function () {
-            var testPool = oracledb.createPool();
-            Pool.extend(testPool);
-
-            var connection = {};
-            testPool.markConnection(connection);
-
-            var lastID = connection.diagnosticInfo.id;
-            assert.isDefined(connection.diagnosticInfo.id);
-
-            testPool.markConnection(connection);
-            assert.equal(connection.diagnosticInfo.id, (lastID + 1));
-        });
-    });
-
     describe('getConnection tests', function () {
         it('getConnection simple', function (done) {
             var testPool = oracledb.createPool();
@@ -762,11 +732,13 @@ describe('Pool Tests', function () {
                 terminate: function (cb) {
                     assert.isFunction(cb);
                     cb();
-
-                    done();
                 }
             };
             Pool.extend(pool);
+
+            pool.on('release', function () {
+                done();
+            });
 
             assert.isFunction(pool.baseTerminate);
             var output = pool.terminate(function () {
@@ -825,6 +797,24 @@ describe('Pool Tests', function () {
 
             assert.isFunction(pool.baseTerminate);
             pool.close();
+        });
+    });
+
+    describe('setupEvents tests', function () {
+        it('setupEvents undefined', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            pool.setupEvents();
+        });
+
+        it('setupEvents valid', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            var connection = {};
+            pool.setupEvents(connection);
+            assert.isFunction(connection.on);
         });
     });
 });

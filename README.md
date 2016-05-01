@@ -13,12 +13,13 @@
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
     * [Event: connection-released](#event-connection-released)
+    * [Event: release](#event-pool-release)
     * [getConnection](#usage-getconnection)
     * [run](#usage-run)
     * [terminate](#usage-terminate)
     * [close](#usage-terminate)
   * [Connection](#usage-connection)
-    * [Event: release](#event-release)
+    * [Event: release](#event-connection-release)
     * [query](#usage-query)
     * [insert](#usage-insert)
     * [update](#usage-update)
@@ -29,6 +30,12 @@
     * [release](#usage-release)
     * [close](#usage-release)
     * [rollback](#usage-rollback)
+  * [SimpleOracleDB](#usage-simple-oracledb)
+    * [Event: pool-created](#event-pool-created-simpleoracledb)
+    * [Event: connection-created](#event-connection-created-simpleoracledb)
+    * [Event: connection-released](#event-connection-released-simpleoracledb)
+    * [stats](#usage-stats)
+    * [enableStats](#usage-enable-stats)
   * [Extensions](#usage-extensions)
     * [connection.upsert](#usage-extension-connection.upsert)
 * [Debug](#debug)
@@ -147,6 +154,12 @@ This events is triggered when a connection is created via pool.
 
 This events is triggered when a connection is released successfully.
 
+<a name="event-pool-release"></a>
+### Event: 'release'
+* pool - The pool instance
+
+This events is triggered after the pool is released successfully.
+
 <a name="usage-getconnection"></a>
 ### 'pool.getConnection(callback)'
 This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
@@ -230,7 +243,7 @@ pool.close();
 <a name="usage-connection"></a>
 ## Class: Connection
 
-<a name="event-release"></a>
+<a name="event-connection-release"></a>
 ### Event: 'release'
 This events is triggered when the connection is released successfully.
 
@@ -564,6 +577,43 @@ connection.rollback(function onRollback(error) {
 });
 ```
 
+<a name="usage-simple-oracledb"></a>
+## Class: SimpleOracleDB
+
+<a name="event-pool-created-simpleoracledb"></a>
+### Event: 'pool-created'
+* pool - The pool instance
+
+This events is triggered when a pool is created.
+
+<a name="event-pool-released-simpleoracledb"></a>
+### Event: 'pool-released'
+* pool - The pool instance
+
+This events is triggered after a pool is released.
+
+<a name="event-connection-created-simpleoracledb"></a>
+### Event: 'connection-created'
+* connection - The connection instance
+
+This events is triggered when a connection is created via oracledb.
+
+<a name="event-connection-released-simpleoracledb"></a>
+### Event: 'connection-released'
+* connection - The connection instance
+
+This events is triggered when a connection is released successfully.
+
+<a name="usage-stats"></a>
+### 'SimpleOracleDB.stats'
+The pool/connection diagnostics info.<br>
+This includes info of all live pools (including live time and create time) and all live connections (including parent pool if any, live time, create time and last SQL)
+
+<a name="usage-enable-stats"></a>
+### 'SimpleOracleDB.enableStats'
+True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
+By default this is set to false.
+
 <a name="usage-extensions"></a>
 ### 'SimpleOracleDB.addExtension(type, name, extension)'
 Adds an extension to all newly created objects of the requested type.<br>
@@ -630,6 +680,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-05-01  | v0.1.55 | Added the new monitor (SimpleOracleDB.stats and SimpleOracleDB.enableStats) and SimpleOracleDB is now an event emitter |
 | 2016-04-27  | v0.1.54 | Maintenance |
 | 2016-03-31  | v0.1.51 | Added new stream.close function to stop streaming data and free the connection for more operations |
 | 2016-03-09  | v0.1.50 | Maintenance |

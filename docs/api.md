@@ -11,20 +11,6 @@
 <dd></dd>
 </dl>
 
-## Events
-
-<dl>
-<dt><a href="#event_release">"release"</a></dt>
-<dd><p>This events is triggered when the connection is released successfully.</p>
-</dd>
-<dt><a href="#event_connection-created">"connection-created" (connection)</a></dt>
-<dd><p>This events is triggered when a connection is created via pool.</p>
-</dd>
-<dt><a href="#event_connection-released">"connection-released" (connection)</a></dt>
-<dd><p>This events is triggered when a connection is released successfully.</p>
-</dd>
-</dl>
-
 ## Typedefs
 
 <dl>
@@ -40,7 +26,7 @@
 
 ## Connection
 **Kind**: global class  
-**Emits**: <code>[release](#event_release)</code>  
+**Emits**: <code>event:release</code>  
 **Access:** public  
 **Author:** Sagie Gur-Ari  
 
@@ -59,6 +45,8 @@
     * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
     * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
     * [#transaction(actions, [options], callback)](#Connection+transaction)
+    * _instance_
+        * ["release"](#Connection+event_release)
     * _static_
         * [.wrapOnConnection(callback)](#Connection.wrapOnConnection) ⇒ <code>function</code>
         * [.extend(connection)](#Connection.extend)
@@ -255,7 +243,7 @@ This function modifies the existing connection.release function by enabling the 
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
-**Emits**: <code>[release](#event_release)</code>  
+**Emits**: <code>event:release</code>  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -309,7 +297,7 @@ connection.close({
 ### Connection#close([options], [callback])
 Alias for connection.release, see connection.release for more info.
 
-**Emits**: <code>[release](#event_release)</code>  
+**Emits**: <code>event:release</code>  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -540,6 +528,12 @@ connection.transaction([
   //continue flow...
 });
 ```
+<a name="Connection+event_release"></a>
+
+### "release"
+This events is triggered when the connection is released successfully.
+
+**Kind**: event emitted by <code>[Connection](#Connection)</code>  
 <a name="Connection.wrapOnConnection"></a>
 
 ### Connection.wrapOnConnection(callback) ⇒ <code>function</code>
@@ -570,7 +564,7 @@ Extends the provided oracledb connection instance.
 
 ## Pool
 **Kind**: global class  
-**Emits**: <code>[connection-created](#event_connection-created)</code>, <code>[connection-released](#event_connection-released)</code>  
+**Emits**: <code>event:connection-created</code>, <code>event:connection-released</code>, <code>event:release</code>  
 **Access:** public  
 **Author:** Sagie Gur-Ari  
 
@@ -581,6 +575,10 @@ Extends the provided oracledb connection instance.
     * [#run(action, [options], callback)](#Pool+run)
     * [#terminate([callback])](#Pool+terminate)
     * [#close([callback])](#Pool+close)
+    * _instance_
+        * ["connection-created" (connection)](#Pool+event_connection-created)
+        * ["connection-released" (connection)](#Pool+event_connection-released)
+        * ["release"](#Pool+event_release)
     * _static_
         * [.extend(pool, [poolAttributes])](#Pool.extend)
 
@@ -604,7 +602,7 @@ It will also ensure the provided connection is valid by running a test SQL and i
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
 See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.<br>
 
-**Emits**: <code>[connection-created](#event_connection-created)</code>  
+**Emits**: <code>event:connection-created</code>  
 **Access:** public  
 
 | Param | Type | Description |
@@ -699,6 +697,34 @@ Alias for pool.terminate, see pool.terminate for more info.
 | --- | --- | --- |
 | [callback] | <code>function</code> | An optional terminate callback function (see oracledb docs) |
 
+<a name="Pool+event_connection-created"></a>
+
+### "connection-created" (connection)
+This events is triggered when a connection is created via pool.
+
+**Kind**: event emitted by <code>[Pool](#Pool)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
+<a name="Pool+event_connection-released"></a>
+
+### "connection-released" (connection)
+This events is triggered when a connection is released successfully.
+
+**Kind**: event emitted by <code>[Pool](#Pool)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
+<a name="Pool+event_release"></a>
+
+### "release"
+This events is triggered after the pool is released successfully.
+
+**Kind**: event emitted by <code>[Pool](#Pool)</code>  
 <a name="Pool.extend"></a>
 
 ### Pool.extend(pool, [poolAttributes])
@@ -748,10 +774,17 @@ It will also free the connection to enable using it to invoke more operations.
 
 * [SimpleOracleDB](#SimpleOracleDB)
     * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
+    * [.stats](#SimpleOracleDB.stats) : <code>object</code>
+    * [.enableStats](#SimpleOracleDB.enableStats) : <code>boolean</code>
     * [#extend(oracledb)](#SimpleOracleDB+extend)
     * [#extend(pool)](#SimpleOracleDB+extend)
     * [#extend(connection)](#SimpleOracleDB+extend)
     * [#addExtension(type, name, extension)](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
+    * _instance_
+        * ["pool-created" (pool)](#SimpleOracleDB+event_pool-created)
+        * ["pool-released" (pool)](#SimpleOracleDB+event_pool-released)
+        * ["connection-created" (connection)](#SimpleOracleDB+event_connection-created)
+        * ["connection-released" (connection)](#SimpleOracleDB+event_connection-released)
     * _static_
         * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
         * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
@@ -762,6 +795,19 @@ It will also free the connection to enable using it to invoke more operations.
 Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
 See extend function for more info.
 
+<a name="SimpleOracleDB.stats"></a>
+
+### SimpleOracleDB.stats : <code>object</code>
+The pool/connection diagnostics info.<br>
+This includes info of all live pools (including live time and create time) and all live connections (including parent pool if any, live time, create time and last SQL)
+
+**Access:** public  
+<a name="SimpleOracleDB.enableStats"></a>
+
+### SimpleOracleDB.enableStats : <code>boolean</code>
+True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.
+
+**Access:** public  
 <a name="SimpleOracleDB+extend"></a>
 
 ### SimpleOracleDB#extend(oracledb)
@@ -832,6 +878,50 @@ SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
 //get pool and start using the new function
 pool.myPoolFunc();
 ```
+<a name="SimpleOracleDB+event_pool-created"></a>
+
+### "pool-created" (pool)
+This events is triggered when a pool is created.
+
+**Kind**: event emitted by <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pool | <code>[Pool](#Pool)</code> | The pool instance |
+
+<a name="SimpleOracleDB+event_pool-released"></a>
+
+### "pool-released" (pool)
+This events is triggered after a pool is released.
+
+**Kind**: event emitted by <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pool | <code>[Pool](#Pool)</code> | The pool instance |
+
+<a name="SimpleOracleDB+event_connection-created"></a>
+
+### "connection-created" (connection)
+This events is triggered when a connection is created via oracledb.
+
+**Kind**: event emitted by <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
+<a name="SimpleOracleDB+event_connection-released"></a>
+
+### "connection-released" (connection)
+This events is triggered when a connection is released successfully.
+
+**Kind**: event emitted by <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| connection | <code>[Connection](#Connection)</code> | The connection instance |
+
 <a name="SimpleOracleDB.oracle.getConnection"></a>
 
 ### SimpleOracleDB.oracle.getConnection(connectionAttributes, callback)
@@ -861,34 +951,6 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
-
-<a name="event_release"></a>
-
-## "release"
-This events is triggered when the connection is released successfully.
-
-**Kind**: event emitted  
-<a name="event_connection-created"></a>
-
-## "connection-created" (connection)
-This events is triggered when a connection is created via pool.
-
-**Kind**: event emitted  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| connection | <code>[Connection](#Connection)</code> | The connection instance |
-
-<a name="event_connection-released"></a>
-
-## "connection-released" (connection)
-This events is triggered when a connection is released successfully.
-
-**Kind**: event emitted  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| connection | <code>[Connection](#Connection)</code> | The connection instance |
 
 <a name="ConnectionAction"></a>
 
