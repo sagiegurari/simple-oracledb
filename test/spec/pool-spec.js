@@ -7,6 +7,7 @@ var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
 var SimpleOracleDB = require('../..');
 var extensions = require('../../lib/extensions');
+var emitter = require('../../lib/emitter');
 
 describe('Pool Tests', function () {
     var noop = function () {
@@ -813,6 +814,7 @@ describe('Pool Tests', function () {
             Pool.extend(pool);
 
             var connection = {};
+            emitter(connection);
             pool.setupEvents(connection);
             assert.isFunction(connection.on);
         });
