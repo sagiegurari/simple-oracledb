@@ -31,14 +31,14 @@ describe('monitor Tests', function () {
             monitor.enabled = true;
             monitor.monitorConnection();
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
         });
 
         it('monitorConnection no diagnosticInfo', function () {
             monitor.enabled = true;
             monitor.monitorConnection({});
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
         });
 
         it('monitorConnection disabled', function () {
@@ -49,7 +49,7 @@ describe('monitor Tests', function () {
                 }
             });
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
         });
 
         it('monitorConnection valid no pool', function () {
@@ -58,20 +58,20 @@ describe('monitor Tests', function () {
             monitor.enabled = true;
             monitor.monitorConnection(connection);
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 1);
-            assert.isDefined(monitor.stats.connection[connection.diagnosticInfo.id].createTime);
-            assert.equal(monitor.stats.connection[connection.diagnosticInfo.id].sql, 'my sql');
-            assert.isDefined(monitor.stats.connection[connection.diagnosticInfo.id].liveTime);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 1);
+            assert.isDefined(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime);
+            assert.equal(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].sql, 'my sql');
+            assert.isDefined(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].liveTime);
 
-            assert.deepEqual(monitor.stats.connection[connection.diagnosticInfo.id], {
+            assert.deepEqual(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id], {
                 connection: connection,
-                createTime: monitor.stats.connection[connection.diagnosticInfo.id].createTime,
+                createTime: monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime,
                 pool: undefined
             });
 
             connection.emit('release');
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
         });
 
         it('monitorConnection valid with pool', function () {
@@ -84,18 +84,18 @@ describe('monitor Tests', function () {
             monitor.enabled = true;
             monitor.monitorConnection(connection, pool);
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 1);
-            assert.isDefined(monitor.stats.connection[connection.diagnosticInfo.id].createTime);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 1);
+            assert.isDefined(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime);
 
-            assert.deepEqual(monitor.stats.connection[connection.diagnosticInfo.id], {
+            assert.deepEqual(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id], {
                 connection: connection,
-                createTime: monitor.stats.connection[connection.diagnosticInfo.id].createTime,
+                createTime: monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime,
                 pool: pool
             });
 
             connection.emit('release');
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
         });
     });
 
@@ -104,14 +104,14 @@ describe('monitor Tests', function () {
             monitor.enabled = true;
             monitor.monitorPool();
 
-            assert.equal(Object.keys(monitor.stats.pool).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.pool).length, 0);
         });
 
         it('monitorPool no diagnosticInfo', function () {
             monitor.enabled = true;
             monitor.monitorPool({});
 
-            assert.equal(Object.keys(monitor.stats.pool).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.pool).length, 0);
         });
 
         it('monitorPool disabled', function () {
@@ -122,7 +122,7 @@ describe('monitor Tests', function () {
                 }
             });
 
-            assert.equal(Object.keys(monitor.stats.pool).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.pool).length, 0);
         });
 
         it('monitorPool valid', function () {
@@ -136,25 +136,25 @@ describe('monitor Tests', function () {
             monitor.enabled = true;
             monitor.monitorPool(pool);
 
-            assert.equal(Object.keys(monitor.stats.pool).length, 1);
-            assert.isDefined(monitor.stats.pool[pool.diagnosticInfo.id].createTime);
-            assert.isDefined(monitor.stats.pool[pool.diagnosticInfo.id].liveTime);
+            assert.equal(Object.keys(monitor.diagnosticInfo.pool).length, 1);
+            assert.isDefined(monitor.diagnosticInfo.pool[pool.diagnosticInfo.id].createTime);
+            assert.isDefined(monitor.diagnosticInfo.pool[pool.diagnosticInfo.id].liveTime);
 
-            assert.deepEqual(monitor.stats.pool[pool.diagnosticInfo.id], {
+            assert.deepEqual(monitor.diagnosticInfo.pool[pool.diagnosticInfo.id], {
                 pool: pool,
-                createTime: monitor.stats.pool[pool.diagnosticInfo.id].createTime
+                createTime: monitor.diagnosticInfo.pool[pool.diagnosticInfo.id].createTime
             });
 
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
             var connection = createConnection();
             pool.emit('connection-created', connection);
-            assert.equal(Object.keys(monitor.stats.connection).length, 1);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 1);
             connection.emit('release');
-            assert.equal(Object.keys(monitor.stats.connection).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
 
             pool.emit('release');
 
-            assert.equal(Object.keys(monitor.stats.pool).length, 0);
+            assert.equal(Object.keys(monitor.diagnosticInfo.pool).length, 0);
         });
     });
 });

@@ -774,8 +774,8 @@ It will also free the connection to enable using it to invoke more operations.
 
 * [SimpleOracleDB](#SimpleOracleDB)
     * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
-    * [.stats](#SimpleOracleDB.stats) : <code>object</code>
-    * [.enableStats](#SimpleOracleDB.enableStats) : <code>boolean</code>
+    * [.diagnosticInfo](#SimpleOracleDB.diagnosticInfo) : <code>object</code>
+    * [.enableDiagnosticInfo](#SimpleOracleDB.enableDiagnosticInfo) : <code>boolean</code>
     * [#extend(oracledb)](#SimpleOracleDB+extend)
     * [#extend(pool)](#SimpleOracleDB+extend)
     * [#extend(connection)](#SimpleOracleDB+extend)
@@ -795,16 +795,16 @@ It will also free the connection to enable using it to invoke more operations.
 Simple oracledb enables to extend the oracledb main object, oracledb pool and oracledb connection.<br>
 See extend function for more info.
 
-<a name="SimpleOracleDB.stats"></a>
+<a name="SimpleOracleDB.diagnosticInfo"></a>
 
-### SimpleOracleDB.stats : <code>object</code>
+### SimpleOracleDB.diagnosticInfo : <code>object</code>
 The pool/connection diagnostics info.<br>
 This includes info of all live pools (including live time and create time) and all live connections (including parent pool if any, live time, create time and last SQL)
 
 **Access:** public  
-<a name="SimpleOracleDB.enableStats"></a>
+<a name="SimpleOracleDB.enableDiagnosticInfo"></a>
 
-### SimpleOracleDB.enableStats : <code>boolean</code>
+### SimpleOracleDB.enableDiagnosticInfo : <code>boolean</code>
 True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
 By default this is set to false.
 

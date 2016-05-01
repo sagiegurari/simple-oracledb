@@ -126,25 +126,25 @@ describe('simple oracledb tests', function () {
         });
     });
 
-    describe('stats tests', function () {
-        it('stats', function () {
-            assert.isDefined(simpleOracleDB.stats);
-            assert.isDefined(simpleOracleDB.stats.pool);
-            assert.isDefined(simpleOracleDB.stats.connection);
+    describe('diagnosticInfo tests', function () {
+        it('diagnosticInfo', function () {
+            assert.isDefined(simpleOracleDB.diagnosticInfo);
+            assert.isDefined(simpleOracleDB.diagnosticInfo.pool);
+            assert.isDefined(simpleOracleDB.diagnosticInfo.connection);
         });
     });
 
-    describe('enableStats tests', function () {
-        it('enableStats', function () {
-            assert.isDefined(simpleOracleDB.enableStats);
+    describe('enableDiagnosticInfo tests', function () {
+        it('enableDiagnosticInfo', function () {
+            assert.isDefined(simpleOracleDB.enableDiagnosticInfo);
 
-            simpleOracleDB.enableStats = true;
-            assert.isTrue(simpleOracleDB.enableStats);
+            simpleOracleDB.enableDiagnosticInfo = true;
+            assert.isTrue(simpleOracleDB.enableDiagnosticInfo);
 
-            simpleOracleDB.enableStats = false;
-            assert.isFalse(simpleOracleDB.enableStats);
-            assert.equal(Object.keys(simpleOracleDB.stats.pool).length, 0);
-            assert.equal(Object.keys(simpleOracleDB.stats.connection).length, 0);
+            simpleOracleDB.enableDiagnosticInfo = false;
+            assert.isFalse(simpleOracleDB.enableDiagnosticInfo);
+            assert.equal(Object.keys(simpleOracleDB.diagnosticInfo.pool).length, 0);
+            assert.equal(Object.keys(simpleOracleDB.diagnosticInfo.connection).length, 0);
         });
     });
 });
