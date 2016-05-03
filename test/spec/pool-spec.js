@@ -350,6 +350,9 @@ describe('Pool Tests', function () {
                         release: function (callback) {
                             releaseCalled = true;
                             callback();
+                        },
+                        rollback: function (callback) {
+                            callback();
                         }
                     });
                 }
@@ -590,6 +593,9 @@ describe('Pool Tests', function () {
                         release: function (callback) {
                             releaseCalled = true;
                             callback();
+                        },
+                        rollback: function (callback) {
+                            callback();
                         }
                     });
                 }
@@ -700,6 +706,9 @@ describe('Pool Tests', function () {
                         },
                         release: function (callback) {
                             releaseCalled = true;
+                            callback();
+                        },
+                        rollback: function (callback) {
                             callback();
                         }
                     });

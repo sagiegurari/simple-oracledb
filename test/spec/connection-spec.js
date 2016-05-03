@@ -2079,6 +2079,9 @@ describe('Connection Tests', function () {
                     assert.isFunction(cb);
                     counter++;
                     cb(new Error('test'));
+                },
+                rollback: function (cb) {
+                    cb();
                 }
             };
             Connection.extend(connection);
@@ -2119,6 +2122,9 @@ describe('Connection Tests', function () {
 
                         cb();
                     }
+                },
+                rollback: function (cb) {
+                    cb();
                 }
             };
             Connection.extend(connection);
@@ -2150,6 +2156,9 @@ describe('Connection Tests', function () {
                     assert.isFunction(cb);
                     releaseCounter++;
                     cb(new Error('test-release'));
+                },
+                rollback: function (cb) {
+                    cb();
                 }
             };
             Connection.extend(connection);
