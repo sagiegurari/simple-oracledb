@@ -1,4 +1,5 @@
 'use strict';
+
 /*global describe: false, it: false */
 
 var chai = require('chai');
