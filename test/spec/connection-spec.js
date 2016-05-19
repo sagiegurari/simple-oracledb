@@ -48,6 +48,79 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('getMetaData', function () {
+        it('undefined', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData();
+            assert.isUndefined(output);
+        });
+
+        it('null', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData(null);
+            assert.isUndefined(output);
+        });
+
+        it('on top object', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData({
+                metaData: [1, 2, 3]
+            });
+            assert.deepEqual(output, [1, 2, 3]);
+        });
+
+        it('empty array on top object', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData({
+                metaData: []
+            });
+            assert.deepEqual(output, []);
+        });
+
+        it('empty array on top object with empty resultSet', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData({
+                metaData: [],
+                resultSet: {}
+            });
+            assert.deepEqual(output, []);
+        });
+
+        it('empty array on top object with metaData in resultSet', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData({
+                metaData: [],
+                resultSet: {
+                    metaData: [1, 2, 3]
+                }
+            });
+            assert.deepEqual(output, [1, 2, 3]);
+        });
+
+        it('on top object with empty resultSet', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            var output = testConnection.getMetaData({
+                metaData: [1, 2, 3],
+                resultSet: {}
+            });
+            assert.deepEqual(output, [1, 2, 3]);
+        });
+    });
+
     describe('execute', function () {
         it('keep sql', function () {
             var testConnection = {

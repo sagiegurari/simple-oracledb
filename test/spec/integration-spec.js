@@ -182,7 +182,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA1';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT TEST1, TEST2 FROM TEST_TBL WHERE TEST3 = :value', {
                                 value: 'valid'
@@ -199,7 +199,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA2';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], function (error, jsRows) {
                                 assert.isNull(error);
@@ -215,7 +215,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA3';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
                                 resultSet: true
@@ -246,7 +246,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
                                 resultSet: false
@@ -294,7 +294,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
                                 resultSet: true
@@ -342,7 +342,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
                                 resultSet: true,
@@ -396,7 +396,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, dbData, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT COUNT(*) count FROM ' + table, function (countError, countResults) {
                                 assert.isNull(countError);
@@ -456,7 +456,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, dbData, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             var stream = connection.query('SELECT * FROM ' + table, [], {
                                 streamResults: true
@@ -490,7 +490,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.query('SELECT * FROM ' + table, [], {
                                 resultSet: false
@@ -519,7 +519,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA_INST1';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO TEST_NOTHING (SOMEFIELD), (:value)', {
                                 value: 'valid'
@@ -536,7 +536,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA_INST2';
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
                                 value1: 'test',
@@ -580,7 +580,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', {
                                 value1: 'test',
@@ -632,7 +632,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO ' + table + ' (COL1, LOB1, LOB2) values (:value1, EMPTY_CLOB(), EMPTY_BLOB())', {
                                 value1: '123',
@@ -683,7 +683,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA_UDT1';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('UPDATE TEST_NOTHING SET SOMEFIELD = 1', {
                                 value: 'valid'
@@ -700,7 +700,7 @@ describe('Integration Tests', function () {
                     var table = 'TEST_ORA_UDT2';
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
                                 value1: 'test',
@@ -792,7 +792,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.insert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', {
                                 value1: 'test',
@@ -907,7 +907,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.queryJSON('SELECT LOB1 FROM ' + table, function (error, results) {
                                 assert.isNull(error);
@@ -962,7 +962,7 @@ describe('Integration Tests', function () {
                         }
                     ], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.queryJSON('SELECT LOB1 FROM ' + table, function (error, results) {
                                 assert.isNull(error);
@@ -1009,7 +1009,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
                                 {
@@ -1071,7 +1071,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2) values (:0, :1)', [
                                 ['test', 123],
@@ -1129,7 +1129,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
                                 {
@@ -1251,7 +1251,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.transaction([
                                 function (cb) {
@@ -1358,7 +1358,7 @@ describe('Integration Tests', function () {
 
                     initDB(table, [], function (pool) {
                         pool.getConnection(function (err, connection) {
-                            assert.isUndefined(err);
+                            assert.isNull(err);
 
                             connection.transaction([
                                 function (cb) {
