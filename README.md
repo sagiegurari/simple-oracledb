@@ -144,18 +144,21 @@ oracledb.createPool({
 
 <a name="event-connection-created"></a>
 ### Event: 'connection-created'
+
 * connection - The connection instance
 
 This events is triggered when a connection is created via pool.
 
 <a name="event-connection-released"></a>
 ### Event: 'connection-released'
+
 * connection - The connection instance
 
 This events is triggered when a connection is released successfully.
 
 <a name="event-pool-release"></a>
 ### Event: 'release'
+
 * pool - The pool instance
 
 This events is triggered after the pool is released successfully.
@@ -164,8 +167,8 @@ This events is triggered after the pool is released successfully.
 ### 'pool.getConnection(callback)'
 This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
-See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
-See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.
+See [getConnection](https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool) for official API details.<br>
+See [createPool](https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool) for extended createPool API details.
 
 ```js
 oracledb.createPool({
@@ -582,24 +585,28 @@ connection.rollback(function onRollback(error) {
 
 <a name="event-pool-created-simpleoracledb"></a>
 ### Event: 'pool-created'
+
 * pool - The pool instance
 
 This events is triggered when a pool is created.
 
 <a name="event-pool-released-simpleoracledb"></a>
 ### Event: 'pool-released'
+
 * pool - The pool instance
 
 This events is triggered after a pool is released.
 
 <a name="event-connection-created-simpleoracledb"></a>
 ### Event: 'connection-created'
+
 * connection - The connection instance
 
 This events is triggered when a connection is created via oracledb.
 
 <a name="event-connection-released-simpleoracledb"></a>
 ### Event: 'connection-released'
+
 * connection - The connection instance
 
 This events is triggered when a connection is released successfully.
@@ -650,7 +657,8 @@ See [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) for more i
 <a name="debug"></a>
 ## Debug
 In order to turn on debug messages, use the standard nodejs NODE_DEBUG environment variable.
-````
+
+````ini
 NODE_DEBUG=simple-oracledb
 ````
 
@@ -663,10 +671,11 @@ npm install --save simple-oracledb
 ```
 
 This library doesn't define oracledb as a dependency and therefore it is not installed when installing simple-oracledb.<br>
-You should define oracledb in your package.json and install it based on the oracledb installation instructions found at: https://github.com/oracle/node-oracledb/blob/master/INSTALL.md
+You should define oracledb in your package.json and install it based on the oracledb installation instructions found at: [installation guide](https://github.com/oracle/node-oracledb/blob/master/INSTALL.md)
 
 <a name="issues"></a>
 ## Known Issues
+
 * oracledb version 1.7.0 breaks the API and prevents the library from being extended. This was fixed in oracledb 1.7.1 ([oracledb case](https://github.com/oracle/node-oracledb/issues/369))
 
 ## API Documentation
@@ -680,7 +689,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-05-27  | v0.1.65 | Maintenance |
+| 2016-05-28  | v0.1.66 | Maintenance |
 | 2016-05-01  | v0.1.57 | Added the new monitor (SimpleOracleDB.diagnosticInfo and SimpleOracleDB.enableDiagnosticInfo) and SimpleOracleDB is now an event emitter |
 | 2016-04-27  | v0.1.54 | Maintenance |
 | 2016-03-31  | v0.1.51 | Added new stream.close function to stop streaming data and free the connection for more operations |
