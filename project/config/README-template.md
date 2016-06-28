@@ -678,16 +678,4 @@ You should define oracledb in your package.json and install it based on the orac
 
 * oracledb version 1.7.0 breaks the API and prevents the library from being extended. This was fixed in oracledb 1.7.1 ([oracledb case](https://github.com/oracle/node-oracledb/issues/369))
 
-## API Documentation
-See full docs at: [API Docs](docs/api.md)
-
-## Contributing
-See [contributing guide](.github/CONTRIBUTING.md)
-
-<a name="history"></a>
-## Release History
-
-{"gitdown": "include", "file": "./docs/CHANGELOG.md"}
-<a name="license"></a>
-## License
-Developed by Sagie Gur-Ari and licensed under the Apache 2 open source license.
+{"gitdown": "include", "file": "./README-footer-template.md"}

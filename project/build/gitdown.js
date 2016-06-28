@@ -10,8 +10,11 @@ module.exports.tasks = {
             options: {
                 gitinfo: {
                     gitPath: path.join(__dirname, '../../')
+                },
+                headingNesting: {
+                    enabled: false
                 }
-            },
+        },
             files: {
                 'README.md': './project/config/README-template.md'
             }
