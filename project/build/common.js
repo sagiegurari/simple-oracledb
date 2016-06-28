@@ -11,6 +11,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('docs', 'Generate docs.', [
+        'gitdown:readme',
         'jsdoc2md:api'
     ]);
 
