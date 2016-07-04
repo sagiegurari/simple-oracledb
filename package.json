@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.1.74",
+  "version": "0.1.75",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "author": {
     "name": "Sagie Gur-Ari",
@@ -47,6 +47,7 @@
     "grunt-contrib-jshint": "latest",
     "grunt-coveralls": "latest",
     "grunt-eslint": "latest",
+    "grunt-force-task": "latest",
     "grunt-gitdown": "latest",
     "grunt-jscs": "latest",
     "grunt-jsdoc-to-markdown": "latest",
