@@ -689,7 +689,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-07-04  | v0.1.75 | Maintenance |
+| 2016-07-06  | v0.1.76 | Maintenance |
 | 2016-05-01  | v0.1.57 | Added the new monitor (SimpleOracleDB.diagnosticInfo and SimpleOracleDB.enableDiagnosticInfo) and SimpleOracleDB is now an event emitter |
 | 2016-04-27  | v0.1.54 | Maintenance |
 | 2016-03-31  | v0.1.51 | Added new stream.close function to stop streaming data and free the connection for more operations |
