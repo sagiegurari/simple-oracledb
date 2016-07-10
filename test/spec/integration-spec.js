@@ -8,26 +8,24 @@ var assert = chai.assert;
 describe('Integration Tests', function () {
     var self = this;
 
-    var oracledb;
     var integrated = true;
-    try {
-        oracledb = require('oracledb');
-    } catch (error) {
+    var connAttrs = {
+        user: process.env.TEST_ORACLE_USER,
+        password: process.env.TEST_ORACLE_PASSWORD,
+        connectString: process.env.TEST_ORACLE_CONNECTION_STRING
+    };
+
+    if ((!connAttrs.user) || (!connAttrs.password) || (!connAttrs.connectString)) {
         integrated = false;
     }
 
-    var connAttrs = {};
-    if (integrated && oracledb) {
-        connAttrs.user = process.env.TEST_ORACLE_USER;
-        connAttrs.password = process.env.TEST_ORACLE_PASSWORD;
-        connAttrs.connectString = process.env.TEST_ORACLE_CONNECTION_STRING;
+    if (!integrated) {
+        it('empty', function () {
+            return undefined;
+        });
+    } else {
+        var oracledb = require('oracledb');
 
-        if ((!connAttrs.user) || (!connAttrs.password) || (!connAttrs.connectString)) {
-            integrated = false;
-        }
-    }
-
-    if (integrated) {
         oracledb.autoCommit = true;
 
         var simpleOracleDB = require('../../');
@@ -179,7 +177,7 @@ describe('Integration Tests', function () {
         describe('connection', function () {
             describe('query', function () {
                 it('error', function (done) {
-                    var table = 'TEST_ORA1';
+                    var table = 'TEST_ORA_QRY1';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
                             assert.isNull(err);
@@ -196,7 +194,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('rows - empty', function (done) {
-                    var table = 'TEST_ORA2';
+                    var table = 'TEST_ORA_QRY2';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
                             assert.isNull(err);
@@ -212,7 +210,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('resultset - empty', function (done) {
-                    var table = 'TEST_ORA3';
+                    var table = 'TEST_ORA_QRY3';
                     initDB(table, null, function (pool) {
                         pool.getConnection(function (err, connection) {
                             assert.isNull(err);
@@ -230,7 +228,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('rows - simple data', function (done) {
-                    var table = 'TEST_ORA4';
+                    var table = 'TEST_ORA_QRY4';
                     initDB(table, [
                         {
                             COL1: 'PK1',
@@ -278,7 +276,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('resultset - simple data', function (done) {
-                    var table = 'TEST_ORA5';
+                    var table = 'TEST_ORA_QRY5';
                     initDB(table, [
                         {
                             COL1: 'PK1',
@@ -326,7 +324,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('resultset - split', function (done) {
-                    var table = 'TEST_ORA6';
+                    var table = 'TEST_ORA_QRY6';
                     initDB(table, [
                         {
                             COL1: 'PK1',
@@ -378,7 +376,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('resultset - stream', function (done) {
-                    var table = 'TEST_ORA7';
+                    var table = 'TEST_ORA_QRY7';
 
                     var dbData = [];
 
@@ -429,7 +427,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('resultset - stream no callback', function (done) {
-                    var table = 'TEST_ORA8';
+                    var table = 'TEST_ORA_QRY8';
 
                     var dbData = [
                         {
@@ -478,7 +476,7 @@ describe('Integration Tests', function () {
                 });
 
                 it('rows - lob data', function (done) {
-                    var table = 'TEST_ORA9';
+                    var table = 'TEST_ORA_QRY9';
                     initDB(table, [
                         {
                             COL1: 'PK1',
@@ -504,6 +502,104 @@ describe('Integration Tests', function () {
                                         COL4: '123',
                                         LOB1: 'THIS IS SOME CLOB TEST TEXT',
                                         LOB2: new Buffer('BLOB - 123456')
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
+                        });
+                    });
+                });
+
+                it('rows - simple data - extendedMetaData', function (done) {
+                    var table = 'TEST_ORA_QRY10';
+                    initDB(table, [
+                        {
+                            COL1: 'PK1',
+                            COL2: 2,
+                            COL3: 30,
+                            COL4: '123'
+                        },
+                        {
+                            COL1: 'PK2',
+                            COL2: 200,
+                            COL3: 30,
+                            COL4: 'SOME TEST HERE'
+                        }
+                    ], function (pool) {
+                        pool.getConnection(function (err, connection) {
+                            assert.isNull(err);
+
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: false,
+                                extendedMetaData: true
+                            }, function (error, jsRows) {
+                                assert.isNull(error);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'PK1',
+                                        COL2: 2,
+                                        COL3: 30,
+                                        COL4: '123',
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    },
+                                    {
+                                        COL1: 'PK2',
+                                        COL2: 200,
+                                        COL3: 30,
+                                        COL4: 'SOME TEST HERE',
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    }
+                                ], jsRows);
+
+                                end(done, connection);
+                            });
+                        });
+                    });
+                });
+
+                it('resultset - simple data - extendedMetaData', function (done) {
+                    var table = 'TEST_ORA_QRY11';
+                    initDB(table, [
+                        {
+                            COL1: 'PK1',
+                            COL2: 2,
+                            COL3: 30,
+                            COL4: '123'
+                        },
+                        {
+                            COL1: 'PK2',
+                            COL2: 200,
+                            COL3: 30,
+                            COL4: 'SOME TEST HERE'
+                        }
+                    ], function (pool) {
+                        pool.getConnection(function (err, connection) {
+                            assert.isNull(err);
+
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: true,
+                                extendedMetaData: true
+                            }, function (error, jsRows) {
+                                assert.isNull(error);
+                                assert.deepEqual([
+                                    {
+                                        COL1: 'PK1',
+                                        COL2: 2,
+                                        COL3: 30,
+                                        COL4: '123',
+                                        LOB1: undefined,
+                                        LOB2: undefined
+                                    },
+                                    {
+                                        COL1: 'PK2',
+                                        COL2: 200,
+                                        COL3: 30,
+                                        COL4: 'SOME TEST HERE',
+                                        LOB1: undefined,
+                                        LOB2: undefined
                                     }
                                 ], jsRows);
 
