@@ -1,6 +1,6 @@
 {
   "name": "simple-oracledb",
-  "version": "0.1.77",
+  "version": "0.1.78",
   "description": "Extend capabilities of oracledb with simplified API for quicker development.",
   "author": {
     "name": "Sagie Gur-Ari",
@@ -35,7 +35,7 @@
     "grunt": "grunt"
   },
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.0",
     "debuglog": "^1.0.1"
   },
   "devDependencies": {
