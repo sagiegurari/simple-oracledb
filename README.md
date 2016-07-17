@@ -689,6 +689,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-07-17  | v0.1.80 | Add support for node-oracledb promise |
 | 2016-07-14  | v0.1.79 | Fixed possible max stack size error |
 | 2016-07-13  | v0.1.78 | Maintenance |
 | 2016-05-01  | v0.1.57 | Added the new monitor (SimpleOracleDB.diagnosticInfo and SimpleOracleDB.enableDiagnosticInfo) and SimpleOracleDB is now an event emitter |

@@ -33,7 +33,7 @@
 * [Connection](#Connection)
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
-    * [#execute(sql, [bindParams], [options], callback)](#Connection+execute)
+    * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>function</code>
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, [bindParams], [options], callback)](#Connection+insert)
     * [#update(sql, [bindParams], [options], callback)](#Connection+update)
@@ -64,9 +64,10 @@ Marker property.
 **Access:** public  
 <a name="Connection+execute"></a>
 
-### Connection#execute(sql, [bindParams], [options], callback)
+### Connection#execute(sql, [bindParams], [options], [callback]) ⇒ <code>function</code>
 Extends the original oracledb connection.execute to provide additional behavior.
 
+**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -74,7 +75,7 @@ Extends the original oracledb connection.execute to provide additional behavior.
 | sql | <code>string</code> | The SQL to execute |
 | [bindParams] | <code>object</code> | Optional bind parameters |
 | [options] | <code>object</code> | Optional execute options |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 <a name="Connection+query"></a>
 
