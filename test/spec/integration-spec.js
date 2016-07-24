@@ -109,6 +109,17 @@ describe('Integration Tests', function () {
 
         describe('pool', function () {
             describe('getConnection', function () {
+                it('promise', function (done) {
+                    var table = 'TEST_ORA_POOL1';
+                    initDB(table, null, function (pool) {
+                        pool.getConnection().then(function (connection) {
+                            assert.isDefined(connection);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+
                 it('error', function (done) {
                     var table = 'TEST_ORA_POOL1';
                     initDB(table, null, function (pool) {
@@ -175,6 +186,43 @@ describe('Integration Tests', function () {
         });
 
         describe('connection', function () {
+            describe('promise', function () {
+                it('query', function (done) {
+                    var table = 'TEST_ORA_PRMS1';
+                    initDB(table, null, function (pool) {
+                        pool.getConnection(function (err, connection) {
+                            assert.isNull(err);
+
+                            connection.execute('SELECT * FROM TEST_ORA_PRMS1').then(function (results) {
+                                assert.isDefined(results);
+                                assert.deepEqual(results.metaData, [
+                                    {
+                                        name: 'COL1'
+                                    },
+                                    {
+                                        name: 'COL2'
+                                    },
+                                    {
+                                        name: 'COL3'
+                                    },
+                                    {
+                                        name: 'COL4'
+                                    },
+                                    {
+                                        name: 'LOB1'
+                                    },
+                                    {
+                                        name: 'LOB2'
+                                    }
+                                ]);
+
+                                end(done, connection);
+                            });
+                        });
+                    });
+                });
+            });
+
             describe('query', function () {
                 it('error', function (done) {
                     var table = 'TEST_ORA_QRY1';

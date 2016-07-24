@@ -122,7 +122,7 @@ function doSomething(connection, callback) {
 ## Class: OracleDB
 
 <a name="usage-createpool"></a>
-### 'oracledb.createPool(poolAttributes, callback)'
+### 'oracledb.createPool(poolAttributes, [callback]) ⇒ [Promise]'
 This function modifies the existing oracledb.createPool function by enhancing the returned pool to support retry in the getConnection function.<br>
 The pool.getConnection will retry configurable amount of times with configurable interval between attempts to return a connection in the getConnection function.<br>
 In case all attempts fail, the getConnection callback will receive the error object of the last attempt.
@@ -164,7 +164,7 @@ This events is triggered when a connection is released successfully.
 This events is triggered after the pool is released successfully.
 
 <a name="usage-getconnection"></a>
-### 'pool.getConnection(callback)'
+### 'pool.getConnection([callback]) ⇒ [Promise]'
 This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See [getConnection](https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool) for official API details.<br>

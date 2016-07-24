@@ -3,6 +3,7 @@
 
 var chai = require('chai');
 var assert = chai.assert;
+var PromiseLib = global.Promise || require('promiscuous');
 
 describe('simple oracledb tests', function () {
     var oracledb = require('../helpers/test-oracledb').create();
@@ -89,6 +90,34 @@ describe('simple oracledb tests', function () {
             });
         });
 
+        it('createPool valid promise', function (done) {
+            var eventTriggered = false;
+            simpleOracleDB.once('pool-created', function (pool) {
+                assert.isDefined(pool);
+                assert.isTrue(pool.simplified);
+                eventTriggered = true;
+            });
+
+            global.Promise = PromiseLib;
+
+            oracledb.createPool().then(function (pool) {
+                assert.isDefined(pool);
+                assert.isTrue(pool.simplified);
+
+                assert.isTrue(eventTriggered);
+
+                simpleOracleDB.once('pool-released', function (releasedPool) {
+                    assert.isTrue(releasedPool === pool);
+
+                    done();
+                });
+
+                pool.close();
+            }, function () {
+                assert.fail();
+            });
+        });
+
         it('createPool error', function (done) {
             oracledb.createPool(true, function (error, pool) {
                 assert.isDefined(error);
@@ -96,6 +125,32 @@ describe('simple oracledb tests', function () {
 
                 done();
             });
+        });
+
+        it('createPool error promise', function (done) {
+            global.Promise = PromiseLib;
+
+            oracledb.createPool({}).then(function () {
+                assert.fail();
+            }, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('createPool promise not supported', function () {
+            delete global.Promise;
+
+            try {
+                oracledb.createPool();
+
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+
+            global.Promise = PromiseLib;
         });
     });
 
@@ -122,6 +177,32 @@ describe('simple oracledb tests', function () {
                 });
 
                 connection.release();
+            });
+        });
+
+        it('getConnection valid promise', function (done) {
+            var eventTriggered = false;
+            simpleOracleDB.once('connection-created', function (connection) {
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
+                eventTriggered = true;
+            });
+
+            oracledb.getConnection().then(function (connection) {
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
+
+                assert.isTrue(eventTriggered);
+
+                simpleOracleDB.once('connection-released', function (releasedConnection) {
+                    assert.isTrue(releasedConnection === connection);
+
+                    done();
+                });
+
+                connection.release();
+            }, function () {
+                assert.fail();
             });
         });
     });

@@ -572,7 +572,7 @@ Extends the provided oracledb connection instance.
 * [Pool](#Pool)
     * [new Pool()](#new_Pool_new)
     * [.simplified](#Pool.simplified) : <code>boolean</code>
-    * [#getConnection(callback)](#Pool+getConnection)
+    * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>function</code>
     * [#run(action, [options], callback)](#Pool+run)
     * [#terminate([callback])](#Pool+terminate)
     * [#close([callback])](#Pool+close)
@@ -596,19 +596,20 @@ Marker property.
 **Access:** public  
 <a name="Pool+getConnection"></a>
 
-### Pool#getConnection(callback)
+### Pool#getConnection([callback]) ⇒ <code>function</code>
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
 In addition, this function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
 See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.<br>
 
+**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
 **Emits**: <code>event:connection-created</code>  
 **Access:** public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
 <a name="Pool+run"></a>
 
@@ -787,8 +788,8 @@ It will also free the connection to enable using it to invoke more operations.
         * ["connection-created" (connection)](#SimpleOracleDB+event_connection-created)
         * ["connection-released" (connection)](#SimpleOracleDB+event_connection-released)
     * _static_
-        * [.oracle.getConnection(connectionAttributes, callback)](#SimpleOracleDB.oracle.getConnection)
-        * [.oracle.createPool(poolAttributes, callback)](#SimpleOracleDB.oracle.createPool)
+        * [.oracle.getConnection(connectionAttributes, [callback])](#SimpleOracleDB.oracle.getConnection) ⇒ <code>function</code>
+        * [.oracle.createPool(poolAttributes, [callback])](#SimpleOracleDB.oracle.createPool) ⇒ <code>function</code>
 
 <a name="new_SimpleOracleDB_new"></a>
 
@@ -926,23 +927,25 @@ This events is triggered when a connection is released successfully.
 
 <a name="SimpleOracleDB.oracle.getConnection"></a>
 
-### SimpleOracleDB.oracle.getConnection(connectionAttributes, callback)
+### SimpleOracleDB.oracle.getConnection(connectionAttributes, [callback]) ⇒ <code>function</code>
 Wraps the original oracledb getConnection in order to provide an extended connection object.
 
 **Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | connectionAttributes | <code>object</code> | The connection attributes object |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the oracle connection instance |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the oracle connection instance |
 
 <a name="SimpleOracleDB.oracle.createPool"></a>
 
-### SimpleOracleDB.oracle.createPool(poolAttributes, callback)
+### SimpleOracleDB.oracle.createPool(poolAttributes, [callback]) ⇒ <code>function</code>
 Wraps the original oracledb createPool in order to provide an extended pool object.
 
 **Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
+**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -952,7 +955,7 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
 | [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
 | [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
 
 <a name="ConnectionAction"></a>
 

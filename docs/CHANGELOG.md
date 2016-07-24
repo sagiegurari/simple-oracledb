@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-07-24  | v0.1.83 | Add support for node-oracledb promise |
 | 2016-07-23  | v0.1.82 | Maintenance |
 | 2016-07-17  | v0.1.80 | Add support for node-oracledb promise |
 | 2016-07-14  | v0.1.79 | Fixed possible max stack size error |

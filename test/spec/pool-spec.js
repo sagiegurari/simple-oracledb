@@ -4,6 +4,7 @@
 
 var chai = require('chai');
 var assert = chai.assert;
+var PromiseLib = global.Promise || require('promiscuous');
 var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
 var SimpleOracleDB = require('../..');
@@ -92,6 +93,92 @@ describe('Pool Tests', function () {
 
                 done();
             });
+        });
+
+        it('getConnection simple promise', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            global.Promise = PromiseLib;
+
+            testPool.getConnection().then(function (connection) {
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
+                assert.isDefined(connection.diagnosticInfo.id);
+
+                testPool.once('connection-released', function (releasedConnection) {
+                    assert.isTrue(releasedConnection === connection);
+
+                    done();
+                });
+
+                connection.release();
+            });
+        });
+
+        it('getConnection error promise then', function (done) {
+            var testPool = oracledb.createPool();
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.throwError = true;
+
+            global.Promise = PromiseLib;
+
+            testPool.getConnection().then(function () {
+                assert.fail();
+            }, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('getConnection error promise catch', function (done) {
+            var testPool = oracledb.createPool();
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.throwError = true;
+
+            global.Promise = PromiseLib;
+
+            testPool.getConnection().then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('getConnection promise not supported', function () {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            delete global.Promise;
+
+            try {
+                testPool.getConnection().then(function () {
+                    assert.fail();
+                }).catch(function () {
+                    assert.fail();
+                });
+
+                assert.fail();
+            } catch (error) {
+                assert.isDefined(error);
+            }
+
+            global.Promise = PromiseLib;
         });
 
         it('getConnection error with valid retry', function (done) {
