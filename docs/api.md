@@ -611,6 +611,20 @@ See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#Simpl
 | --- | --- | --- |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an extended connection object |
 
+**Example**  
+```js
+oracledb.createPool({
+  retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
+  retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
+  runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
+  //any other oracledb pool attributes
+}, function onPoolCreated(error, pool) {
+  pool.getConnection(function onConnection(poolError, connection) {
+    //continue flow (connection, if provided, has been tested to ensure it is valid)
+  });
+});
+```
 <a name="Pool+run"></a>
 
 ### Pool#run(action, [options], callback)
