@@ -33,7 +33,7 @@
 * [Connection](#Connection)
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
-    * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>function</code>
+    * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>Promise</code>
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
     * [#insert(sql, [bindParams], [options], callback)](#Connection+insert)
     * [#update(sql, [bindParams], [options], callback)](#Connection+update)
@@ -64,10 +64,10 @@ Marker property.
 **Access:** public  
 <a name="Connection+execute"></a>
 
-### Connection#execute(sql, [bindParams], [options], [callback]) ⇒ <code>function</code>
+### Connection#execute(sql, [bindParams], [options], [callback]) ⇒ <code>Promise</code>
 Extends the original oracledb connection.execute to provide additional behavior.
 
-**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -572,7 +572,7 @@ Extends the provided oracledb connection instance.
 * [Pool](#Pool)
     * [new Pool()](#new_Pool_new)
     * [.simplified](#Pool.simplified) : <code>boolean</code>
-    * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>function</code>
+    * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>Promise</code>
     * [#run(action, [options], callback)](#Pool+run)
     * [#terminate([callback])](#Pool+terminate)
     * [#close([callback])](#Pool+close)
@@ -596,14 +596,14 @@ Marker property.
 **Access:** public  
 <a name="Pool+getConnection"></a>
 
-### Pool#getConnection([callback]) ⇒ <code>function</code>
+### Pool#getConnection([callback]) ⇒ <code>Promise</code>
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
 In addition, this function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
 See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.<br>
 
-**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Emits**: <code>event:connection-created</code>  
 **Access:** public  
 
@@ -788,8 +788,8 @@ It will also free the connection to enable using it to invoke more operations.
         * ["connection-created" (connection)](#SimpleOracleDB+event_connection-created)
         * ["connection-released" (connection)](#SimpleOracleDB+event_connection-released)
     * _static_
-        * [.oracle.getConnection(connectionAttributes, [callback])](#SimpleOracleDB.oracle.getConnection) ⇒ <code>function</code>
-        * [.oracle.createPool(poolAttributes, [callback])](#SimpleOracleDB.oracle.createPool) ⇒ <code>function</code>
+        * [.oracle.getConnection(connectionAttributes, [callback])](#SimpleOracleDB.oracle.getConnection) ⇒ <code>Promise</code>
+        * [.oracle.createPool(poolAttributes, [callback])](#SimpleOracleDB.oracle.createPool) ⇒ <code>Promise</code>
 
 <a name="new_SimpleOracleDB_new"></a>
 
@@ -927,11 +927,11 @@ This events is triggered when a connection is released successfully.
 
 <a name="SimpleOracleDB.oracle.getConnection"></a>
 
-### SimpleOracleDB.oracle.getConnection(connectionAttributes, [callback]) ⇒ <code>function</code>
+### SimpleOracleDB.oracle.getConnection(connectionAttributes, [callback]) ⇒ <code>Promise</code>
 Wraps the original oracledb getConnection in order to provide an extended connection object.
 
 **Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
-**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -941,11 +941,11 @@ Wraps the original oracledb getConnection in order to provide an extended connec
 
 <a name="SimpleOracleDB.oracle.createPool"></a>
 
-### SimpleOracleDB.oracle.createPool(poolAttributes, [callback]) ⇒ <code>function</code>
+### SimpleOracleDB.oracle.createPool(poolAttributes, [callback]) ⇒ <code>Promise</code>
 Wraps the original oracledb createPool in order to provide an extended pool object.
 
 **Kind**: static method of <code>[SimpleOracleDB](#SimpleOracleDB)</code>  
-**Returns**: <code>function</code> - In case of no callback provided in input, this function will return a promise  
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Default | Description |
