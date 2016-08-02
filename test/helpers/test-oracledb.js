@@ -66,7 +66,23 @@ module.exports = {
                     callback(null, new TestPool());
                 }
             },
-            getConnection: TestPool.prototype.getConnection,
+            getConnection: function (connAttrs, callback) {
+                if (this.throwError) {
+                    callback(new Error());
+                } else if (!arguments.length) {
+                    callback(new Error());
+                } else {
+                    assert.isObject(connAttrs);
+
+                    var connection = new TestConnection();
+
+                    if (this.extendConnection) {
+                        Connection.extend(connection);
+                    }
+
+                    callback(null, connection);
+                }
+            },
             execute: TestConnection.prototype.execute
         };
     },

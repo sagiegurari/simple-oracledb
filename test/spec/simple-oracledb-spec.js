@@ -163,7 +163,7 @@ describe('simple oracledb tests', function () {
                 eventTriggered = true;
             });
 
-            oracledb.getConnection(function (error, connection) {
+            oracledb.getConnection({}, function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -188,7 +188,7 @@ describe('simple oracledb tests', function () {
                 eventTriggered = true;
             });
 
-            oracledb.getConnection().then(function (connection) {
+            oracledb.getConnection({}).then(function (connection) {
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
 

@@ -107,6 +107,21 @@ describe('Integration Tests', function () {
 
         self.timeout(60000);
 
+        describe('oracledb', function () {
+            describe('getConnection', function () {
+                it('promise', function (done) {
+                    var table = 'TEST_ORA_CONN1';
+                    initDB(table, null, function () {
+                        oracledb.getConnection(connAttrs).then(function (connection) {
+                            assert.isDefined(connection);
+
+                            end(done, connection);
+                        });
+                    });
+                });
+            });
+        });
+
         describe('pool', function () {
             describe('getConnection', function () {
                 it('promise', function (done) {
