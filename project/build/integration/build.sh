@@ -2,6 +2,8 @@
 
 set -ev
 
+cd "${0%/*}"
+
 export PARENT_HOST=`/sbin/ip route|awk '/default/ { print  $3}'`
 echo "parent host: ${PARENT_HOST}"
 
