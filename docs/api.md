@@ -325,6 +325,20 @@ Extends the connection.commit to prevent commit being invoked while in the middl
 | --- | --- | --- |
 | [callback] | <code>function</code> | The commit callback function (see oracledb docs) |
 
+**Example**  
+```js
+//using callback
+connection.commit(function onCommit(error) {
+  //do something...
+});
+
+//or you can use a promise
+connection.commit().then(function () {
+  //commit done....
+}).catch(function (error) {
+  //commit failed...
+});
+```
 <a name="Connection+rollback"></a>
 
 ### Connection#rollback([callback]) ⇒ <code>Promise</code>
