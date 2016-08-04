@@ -419,6 +419,8 @@ describe('RowsReader Tests', function () {
         });
 
         it('multiple keys', function () {
+            var errorFound = false;
+
             try {
                 RowsReader.readJSON([{
                     key1: JSON.stringify({
@@ -428,10 +430,11 @@ describe('RowsReader Tests', function () {
                         test: true
                     })
                 }]);
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
         });
 
         it('no rows', function () {

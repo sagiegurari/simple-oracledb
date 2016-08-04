@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-05  | v0.1.95 | Added promise support for all library APIs |
 | 2016-08-03  | v0.1.94 | Maintenance |
 | 2016-07-26  | v0.1.84 | Add integration test via docker |
 | 2016-07-24  | v0.1.83 | Add support for node-oracledb promise |

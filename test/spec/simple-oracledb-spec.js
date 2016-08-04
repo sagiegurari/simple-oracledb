@@ -46,21 +46,26 @@ describe('simple oracledb tests', function () {
 
         it('extend unsupported', function () {
             var obj = {};
+
+            var errorFound = false;
             try {
                 simpleOracleDB.extend(obj);
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
         });
 
         it('extend no input', function () {
+            var errorFound = false;
             try {
                 simpleOracleDB.extend();
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
         });
     });
 
@@ -142,13 +147,14 @@ describe('simple oracledb tests', function () {
         it('createPool promise not supported', function () {
             delete global.Promise;
 
+            var errorFound = false;
             try {
                 oracledb.createPool();
-
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
 
             global.Promise = PromiseLib;
         });

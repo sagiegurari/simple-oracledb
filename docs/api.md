@@ -34,17 +34,17 @@
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>boolean</code>
     * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>Promise</code>
-    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
-    * [#insert(sql, [bindParams], [options], callback)](#Connection+insert)
-    * [#update(sql, [bindParams], [options], callback)](#Connection+update)
-    * [#release([options], [callback])](#Connection+release)
-    * [#close([options], [callback])](#Connection+close)
-    * [#commit(callback)](#Connection+commit)
-    * [#rollback([callback])](#Connection+rollback)
-    * [#queryJSON(sql, [bindParams], [options], callback)](#Connection+queryJSON)
-    * [#batchInsert(sql, bindParamsArray, options, callback)](#Connection+batchInsert)
-    * [#batchUpdate(sql, bindParamsArray, options, callback)](#Connection+batchUpdate)
-    * [#transaction(actions, [options], callback)](#Connection+transaction)
+    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
+    * [#insert(sql, [bindParams], [options], [callback])](#Connection+insert) ⇒ <code>Promise</code>
+    * [#update(sql, [bindParams], [options], [callback])](#Connection+update) ⇒ <code>Promise</code>
+    * [#release([options], [callback])](#Connection+release) ⇒ <code>Promise</code>
+    * [#close([options], [callback])](#Connection+close) ⇒ <code>Promise</code>
+    * [#commit([callback])](#Connection+commit) ⇒ <code>Promise</code>
+    * [#rollback([callback])](#Connection+rollback) ⇒ <code>Promise</code>
+    * [#queryJSON(sql, [bindParams], [options], [callback])](#Connection+queryJSON) ⇒ <code>Promise</code>
+    * [#batchInsert(sql, bindParamsArray, options, [callback])](#Connection+batchInsert) ⇒ <code>Promise</code>
+    * [#batchUpdate(sql, bindParamsArray, options, [callback])](#Connection+batchUpdate) ⇒ <code>Promise</code>
+    * [#transaction(actions, [options], [callback])](#Connection+transaction) ⇒ <code>Promise</code>
     * _instance_
         * ["release"](#Connection+event_release)
     * _static_
@@ -79,14 +79,14 @@ Extends the original oracledb connection.execute to provide additional behavior.
 
 <a name="Connection+query"></a>
 
-### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code>
+### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
-**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> - The stream to read the results from (if streamResults=true in options)  
+**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code> - The stream to read the results from (if streamResults=true in options) or promise if callback not provided  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -94,10 +94,10 @@ The function arguments used to execute the 'query' are exactly as defined in the
 | sql | <code>string</code> |  | The SQL to execute |
 | [bindParams] | <code>object</code> |  | Optional bind parameters |
 | [options] | <code>object</code> |  | Optional execute options |
-| [options.splitResults] | <code>object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results). See also bulkRowsAmount option. |
+| [options.splitResults] | <code>object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results, promise not supported). See also bulkRowsAmount option. |
 | [options.streamResults] | <code>object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
 | [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
-| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs (optional if streamResults=true) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs |
 
 **Example**  
 ```js
@@ -144,12 +144,13 @@ stream.on('data', function (row) {
 ```
 <a name="Connection+insert"></a>
 
-### Connection#insert(sql, [bindParams], [options], callback)
+### Connection#insert(sql, [bindParams], [options], [callback]) ⇒ <code>Promise</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -160,7 +161,7 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -202,12 +203,13 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 ```
 <a name="Connection+update"></a>
 
-### Connection#update(sql, [bindParams], [options], callback)
+### Connection#update(sql, [bindParams], [options], [callback]) ⇒ <code>Promise</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -218,7 +220,7 @@ The function arguments used to execute the 'update' are exactly as defined in th
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -239,11 +241,12 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 ```
 <a name="Connection+release"></a>
 
-### Connection#release([options], [callback])
+### Connection#release([options], [callback]) ⇒ <code>Promise</code>
 This function modifies the existing connection.release function by enabling the input
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Emits**: <code>event:release</code>  
 **Access:** public  
 
@@ -295,9 +298,10 @@ connection.close({
 ```
 <a name="Connection+close"></a>
 
-### Connection#close([options], [callback])
+### Connection#close([options], [callback]) ⇒ <code>Promise</code>
 Alias for connection.release, see connection.release for more info.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Emits**: <code>event:release</code>  
 **Access:** public  
 
@@ -311,23 +315,25 @@ Alias for connection.release, see connection.release for more info.
 
 <a name="Connection+commit"></a>
 
-### Connection#commit(callback)
+### Connection#commit([callback]) ⇒ <code>Promise</code>
 Extends the connection.commit to prevent commit being invoked while in the middle of a transaction.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>function</code> | The commit callback function (see oracledb docs) |
+| [callback] | <code>function</code> | The commit callback function (see oracledb docs) |
 
 <a name="Connection+rollback"></a>
 
-### Connection#rollback([callback])
+### Connection#rollback([callback]) ⇒ <code>Promise</code>
 This function modifies the existing connection.rollback function by enabling the input
 callback to be an optional parameter.<br>
 If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -347,12 +353,13 @@ connection.rollback(function onRollback(error) {
 ```
 <a name="Connection+queryJSON"></a>
 
-### Connection#queryJSON(sql, [bindParams], [options], callback)
+### Connection#queryJSON(sql, [bindParams], [options], [callback]) ⇒ <code>Promise</code>
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
 The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
 The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
 The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -360,7 +367,7 @@ The function arguments used to execute the 'queryJSON' are exactly as defined in
 | sql | <code>string</code> | The SQL to execute |
 | [bindParams] | <code>object</code> | Optional bind parameters |
 | [options] | <code>object</code> | Optional execute options |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the query results object holding the row count and JSONs |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the query results object holding the row count and JSONs |
 
 **Example**  
 ```js
@@ -382,7 +389,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ```
 <a name="Connection+batchInsert"></a>
 
-### Connection#batchInsert(sql, bindParamsArray, options, callback)
+### Connection#batchInsert(sql, bindParamsArray, options, [callback]) ⇒ <code>Promise</code>
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -390,6 +397,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -400,7 +408,7 @@ the bind params is now an array of bind params (one per row).
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -427,7 +435,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 ```
 <a name="Connection+batchUpdate"></a>
 
-### Connection#batchUpdate(sql, bindParamsArray, options, callback)
+### Connection#batchUpdate(sql, bindParamsArray, options, [callback]) ⇒ <code>Promise</code>
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -435,6 +443,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -445,7 +454,7 @@ the bind params is now an array of bind params (one per row).
 | [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -472,7 +481,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 ```
 <a name="Connection+transaction"></a>
 
-### Connection#transaction(actions, [options], callback)
+### Connection#transaction(actions, [options], [callback]) ⇒ <code>Promise</code>
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
@@ -483,6 +492,7 @@ When calling any connection operation (execute, insert, update, ...) the connect
 This is done to prevent commits in the middle of the transaction.<br>
 In addition, you can not start a transaction while another transaction is in progress.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -490,7 +500,7 @@ In addition, you can not start a transaction while another transaction is in pro
 | actions | <code>Array</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
 | [options] | <code>object</code> |  | Any transaction options |
 | [options.sequence] | <code>boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the transaction results |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the transaction results |
 
 **Example**  
 ```js
@@ -573,9 +583,9 @@ Extends the provided oracledb connection instance.
     * [new Pool()](#new_Pool_new)
     * [.simplified](#Pool.simplified) : <code>boolean</code>
     * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>Promise</code>
-    * [#run(action, [options], callback)](#Pool+run)
-    * [#terminate([callback])](#Pool+terminate)
-    * [#close([callback])](#Pool+close)
+    * [#run(action, [options], [callback])](#Pool+run) ⇒ <code>Promise</code>
+    * [#terminate([callback])](#Pool+terminate) ⇒ <code>Promise</code>
+    * [#close([callback])](#Pool+close) ⇒ <code>Promise</code>
     * _instance_
         * ["connection-created" (connection)](#Pool+event_connection-created)
         * ["connection-released" (connection)](#Pool+event_connection-released)
@@ -627,13 +637,14 @@ oracledb.createPool({
 ```
 <a name="Pool+run"></a>
 
-### Pool#run(action, [options], callback)
+### Pool#run(action, [options], [callback]) ⇒ <code>Promise</code>
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
 The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
 This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Default | Description |
@@ -643,7 +654,7 @@ This function basically will remove the need of caller code to get and release a
 | [options.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
 | [options.releaseOptions] | <code>object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
 | [options.releaseOptions.force] | <code>boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
-| callback | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
 
 **Example**  
 ```js
@@ -674,7 +685,7 @@ pool.run(function (connection, callback) {
 ```
 <a name="Pool+terminate"></a>
 
-### Pool#terminate([callback])
+### Pool#terminate([callback]) ⇒ <code>Promise</code>
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
@@ -682,6 +693,7 @@ is just log the error and continue.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.<br>
 The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |
@@ -704,9 +716,10 @@ pool.close();
 ```
 <a name="Pool+close"></a>
 
-### Pool#close([callback])
+### Pool#close([callback]) ⇒ <code>Promise</code>
 Alias for pool.terminate, see pool.terminate for more info.
 
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access:** public  
 
 | Param | Type | Description |

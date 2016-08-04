@@ -409,32 +409,43 @@ describe('RecordReader Tests', function () {
         });
 
         it('not json no column', function () {
-            try {
-                RecordReader.readJSON('some text');
-                assert.fail();
-            } catch (error) {
-                assert.isDefined(error);
-            }
+            var json = RecordReader.readJSON('some text');
+
+            assert.isUndefined(json);
         });
 
         it('not json with column', function () {
-            try {
-                RecordReader.readJSON('some text', 'data');
-                assert.fail();
-            } catch (error) {
-                assert.isDefined(error);
-            }
+            var json = RecordReader.readJSON('some text', 'data');
+
+            assert.isObject(json);
         });
 
-        it('not json in data with column', function () {
+        it('not json field', function () {
+            var errorFound = false;
+
             try {
                 RecordReader.readJSON({
                     data: 'some text'
                 }, 'data');
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
+        });
+
+        it('not json in data with column', function () {
+            var errorFound = false;
+
+            try {
+                RecordReader.readJSON({
+                    data: 'some text'
+                }, 'data');
+            } catch (error) {
+                errorFound = true;
+            }
+
+            assert.isTrue(errorFound);
         });
 
         it('json no column', function () {

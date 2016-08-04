@@ -166,19 +166,21 @@ describe('Pool Tests', function () {
 
             delete global.Promise;
 
+            var errorFound = false;
+
             try {
                 testPool.getConnection().then(function () {
                     assert.fail();
                 }).catch(function () {
                     assert.fail();
                 });
-
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
 
             global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
         });
 
         it('getConnection error with valid retry', function (done) {
@@ -327,52 +329,158 @@ describe('Pool Tests', function () {
     });
 
     describe('run', function () {
-        it('missing callback with options', function () {
+        it('missing callback with options with promise', function (done) {
+            var releaseCalled = false;
+
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        },
+                        rollback: function (callback) {
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            global.Promise = PromiseLib;
+
+            var promise = pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+
+                callback();
+            }, {});
+
+            promise.then(function () {
+                assert.isTrue(releaseCalled);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('missing callback with options, no promise support', function () {
             var pool = {};
             Pool.extend(pool);
+
+            delete global.Promise;
+
+            var errorFound = false;
 
             try {
                 pool.run(noop, {});
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
         });
 
-        it('missing callback without options', function () {
+        it('missing callback without options, using promise', function (done) {
+            var releaseCalled = false;
+            var pool = {
+                getConnection: function (cb) {
+                    cb(null, {
+                        break: function (breakCB) {
+                            breakCB();
+                        },
+                        execute: function () {
+                            arguments[arguments.length - 1]();
+                        },
+                        release: function (callback) {
+                            releaseCalled = true;
+                            callback();
+                        },
+                        rollback: function (callback) {
+                            callback();
+                        }
+                    });
+                }
+            };
+            Pool.extend(pool);
+
+            global.Promise = PromiseLib;
+
+            var promise = pool.run(function (connection, callback) {
+                assert.isDefined(connection);
+
+                setTimeout(function () {
+                    callback(null, 'valid output');
+                }, 5);
+            }, {
+                ignoreReleaseErrors: false
+            });
+
+            promise.then(function (result) {
+                assert.isTrue(releaseCalled);
+                assert.equal(result, 'valid output');
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('missing callback without options, no promise support', function () {
             var pool = {};
             Pool.extend(pool);
 
+            delete global.Promise;
+
+            var errorFound = false;
+
             try {
                 pool.run(noop);
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
         });
 
         it('missing action with options', function () {
             var pool = {};
             Pool.extend(pool);
 
+            var errorFound = false;
+
             try {
                 pool.run(null, {}, noop);
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
         });
 
         it('action not a function', function () {
             var pool = {};
             Pool.extend(pool);
 
+            var errorFound = false;
+
             try {
                 pool.run('test', {}, noop);
-                assert.fail();
             } catch (error) {
-                assert.isDefined(error);
+                errorFound = true;
             }
+
+            assert.isTrue(errorFound);
         });
 
         it('get connection error', function (done) {
@@ -846,7 +954,25 @@ describe('Pool Tests', function () {
             assert.isUndefined(output);
         });
 
-        it('callback undefined', function (done) {
+        it('callback undefined with promise', function (done) {
+            var pool = {
+                terminate: function (cb) {
+                    assert.isFunction(cb);
+                    cb();
+                }
+            };
+            Pool.extend(pool);
+
+            assert.isFunction(pool.baseTerminate);
+
+            global.Promise = PromiseLib;
+
+            var promise = pool.terminate();
+
+            promise.then(done);
+        });
+
+        it('callback undefined, no promise support', function (done) {
             var pool = {
                 terminate: function (cb) {
                     assert.isFunction(cb);
@@ -858,7 +984,13 @@ describe('Pool Tests', function () {
             Pool.extend(pool);
 
             assert.isFunction(pool.baseTerminate);
-            pool.terminate();
+
+            delete global.Promise;
+
+            var promise = pool.terminate();
+            assert.isUndefined(promise);
+
+            global.Promise = PromiseLib;
         });
     });
 
