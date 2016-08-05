@@ -26,9 +26,11 @@ describe('Pool Tests', function () {
             assert.isFunction(testPool.getConnectionOrg);
         });
 
-        it('with extensions', function () {
-            SimpleOracleDB.addExtension('pool', 'testPoolFunc', function () {
-                return undefined;
+        it('with extensions', function (done) {
+            SimpleOracleDB.addExtension('pool', 'testPoolFunc', function (callback) {
+                setTimeout(function () {
+                    callback(null, true);
+                }, 0);
             });
             SimpleOracleDB.addExtension('pool', 'coreFunc', function () {
                 return false;
@@ -46,7 +48,53 @@ describe('Pool Tests', function () {
             assert.isFunction(testPool.testPoolFunc);
             assert.isTrue(testPool.coreFunc());
 
-            extensions.extensions.pool = {};
+            var output = testPool.testPoolFunc(function (error, result) {
+                assert.isNull(error);
+                assert.isTrue(result);
+
+                extensions.extensions.pool = {};
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
+        it('with extensions, using promise', function (done) {
+            SimpleOracleDB.addExtension('pool', 'testPoolFunc', function (callback) {
+                setTimeout(function () {
+                    callback(null, true);
+                }, 0);
+            });
+            SimpleOracleDB.addExtension('pool', 'coreFunc', function () {
+                return false;
+            });
+
+            var testPool = oracledb.createPool();
+            testPool.coreFunc = function () {
+                return true;
+            };
+
+            Pool.extend(testPool);
+
+            assert.isTrue(testPool.simplified);
+            assert.isFunction(testPool.getConnectionOrg);
+            assert.isFunction(testPool.testPoolFunc);
+            assert.isTrue(testPool.coreFunc());
+
+            global.Promise = PromiseLib;
+
+            var promise = testPool.testPoolFunc();
+
+            promise.then(function (result) {
+                assert.isTrue(result);
+
+                extensions.extensions.pool = {};
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
         });
 
         it('no input', function () {

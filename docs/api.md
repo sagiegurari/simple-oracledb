@@ -822,7 +822,7 @@ It will also free the connection to enable using it to invoke more operations.
     * [#extend(oracledb)](#SimpleOracleDB+extend)
     * [#extend(pool)](#SimpleOracleDB+extend)
     * [#extend(connection)](#SimpleOracleDB+extend)
-    * [#addExtension(type, name, extension)](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
+    * [#addExtension(type, name, extension, [options])](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
     * _instance_
         * ["pool-created" (pool)](#SimpleOracleDB+event_pool-created)
         * ["pool-released" (pool)](#SimpleOracleDB+event_pool-released)
@@ -890,29 +890,48 @@ the extended capabilities of this library.
 
 <a name="SimpleOracleDB+addExtension"></a>
 
-### SimpleOracleDB#addExtension(type, name, extension) ⇒ <code>boolean</code>
+### SimpleOracleDB#addExtension(type, name, extension, [options]) ⇒ <code>boolean</code>
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
-This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
+This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
+Extension functions automatically get promisified unless specified differently in the optional options.
 
 **Returns**: <code>boolean</code> - True if added, false if ignored  
 **Access:** public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| type | <code>string</code> | Either 'connection' or 'pool' |
-| name | <code>string</code> | The function name which will be added to the object |
-| extension | <code>function</code> | The function to be added |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| type | <code>string</code> |  | Either 'connection' or 'pool' |
+| name | <code>string</code> |  | The function name which will be added to the object |
+| extension | <code>function</code> |  | The function to be added |
+| [options] | <code>object</code> |  | Any extension options needed |
+| [options.promise] | <code>object</code> |  | Promise options |
+| [options.promise.noPromise] | <code>boolean</code> | <code>false</code> | If true, do not promisify function |
+| [options.promise.force] | <code>boolean</code> | <code>false</code> | If true, do not check if promise is supported |
+| [options.promise.defaultCallback] | <code>boolean</code> | <code>false</code> | If true and no callback provided, generate an empty callback |
+| [options.promise.callbackMinIndex] | <code>number</code> | <code>0</code> | The minimum index in the arguments that the callback is found in |
 
 **Example**  
 ```js
 //define a new function for all new connection objects called 'myConnFunc' which accepts 2 arguments
-SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2) {
-  //implement some custom functionality
+SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2, callback) {
+  //implement some custom functionality...
+
+  callback();
 });
 
 //get connection (via oracledb directly or via pool) and start using the new function
-connection.myConnFunc('test', 123);
+connection.myConnFunc('test', 123, function () {
+  //continue flow...
+});
+
+//extensions are automatically promisified (can be disabled) so you can also run extension functions without callback
+var promise = connection.myConnFunc('test', 123);
+promise.then(function () {
+  //continue flow...
+}).catch(function (error) {
+  //got some error...
+});
 
 //define a new function for all new pool objects called 'myPoolFunc'
 SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {

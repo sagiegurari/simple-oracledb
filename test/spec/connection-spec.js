@@ -23,9 +23,11 @@ describe('Connection Tests', function () {
             assert.isTrue(testConnection.simplified);
         });
 
-        it('with extensions', function () {
-            SimpleOracleDB.addExtension('connection', 'testConnFunc', function () {
-                return undefined;
+        it('with extensions', function (done) {
+            SimpleOracleDB.addExtension('connection', 'testConnFunc', function (callback) {
+                setTimeout(function () {
+                    callback(null, true);
+                }, 0);
             });
             SimpleOracleDB.addExtension('connection', 'coreFunc', function () {
                 return false;
@@ -41,7 +43,51 @@ describe('Connection Tests', function () {
             assert.isFunction(testConnection.testConnFunc);
             assert.isTrue(testConnection.coreFunc());
 
-            extensions.extensions.connection = {};
+            var output = testConnection.testConnFunc(function (error, result) {
+                assert.isNull(error);
+                assert.isTrue(result);
+
+                extensions.extensions.connection = {};
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
+        it('with extensions, using promise', function (done) {
+            SimpleOracleDB.addExtension('connection', 'testConnFunc', function (callback) {
+                setTimeout(function () {
+                    callback(null, true);
+                }, 0);
+            });
+            SimpleOracleDB.addExtension('connection', 'coreFunc', function () {
+                return false;
+            });
+
+            var testConnection = {};
+            testConnection.coreFunc = function () {
+                return true;
+            };
+            Connection.extend(testConnection);
+
+            assert.isTrue(testConnection.simplified);
+            assert.isFunction(testConnection.testConnFunc);
+            assert.isTrue(testConnection.coreFunc());
+
+            global.Promise = PromiseLib;
+
+            var promise = testConnection.testConnFunc();
+
+            promise.then(function (result) {
+                assert.isTrue(result);
+
+                extensions.extensions.connection = {};
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
         });
 
         it('no input', function () {
@@ -2880,15 +2926,22 @@ describe('Connection Tests', function () {
                     } else {
                         assert.isFunction(cb);
                         cb();
-
-                        done();
                     }
                 }
             };
             Connection.extend(connection);
 
+            global.Promise = PromiseLib;
+
             assert.isFunction(connection.baseRelease);
-            connection.release({});
+
+            var promise = connection.release({});
+
+            promise.then(function () {
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
         });
 
         it('options and callback provided', function (done) {

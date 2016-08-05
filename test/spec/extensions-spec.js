@@ -64,12 +64,53 @@ describe('Extensions Tests', function () {
             output = extensions.add('pool', 'myfunc1', noop);
             assert.isTrue(output);
 
+            assert.isFunction(extensions.extensions.connection.myfunc1);
+            assert.isFunction(extensions.extensions.connection.myfunc2);
+
+            output = extensions.add('connection', 'myfunc2', noop);
+            assert.isTrue(output);
+
+            assert.isFunction(extensions.extensions.connection.myfunc1);
+            assert.isFunction(extensions.extensions.connection.myfunc2);
+
+            assert.isFunction(extensions.get('connection').myfunc1);
+            assert.isFunction(extensions.get('connection').myfunc2);
+
+            assert.isFunction(extensions.get('pool').myfunc1);
+        });
+
+        it('valid, no promise', function () {
+            var output = extensions.add('connection', 'myfunc1', noop, {
+                promise: {
+                    noPromise: true
+                }
+            });
+            assert.isTrue(output);
+
+            output = extensions.add('connection', 'myfunc2', noop2, {
+                promise: {
+                    noPromise: true
+                }
+            });
+            assert.isTrue(output);
+
+            output = extensions.add('pool', 'myfunc1', noop, {
+                promise: {
+                    noPromise: true
+                }
+            });
+            assert.isTrue(output);
+
             assert.deepEqual(extensions.extensions.connection, {
                 myfunc1: noop,
                 myfunc2: noop2
             });
 
-            output = extensions.add('connection', 'myfunc2', noop);
+            output = extensions.add('connection', 'myfunc2', noop, {
+                promise: {
+                    noPromise: true
+                }
+            });
             assert.isTrue(output);
 
             assert.deepEqual(extensions.extensions.connection, {

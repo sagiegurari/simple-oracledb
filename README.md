@@ -622,19 +622,32 @@ True if the monitoring is enabled and it will listen and store pool/connection d
 By default this is set to false.
 
 <a name="usage-extensions"></a>
-### 'SimpleOracleDB.addExtension(type, name, extension)'
+### 'SimpleOracleDB.addExtension(type, name, extension, [options])'
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
-This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.
+This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
+Extension functions automatically get promisified unless specified differently in the optional options.
 
 ```js
 //define a new function for all new connection objects called 'myConnFunc' which accepts 2 arguments
-SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2) {
-  //implement some custom functionality
+SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2, callback) {
+  //implement some custom functionality...
+
+  callback();
 });
 
 //get connection (via oracledb directly or via pool) and start using the new function
-connection.myConnFunc('test', 123);
+connection.myConnFunc('test', 123, function () {
+  //continue flow...
+});
+
+//extensions are automatically promisified (can be disabled) so you can also run extension functions without callback
+var promise = connection.myConnFunc('test', 123);
+promise.then(function () {
+  //continue flow...
+}).catch(function (error) {
+  //got some error...
+});
 
 //define a new function for all new pool objects called 'myPoolFunc'
 SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
@@ -648,7 +661,7 @@ pool.myPoolFunc();
 An example of an existing extension can be found at: [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) which adds the connection.upsert (insert/update) functionality.
 
 <a name="usage-extension-connection.upsert"></a>
-### 'connection.upsert(sqls, bindParams, [options], callback)'
+### 'connection.upsert(sqls, bindParams, [options], [callback]) ⇒ [Promise]'
 See [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) for more info.
 
 <br>
@@ -689,6 +702,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-05  | v0.1.96 | Extensions are now automatically promisified |
 | 2016-08-05  | v0.1.95 | Added promise support for all library APIs |
 | 2016-08-03  | v0.1.94 | Maintenance |
 | 2016-07-26  | v0.1.84 | Add integration test via docker |

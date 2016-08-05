@@ -145,4 +145,22 @@ describe('PromiseHelper Tests', function () {
             assert.isTrue(errorFound);
         });
     });
+
+    describe('promisify', function () {
+        it('no options', function () {
+            global.Promise = PromiseLib;
+
+            var func = promiseHelper.promisify(function (num, callback) {
+                assert.equal(num, 15);
+
+                callback(null, 20);
+            });
+
+            func(15).then(function (result) {
+                assert.equal(result, 20);
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+    });
 });
