@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-05  | v0.1.97 | Maintenance |
 | 2016-08-05  | v0.1.96 | Extensions are now automatically promisified |
 | 2016-08-05  | v0.1.95 | Added promise support for all library APIs |
 | 2016-08-03  | v0.1.94 | Maintenance |
