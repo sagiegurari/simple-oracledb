@@ -1771,13 +1771,15 @@ describe('Integration Tests', function () {
                                 assert.isDefined(actionsError);
                                 assert.equal(actionsError.message, 'test error');
 
-                                connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
-                                    resultSet: false
-                                }, function (queryError, jsRows) {
-                                    assert.isNull(queryError);
-                                    assert.equal(jsRows.length, 0);
+                                pool.getConnection(function (err2, newConnection) {
+                                    connection.release();
 
-                                    end(done, connection);
+                                    newConnection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.equal(jsRows.length, 0);
+
+                                        end(done, newConnection);
+                                    });
                                 });
                             });
                         });
