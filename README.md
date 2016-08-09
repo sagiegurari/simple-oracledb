@@ -702,6 +702,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-09  | v1.0.0  | Maintenance |
 | 2016-08-07  | v0.1.98 | NODE_DEBUG=simple-oracledb will now also log all SQL statements and bind params for the connection.execute function |
 | 2016-08-05  | v0.1.97 | Maintenance |
 | 2016-08-05  | v0.1.96 | Extensions are now automatically promisified |

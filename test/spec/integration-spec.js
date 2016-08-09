@@ -158,14 +158,12 @@ describe('Integration Tests', function () {
                         {
                             COL1: 'PK1',
                             COL2: 2,
-                            COL3: 30,
-                            COL4: '123'
+                            COL3: 30
                         },
                         {
                             COL1: 'PK2',
                             COL2: 200,
-                            COL3: 30,
-                            COL4: 'SOME TEST HERE'
+                            COL3: 30
                         }
                     ], function (pool) {
                         pool.run(function (connection, callback) {
@@ -179,7 +177,7 @@ describe('Integration Tests', function () {
                                     COL1: 'PK1',
                                     COL2: 2,
                                     COL3: 30,
-                                    COL4: '123',
+                                    COL4: undefined,
                                     LOB1: undefined,
                                     LOB2: undefined
                                 },
@@ -187,7 +185,7 @@ describe('Integration Tests', function () {
                                     COL1: 'PK2',
                                     COL2: 200,
                                     COL3: 30,
-                                    COL4: 'SOME TEST HERE',
+                                    COL4: undefined,
                                     LOB1: undefined,
                                     LOB2: undefined
                                 }
