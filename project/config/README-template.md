@@ -15,7 +15,7 @@
     * [Event: connection-released](#event-connection-released)
     * [Event: release](#event-pool-release)
     * [getConnection](#usage-getconnection)
-    * [run](#usage-run)
+    * [run](#usage-pool-run)
     * [terminate](#usage-terminate)
     * [close](#usage-terminate)
   * [Connection](#usage-connection)
@@ -27,6 +27,7 @@
     * [batchInsert](#usage-batchInsert)
     * [batchUpdate](#usage-batchUpdate)
     * [transaction](#usage-transaction)
+    * [run](#usage-connection-run)
     * [release](#usage-release)
     * [close](#usage-release)
     * [rollback](#usage-rollback)
@@ -184,7 +185,7 @@ oracledb.createPool({
 });
 ```
 
-<a name="usage-run"></a>
+<a name="usage-pool-run"></a>
 ### 'pool.run(action, [options], [callback]) ⇒ [Promise]'
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
@@ -514,6 +515,88 @@ connection.transaction([
 ], {
   sequence: true
 }, function onTransactionResults(error, output) {
+  //continue flow...
+});
+```
+
+<a name="usage-connection-run"></a>
+### 'connection.run(actions, [options], [callback]) ⇒ [Promise]'
+Enables to run multiple oracle operations in sequence or parallel (parallel only for IO operations as the driver will queue operations on same connection).<br>
+Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+All provided actions are executed in parallel unless options.sequence=true is provided.<br>
+This function is basically the same as connection.transaction with few exceptions<br>
+<ul>
+  <li>This function will <b>not</b> auto commit/rollback or disable any commits/rollbacks done by the user</li>
+  <li>You can invoke connection.run inside connection.run as many times as needed (for example if you execute connection.run with option.sequence=false meaning parallel and inside invoke connection.run with option.sequence=true for a subset of operations)</li>
+</ul>
+
+```js
+//run all actions in parallel
+connection.run([
+  function insertSomeRows(callback) {
+    connection.insert(...., function (error, results) {
+      //some more inserts....
+      connection.insert(...., callback);
+    });
+  },
+  function insertSomeMoreRows(callback) {
+    connection.insert(...., callback);
+  },
+  function doSomeUpdates(callback) {
+    connection.update(...., callback);
+  },
+  function runBatchUpdates(callback) {
+    connection.batchUpdate(...., callback);
+  }
+], function onActionsResults(error, output) {
+  //continue flow...
+});
+
+//run all actions in sequence
+connection.run([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}, function onActionsResults(error, output) {
+  //continue flow...
+});
+
+//run some actions in sequence and a subset in parallel
+connection.run([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  },
+  function subsetInParallel(callback) {
+    //run all actions in parallel
+    connection.run([
+      function insertSomeRows(subsetCallback) {
+        connection.insert(...., function (error, results) {
+          //some more inserts....
+          connection.insert(...., subsetCallback);
+        });
+      },
+      function insertSomeMoreRows(subsetCallback) {
+        connection.insert(...., subsetCallback);
+      },
+      function doSomeUpdates(subsetCallback) {
+        connection.update(...., subsetCallback);
+      },
+      function runBatchUpdates(subsetCallback) {
+        connection.batchUpdate(...., subsetCallback);
+      }
+    ], callback); //all parallel actions done, call main callback
+  }
+], {
+  sequence: true
+}, function onActionsResults(error, output) {
   //continue flow...
 });
 ```

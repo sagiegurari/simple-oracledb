@@ -1586,6 +1586,204 @@ describe('Integration Tests', function () {
                     });
                 });
             });
+
+            describe('run', function () {
+                it('multiple actions', function (done) {
+                    var table = 'TEST_ORA_RUN1';
+
+                    var longClobText = 'this is a really long line of test data\n';
+                    var index;
+                    var buffer = [];
+                    for (index = 0; index < 1000; index++) {
+                        buffer.push(longClobText);
+                    }
+                    longClobText = buffer.join('');
+
+                    initDB(table, [], function (pool) {
+                        pool.getConnection(function (err, connection) {
+                            assert.isNull(err);
+
+                            connection.run([
+                                function (cb) {
+                                    connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                        {
+                                            value1: 'test',
+                                            value2: 123,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            value1: 'test2',
+                                            value2: 455,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('second row')
+                                        }
+                                    ], {
+                                        autoCommit: true,
+                                        lobMetaInfo: {
+                                            LOB1: 'clob1',
+                                            LOB2: 'blob2'
+                                        }
+                                    }, cb);
+                                },
+                                function (cb) {
+                                    connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                        {
+                                            value1: 'testI2',
+                                            value2: 1000,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            value1: 'testI3',
+                                            value2: 2000,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('second row')
+                                        }
+                                    ], {
+                                        autoCommit: true,
+                                        lobMetaInfo: {
+                                            LOB1: 'clob1',
+                                            LOB2: 'blob2'
+                                        }
+                                    }, cb);
+                                }
+                            ], function (actionsError) {
+                                assert.isNull(actionsError);
+
+                                connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                    resultSet: false
+                                }, function (queryError, jsRows) {
+                                    assert.isNull(queryError);
+                                    assert.deepEqual([
+                                        {
+                                            COL1: 'test',
+                                            COL2: 123,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            COL1: 'test2',
+                                            COL2: 455,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('second row')
+                                        },
+                                        {
+                                            COL1: 'testI2',
+                                            COL2: 1000,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            COL1: 'testI3',
+                                            COL2: 2000,
+                                            COL3: undefined,
+                                            COL4: undefined,
+                                            LOB1: longClobText,
+                                            LOB2: new Buffer('second row')
+                                        }
+                                    ], jsRows);
+
+                                    end(done, connection);
+                                });
+                            });
+                        });
+                    });
+                });
+
+                it('error in action', function (done) {
+                    var table = 'TEST_ORA_RUN2';
+
+                    var longClobText = 'this is a really long line of test data\n';
+                    var index;
+                    var buffer = [];
+                    for (index = 0; index < 1000; index++) {
+                        buffer.push(longClobText);
+                    }
+                    longClobText = buffer.join('');
+
+                    initDB(table, [], function (pool) {
+                        pool.getConnection(function (err, connection) {
+                            assert.isNull(err);
+
+                            connection.run([
+                                function (cb) {
+                                    connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                        {
+                                            value1: 'test',
+                                            value2: 123,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            value1: 'test2',
+                                            value2: 455,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('second row')
+                                        }
+                                    ], {
+                                        autoCommit: false,
+                                        lobMetaInfo: {
+                                            LOB1: 'clob1',
+                                            LOB2: 'blob2'
+                                        }
+                                    }, cb);
+                                },
+                                function (cb) {
+                                    connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                        {
+                                            value1: 'testI2',
+                                            value2: 1000,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('blob text here')
+                                        },
+                                        {
+                                            value1: 'testI3',
+                                            value2: 2000,
+                                            clob1: longClobText,
+                                            blob2: new Buffer('second row')
+                                        }
+                                    ], {
+                                        autoCommit: false,
+                                        lobMetaInfo: {
+                                            LOB1: 'clob1',
+                                            LOB2: 'blob2'
+                                        }
+                                    }, cb);
+                                },
+                                function (cb) {
+                                    setTimeout(function () {
+                                        cb(new Error('test error'));
+                                    }, 250);
+                                },
+                                function (cb) {
+                                    connection.commit(cb);
+                                }
+                            ], {
+                                sequence: true
+                            }, function (actionsError) {
+                                assert.isDefined(actionsError);
+                                assert.equal(actionsError.message, 'test error');
+
+                                connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                    resultSet: false
+                                }, function (queryError, jsRows) {
+                                    assert.isNull(queryError);
+                                    assert.equal(jsRows.length, 0);
+
+                                    end(done, connection);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
         });
     }
 });

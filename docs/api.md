@@ -44,6 +44,7 @@
     * [#queryJSON(sql, [bindParams], [options], [callback])](#Connection+queryJSON) ⇒ <code>Promise</code>
     * [#batchInsert(sql, bindParamsArray, options, [callback])](#Connection+batchInsert) ⇒ <code>Promise</code>
     * [#batchUpdate(sql, bindParamsArray, options, [callback])](#Connection+batchUpdate) ⇒ <code>Promise</code>
+    * [#run(actions, [options], [callback])](#Connection+run) ⇒ <code>Promise</code>
     * [#transaction(actions, [options], [callback])](#Connection+transaction) ⇒ <code>Promise</code>
     * _instance_
         * ["release"](#Connection+event_release)
@@ -490,6 +491,99 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
     blob_column2: 'blobBuffer2'
   }
 }, function onResults(error, output) {
+  //continue flow...
+});
+```
+<a name="Connection+run"></a>
+
+### Connection#run(actions, [options], [callback]) ⇒ <code>Promise</code>
+Enables to run multiple oracle operations in sequence or parallel (parallel only for IO operations as the driver will queue operations on same connection).<br>
+Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+All provided actions are executed in parallel unless options.sequence=true is provided.<br>
+This function is basically the same as connection.transaction with few exceptions<br>
+<ul>
+  <li>This function will <b>not</b> auto commit/rollback or disable any commits/rollbacks done by the user</li>
+  <li>You can invoke connection.run inside connection.run as many times as needed (for example if you execute connection.run with option.sequence=false meaning parallel and inside invoke connection.run with option.sequence=true for a subset of operations)</li>
+</ul>
+
+**Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
+**Access:** public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| actions | <code>Array</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| [options] | <code>object</code> |  | Any run options |
+| [options.sequence] | <code>boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the run actions results |
+
+**Example**  
+```js
+//run all actions in parallel
+connection.run([
+  function insertSomeRows(callback) {
+    connection.insert(...., function (error, results) {
+      //some more inserts....
+      connection.insert(...., callback);
+    });
+  },
+  function insertSomeMoreRows(callback) {
+    connection.insert(...., callback);
+  },
+  function doSomeUpdates(callback) {
+    connection.update(...., callback);
+  },
+  function runBatchUpdates(callback) {
+    connection.batchUpdate(...., callback);
+  }
+], function onActionsResults(error, output) {
+  //continue flow...
+});
+
+//run all actions in sequence
+connection.run([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}, function onActionsResults(error, output) {
+  //continue flow...
+});
+
+//run some actions in sequence and a subset in parallel
+connection.run([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  },
+  function subsetInParallel(callback) {
+    //run all actions in parallel
+    connection.run([
+      function insertSomeRows(subsetCallback) {
+        connection.insert(...., function (error, results) {
+          //some more inserts....
+          connection.insert(...., subsetCallback);
+        });
+      },
+      function insertSomeMoreRows(subsetCallback) {
+        connection.insert(...., subsetCallback);
+      },
+      function doSomeUpdates(subsetCallback) {
+        connection.update(...., subsetCallback);
+      },
+      function runBatchUpdates(subsetCallback) {
+        connection.batchUpdate(...., subsetCallback);
+      }
+    ], callback); //all parallel actions done, call main callback
+  }
+], {
+  sequence: true
+}, function onActionsResults(error, output) {
   //continue flow...
 });
 ```

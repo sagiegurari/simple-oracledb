@@ -5130,6 +5130,249 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('run', function () {
+        it('no actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.run(undefined, function () {
+                assert.fail();
+            });
+
+            setTimeout(done, 50);
+        });
+
+        it('single action', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            connection.run(function (callback) {
+                assert.isFalse(commitDone);
+
+                callback(null, 'my result');
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual(['my result'], results);
+                assert.isFalse(commitDone);
+
+                done();
+            });
+        });
+
+        it('single action, using promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = connection.run(function (callback) {
+                assert.isFalse(commitDone);
+
+                callback(null, 'my result');
+            });
+
+            promise.then(function (results) {
+                assert.deepEqual(['my result'], results);
+                assert.isFalse(commitDone);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('single action, no promise support', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            var errorFound = false;
+
+            delete global.Promise;
+
+            try {
+                connection.run(function (callback) {
+                    assert.isFalse(commitDone);
+
+                    callback(null, 'my result');
+                });
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('multiple actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var secondStarted = false;
+            connection.run([
+                function (callback) {
+                    setTimeout(function () {
+                        assert.isTrue(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function (callback) {
+                    secondStarted = true;
+
+                    callback(null, 'my second');
+                }
+            ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+
+                done();
+            });
+        });
+
+        it('parallel', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var secondStarted = false;
+            connection.run([
+                function (callback) {
+                    setTimeout(function () {
+                        assert.isTrue(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function (callback) {
+                    secondStarted = true;
+
+                    callback(null, 'my second');
+                }
+            ], {
+                sequence: false
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+
+                done();
+            });
+        });
+
+        it('sequence', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var secondStarted = false;
+            connection.run([
+                function (callback) {
+                    setTimeout(function () {
+                        assert.isFalse(secondStarted);
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function (callback) {
+                    secondStarted = true;
+
+                    callback(null, 'my second');
+                }
+            ], {
+                sequence: true
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+
+                done();
+            });
+        });
+
+        it('run in run', function (done) {
+            var connection = {};
+
+            Connection.extend(connection);
+
+            connection.run(function (callback) {
+                connection.run(function (cb) {
+                    cb(null, 2);
+                }, callback);
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual(results, [[2]]);
+
+                done();
+            });
+        });
+
+        it('error in actions', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.run([
+                function (callback) {
+                    callback(null, 'my first');
+                },
+                function (callback) {
+                    callback(new Error('test error'));
+                }
+            ], function (error) {
+                assert.isDefined(error);
+                assert.equal('test error', error.message);
+
+                done();
+            });
+        });
+
+        it('error in actions, using promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var promise = connection.run([
+                function (callback) {
+                    callback(null, 'my first');
+                },
+                function (callback) {
+                    callback(new Error('test error'));
+                }
+            ]);
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.equal('test error', error.message);
+
+                done();
+            });
+        });
+    });
+
     describe('transaction', function () {
         it('ensure autocommit false', function (done) {
             var connection = {
