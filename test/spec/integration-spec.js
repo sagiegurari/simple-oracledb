@@ -59,6 +59,9 @@ describe('Integration Tests', function () {
                                 var func = [];
                                 data.forEach(function (rowData) {
                                     func.push(function (asyncCB) {
+                                        if (!rowData.COL4) {
+                                            rowData.COL4 = undefined;
+                                        }
                                         if (!rowData.LOB1) {
                                             rowData.LOB1 = undefined;
                                         }
