@@ -5230,7 +5230,7 @@ describe('Connection Tests', function () {
             connection.run([
                 function (callback) {
                     setTimeout(function () {
-                        assert.isTrue(secondStarted);
+                        assert.isFalse(secondStarted); //sequence is default
 
                         callback(null, 'my first');
                     }, 10);
@@ -5518,7 +5518,7 @@ describe('Connection Tests', function () {
                     assert.isFalse(commitDone);
 
                     setTimeout(function () {
-                        assert.isTrue(secondStarted);
+                        assert.isFalse(secondStarted); //sequence is default
 
                         callback(null, 'my first');
                     }, 10);

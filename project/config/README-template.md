@@ -475,7 +475,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
-All provided actions are executed in parallel unless options.sequence=true is provided.<br>
+All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
 When calling any connection operation (execute, insert, update, ...) the connection will automatically set the autoCommit=false and will ignore the value provided.<br>
@@ -500,7 +500,9 @@ connection.transaction([
   function runBatchUpdates(callback) {
     connection.batchUpdate(...., callback);
   }
-], function onTransactionResults(error, output) {
+], {
+  sequence: false
+}, function onTransactionResults(error, output) {
   //continue flow...
 });
 
@@ -521,9 +523,9 @@ connection.transaction([
 
 <a name="usage-connection-run"></a>
 ### 'connection.run(actions, [options], [callback]) ⇒ [Promise]'
-Enables to run multiple oracle operations in sequence or parallel (parallel only for IO operations as the driver will queue operations on same connection).<br>
+Enables to run multiple oracle operations in sequence or parallel.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
-All provided actions are executed in parallel unless options.sequence=true is provided.<br>
+All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 This function is basically the same as connection.transaction with few exceptions<br>
 <ul>
   <li>This function will <b>not</b> auto commit/rollback or disable any commits/rollbacks done by the user</li>
@@ -548,7 +550,9 @@ connection.run([
   function runBatchUpdates(callback) {
     connection.batchUpdate(...., callback);
   }
-], function onActionsResults(error, output) {
+], {
+  sequence: false
+}, function onActionsResults(error, output) {
   //continue flow...
 });
 
@@ -592,7 +596,9 @@ connection.run([
       function runBatchUpdates(subsetCallback) {
         connection.batchUpdate(...., subsetCallback);
       }
-    ], callback); //all parallel actions done, call main callback
+    ], {
+      sequence: false
+    }, callback); //all parallel actions done, call main callback
   }
 ], {
   sequence: true
