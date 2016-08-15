@@ -309,6 +309,11 @@ stream.on('data', function (row) {
   }
 });
 
+//optionally listen also to metadata of query
+stream.on('metadata', function (metaData) {
+  console.log(metaData);
+});
+
 //listen to other events such as end/close/error....
 ```
 

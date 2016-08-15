@@ -309,6 +309,11 @@ stream.on('data', function (row) {
   }
 });
 
+//optionally listen also to metadata of query
+stream.on('metadata', function (metaData) {
+  console.log(metaData);
+});
+
 //listen to other events such as end/close/error....
 ```
 
@@ -791,6 +796,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
 | 2016-08-15  | v1.1.1  | Maintenance |
 | 2016-08-10  | v1.1.0  | Breaking change connection.run and connection.transaction default is now sequence instead of parallel |
 | 2016-08-09  | v1.0.2  | Added connection.run |
