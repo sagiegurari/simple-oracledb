@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-08-15  | v1.1.1  | Maintenance |
 | 2016-08-10  | v1.1.0  | Breaking change connection.run and connection.transaction default is now sequence instead of parallel |
 | 2016-08-09  | v1.0.2  | Added connection.run |
 | 2016-08-09  | v1.0.1  | Maintenance |
