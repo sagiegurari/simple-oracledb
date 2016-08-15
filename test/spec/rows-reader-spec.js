@@ -103,6 +103,50 @@ describe('RowsReader Tests', function () {
             });
         });
 
+        it('array - basic js types, huge size', function (done) {
+            this.timeout(5000);
+
+            var data = [];
+            var result = [];
+            var rowData;
+            var index;
+            for (index = 0; index < 5000; index++) {
+                rowData = [
+                    index,
+                    'test-' + index,
+                    (index % 20),
+                    undefined
+                ];
+
+                data.push(rowData);
+                result.push({
+                    COL1: rowData[0],
+                    COL2: rowData[1],
+                    COL3: rowData[2],
+                    COL4: rowData[3]
+                });
+            }
+
+            RowsReader.read([
+                {
+                    name: 'COL1'
+                },
+                {
+                    name: 'COL2'
+                }, {
+                    name: 'COL3'
+                },
+                {
+                    name: 'COL4'
+                }
+            ], data, function (error, jsRows) {
+                assert.isNull(error);
+                assert.deepEqual(result, jsRows);
+
+                done();
+            });
+        });
+
         it('array - CLOB types', function (done) {
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
