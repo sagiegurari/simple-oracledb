@@ -292,7 +292,7 @@ describe('Connection Tests', function () {
                 assert.equal(argumentsArray.shift(), 1);
                 assert.equal(argumentsArray.shift(), 2);
                 assert.deepEqual(argumentsArray.shift(), {
-                    resultSet: true
+                    maxRows: 5
                 });
 
                 argumentsArray.shift()(null, {
@@ -301,7 +301,9 @@ describe('Connection Tests', function () {
                 });
             };
 
-            connection.query(1, 2, {}, function (error, jsRows) {
+            connection.query(1, 2, {
+                maxRows: 5
+            }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([], jsRows);
             });
