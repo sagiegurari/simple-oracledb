@@ -64,7 +64,6 @@
     "istanbul": "latest",
     "jit-grunt": "latest",
     "js-project-commons": "latest",
-    "load-grunt-configs": "latest",
     "mocha": "latest",
     "promiscuous": "latest",
     "time-grunt": "latest"
