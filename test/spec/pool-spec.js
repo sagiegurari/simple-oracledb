@@ -632,10 +632,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {
@@ -665,10 +665,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {
@@ -700,10 +700,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {
@@ -735,10 +735,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {
@@ -768,10 +768,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {
@@ -803,10 +803,10 @@ describe('Pool Tests', function () {
 
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
-                connection.release = function (options, callback) {
+                connection.release = function (options, cb) {
                     assert.isDefined(options);
                     releaseCalled = true;
-                    callback(new Error('release error'));
+                    cb(new Error('release error'));
                 };
 
                 setTimeout(function () {

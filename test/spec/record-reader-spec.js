@@ -2,7 +2,6 @@
 
 /*global describe: false, it: false */
 
-var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
 var assert = chai.assert;
 var helper = require('../helpers/test-oracledb');
@@ -118,7 +117,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('unsupported', function (done) {
-            RecordReader.getValue({}, function (error, value) {
+            RecordReader.getValue({}, function (error) {
                 assert.isDefined(error);
 
                 done();

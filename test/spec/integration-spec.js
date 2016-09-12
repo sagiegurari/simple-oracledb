@@ -1366,8 +1366,8 @@ describe('Integration Tests', function () {
 
                                         connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
                                             resultSet: false
-                                        }, function (queryError, jsRows) {
-                                            assert.isNull(queryError);
+                                        }, function (queryError2, jsRows2) {
+                                            assert.isNull(queryError2);
                                             assert.deepEqual([
                                                 {
                                                     COL1: 'testU1',
@@ -1385,7 +1385,7 @@ describe('Integration Tests', function () {
                                                     LOB1: 'NEW CLOB2',
                                                     LOB2: new Buffer('AND ANOTHER NEW BLOB')
                                                 }
-                                            ], jsRows);
+                                            ], jsRows2);
 
                                             end(done, connection);
                                         });

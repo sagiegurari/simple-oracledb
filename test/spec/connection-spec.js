@@ -2762,7 +2762,7 @@ describe('Connection Tests', function () {
                 done();
             }).catch(function () {
                 assert.fail();
-            })
+            });
         });
 
         it('multiple lobs, no rows', function (done) {
@@ -4738,7 +4738,7 @@ describe('Connection Tests', function () {
                 done();
             }).catch(function () {
                 assert.fail();
-            })
+            });
         });
 
         it('no lobs, no promise support', function () {
@@ -5642,7 +5642,7 @@ describe('Connection Tests', function () {
                 done();
             }).catch(function () {
                 assert.fail();
-            })
+            });
         });
 
         it('single action, no promise support', function () {
