@@ -1,5 +1,6 @@
 'use strict';
-/*global describe: false, it: false */
+
+/*global describe: false, it: false*/
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -25,15 +26,26 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
                     name: 'COL4'
                 }
             ], [
-                [1, 'test', 50, undefined],
-                ['a', date, undefined, null]
+                [
+                    1,
+                    'test',
+                    50,
+                    undefined
+                ],
+                [
+                    'a',
+                    date,
+                    undefined,
+                    null
+                ]
             ], function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
@@ -63,7 +75,8 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -110,11 +123,14 @@ describe('RowsReader Tests', function () {
             var result = [];
             var rowData;
             var index;
+            var numValue;
             for (index = 0; index < 5000; index++) {
+                numValue = (index % 20);
+
                 rowData = [
                     index,
                     'test-' + index,
-                    (index % 20),
+                    numValue,
                     undefined
                 ];
 
@@ -133,7 +149,8 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -158,15 +175,26 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
                     name: 'COL4'
                 }
             ], [
-                [lob1, 'test', 50, undefined],
-                ['a', date, undefined, lob2]
+                [
+                    lob1,
+                    'test',
+                    50,
+                    undefined
+                ],
+                [
+                    'a',
+                    date,
+                    undefined,
+                    lob2
+                ]
             ], function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
@@ -209,7 +237,8 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -270,15 +299,26 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
                     name: 'COL4'
                 }
             ], [
-                [lob1, 'test', 50, undefined],
-                ['a', date, undefined, lob2]
+                [
+                    lob1,
+                    'test',
+                    50,
+                    undefined
+                ],
+                [
+                    'a',
+                    date,
+                    undefined,
+                    lob2
+                ]
             ], function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
@@ -321,7 +361,8 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -382,15 +423,26 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
                     name: 'COL4'
                 }
             ], [
-                [lob1, 'test', 50, undefined],
-                ['a', date, undefined, lob2]
+                [
+                    lob1,
+                    'test',
+                    50,
+                    undefined
+                ],
+                [
+                    'a',
+                    date,
+                    undefined,
+                    lob2
+                ]
             ], function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'test lob error');
@@ -419,7 +471,8 @@ describe('RowsReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -466,14 +519,16 @@ describe('RowsReader Tests', function () {
             var errorFound = false;
 
             try {
-                RowsReader.readJSON([{
-                    key1: JSON.stringify({
-                        test: true
-                    }),
-                    key2: JSON.stringify({
-                        test: true
-                    })
-                }]);
+                RowsReader.readJSON([
+                    {
+                        key1: JSON.stringify({
+                            test: true
+                        }),
+                        key2: JSON.stringify({
+                            test: true
+                        })
+                    }
+                ]);
             } catch (error) {
                 errorFound = true;
             }

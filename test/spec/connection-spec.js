@@ -1,4 +1,5 @@
 'use strict';
+
 /*global describe: false, it: false */
 
 var chai = require('chai');
@@ -867,15 +868,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 setTimeout(function () {
@@ -988,15 +993,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 setTimeout(function () {
@@ -1115,15 +1124,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 var cb = argumentsArray.pop();
@@ -1252,15 +1265,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 var cb = argumentsArray.pop();
@@ -1349,15 +1366,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
@@ -1508,15 +1529,19 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [null, function () {
-                    lob1.emit('data', 'test1');
-                    lob1.emit('data', '\ntest2');
-                    lob1.emit('end');
-                }, function () {
-                    lob2.emit('data', '123');
-                    lob2.emit('data', '456');
-                    lob2.emit('end');
-                }];
+                var dbEvents = [
+                    null,
+                    function () {
+                        lob1.emit('data', 'test1');
+                        lob1.emit('data', '\ntest2');
+                        lob1.emit('end');
+                    },
+                    function () {
+                        lob2.emit('data', '123');
+                        lob2.emit('data', '456');
+                        lob2.emit('end');
+                    }
+                ];
 
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
@@ -1641,15 +1666,19 @@ describe('Connection Tests', function () {
                             }
                         ]
                     ];
-                    var dbEvents = [null, function () {
-                        lob1.emit('data', 'test1');
-                        lob1.emit('data', '\ntest2');
-                        lob1.emit('end');
-                    }, function () {
-                        lob2.emit('data', '123');
-                        lob2.emit('data', '456');
-                        lob2.emit('end');
-                    }];
+                    var dbEvents = [
+                        null,
+                        function () {
+                            lob1.emit('data', 'test1');
+                            lob1.emit('data', '\ntest2');
+                            lob1.emit('end');
+                        },
+                        function () {
+                            lob2.emit('data', '123');
+                            lob2.emit('data', '456');
+                            lob2.emit('end');
+                        }
+                    ];
 
                     argumentsArray.pop()(null, {
                         metaData: columnNames,
@@ -3597,9 +3626,11 @@ describe('Connection Tests', function () {
             connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
-                argumentsArray.pop()(null, [{
-                    data: 'not json text'
-                }]);
+                argumentsArray.pop()(null, [
+                    {
+                        data: 'not json text'
+                    }
+                ]);
             };
 
             connection.queryJSON(1, 2, {}, function (error) {
@@ -3659,9 +3690,11 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             connection.query = function (callback) {
-                callback(null, [{
-                    data: ''
-                }]);
+                callback(null, [
+                    {
+                        data: ''
+                    }
+                ]);
             };
 
             connection.queryJSON(function (error, results) {
@@ -3676,9 +3709,11 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             connection.query = function (callback) {
-                callback(null, [{
-                    data: undefined
-                }]);
+                callback(null, [
+                    {
+                        data: undefined
+                    }
+                ]);
             };
 
             connection.queryJSON(function (error, results) {
@@ -3693,9 +3728,11 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             connection.query = function (callback) {
-                callback(null, [{
-                    data: 'some text'
-                }]);
+                callback(null, [
+                    {
+                        data: 'some text'
+                    }
+                ]);
             };
 
             connection.queryJSON(function (error) {

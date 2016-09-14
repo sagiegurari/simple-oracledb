@@ -1,5 +1,6 @@
 'use strict';
-/*global describe: false, it: false */
+
+/*global describe: false, it: false*/
 
 var asyncLib = require('async');
 var chai = require('chai');
@@ -1061,7 +1062,12 @@ describe('Integration Tests', function () {
                                 oracle: true,
                                 text: 'test',
                                 subObj: {
-                                    array: [1, 2, 3, '4']
+                                    array: [
+                                        1,
+                                        2,
+                                        3,
+                                        '4'
+                                    ]
                                 }
                             })
                         }
@@ -1077,7 +1083,12 @@ describe('Integration Tests', function () {
                                     oracle: true,
                                     text: 'test',
                                     subObj: {
-                                        array: [1, 2, 3, '4']
+                                        array: [
+                                            1,
+                                            2,
+                                            3,
+                                            '4'
+                                        ]
                                     }
                                 }, results.json);
 
@@ -1100,7 +1111,12 @@ describe('Integration Tests', function () {
                                 oracle: true,
                                 text: 'test',
                                 subObj: {
-                                    array: [1, 2, 3, '4']
+                                    array: [
+                                        1,
+                                        2,
+                                        3,
+                                        '4'
+                                    ]
                                 }
                             })
                         },
@@ -1114,9 +1130,15 @@ describe('Integration Tests', function () {
                                 oracle: 'oracledb',
                                 text: 'test',
                                 subObj: {
-                                    array: [1, 2, 3, '4', {
-                                        works: 'yes'
-                                    }]
+                                    array: [
+                                        1,
+                                        2,
+                                        3,
+                                        '4',
+                                        {
+                                            works: 'yes'
+                                        }
+                                    ]
                                 }
                             })
                         }
@@ -1133,7 +1155,12 @@ describe('Integration Tests', function () {
                                         oracle: true,
                                         text: 'test',
                                         subObj: {
-                                            array: [1, 2, 3, '4']
+                                            array: [
+                                                1,
+                                                2,
+                                                3,
+                                                '4'
+                                            ]
                                         }
                                     },
                                     {
@@ -1141,9 +1168,15 @@ describe('Integration Tests', function () {
                                         oracle: 'oracledb',
                                         text: 'test',
                                         subObj: {
-                                            array: [1, 2, 3, '4', {
-                                                works: 'yes'
-                                            }]
+                                            array: [
+                                                1,
+                                                2,
+                                                3,
+                                                '4',
+                                                {
+                                                    works: 'yes'
+                                                }
+                                            ]
                                         }
                                     }
                                 ], results.json);

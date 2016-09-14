@@ -1,6 +1,6 @@
 'use strict';
 
-/*global describe: false, it: false */
+/*global describe: false, it: false*/
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -159,13 +159,19 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
                     name: 'COL4'
                 }
-            ], [1, 'test', 50, undefined], function (error, jsObject) {
+            ], [
+                1,
+                'test',
+                50,
+                undefined
+            ], function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -185,7 +191,8 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -219,7 +226,8 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -231,7 +239,14 @@ describe('RecordReader Tests', function () {
                 {
                     name: 'LOB2'
                 }
-            ], [1, 'test', 50, undefined, lob1, lob2], function (error, jsObject) {
+            ], [
+                1,
+                'test',
+                50,
+                undefined,
+                lob1,
+                lob2
+            ], function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -266,7 +281,8 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -320,7 +336,8 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -332,7 +349,14 @@ describe('RecordReader Tests', function () {
                 {
                     name: 'LOB2'
                 }
-            ], [1, 'test', 50, undefined, lob1, lob2], function (error) {
+            ], [
+                1,
+                'test',
+                50,
+                undefined,
+                lob1,
+                lob2
+            ], function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob1 error');
 
@@ -359,7 +383,8 @@ describe('RecordReader Tests', function () {
                 },
                 {
                     name: 'COL2'
-                }, {
+                },
+                {
                     name: 'COL3'
                 },
                 {
@@ -462,7 +487,11 @@ describe('RecordReader Tests', function () {
                 data: JSON.stringify({
                     a: 1,
                     test: true,
-                    array: [1, 2, 3],
+                    array: [
+                        1,
+                        2,
+                        3
+                    ],
                     subObject: {
                         key1: 'value1'
                     }
@@ -472,7 +501,11 @@ describe('RecordReader Tests', function () {
             assert.deepEqual(output, {
                 a: 1,
                 test: true,
-                array: [1, 2, 3],
+                array: [
+                    1,
+                    2,
+                    3
+                ],
                 subObject: {
                     key1: 'value1'
                 }
@@ -484,7 +517,11 @@ describe('RecordReader Tests', function () {
                 data: JSON.stringify({
                     a: 1,
                     test: true,
-                    array: [1, 2, 3],
+                    array: [
+                        1,
+                        2,
+                        3
+                    ],
                     subObject: {
                         key1: 'value1'
                     }

@@ -1,5 +1,6 @@
 'use strict';
-/*global describe: false, it: false */
+
+/*global describe: false, it: false*/
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -14,7 +15,8 @@ describe('resultSetReader Tests', function () {
         },
         {
             name: 'COL2'
-        }, {
+        },
+        {
             name: 'COL3'
         },
         {
@@ -86,15 +88,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             resultSetReader.readNextRows(columnNames, {
                 getRows: function (number, callback) {
@@ -139,15 +145,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             resultSetReader.readNextRows(columnNames, {
                 getRows: function (number, callback) {
@@ -230,15 +240,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             resultSetReader.readFully(columnNames, {
                 close: function (releaseCallback) {
@@ -324,15 +338,19 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             resultSetReader.readFully(columnNames, {
                 close: function (releaseCallback) {
@@ -398,15 +416,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('error', new Error('lob2 error'));
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('error', new Error('lob2 error'));
+                }
+            ];
 
             resultSetReader.readFully(columnNames, {
                 close: function (releaseCallback) {
@@ -467,15 +489,19 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('error', new Error('lob2 error'));
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('error', new Error('lob2 error'));
+                }
+            ];
 
             resultSetReader.readFully(columnNames, {
                 close: function (releaseCallback) {
@@ -553,15 +579,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             var outputData = [
                 [
@@ -661,15 +691,19 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             var outputData = [
                 [
@@ -749,15 +783,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('error', new Error('lob2 error'));
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('error', new Error('lob2 error'));
+                }
+            ];
 
             var counter = 0;
             resultSetReader.readBulks(columnNames, {
@@ -826,15 +864,19 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('error', new Error('lob2 error'));
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('error', new Error('lob2 error'));
+                }
+            ];
 
             var counter = 0;
             resultSetReader.readBulks(columnNames, {
@@ -925,15 +967,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             var resultData = [
                 {
@@ -1019,15 +1065,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('error', new Error('lob2 error'));
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('error', new Error('lob2 error'));
+                }
+            ];
 
             var resultData = [
                 {
@@ -1126,15 +1176,19 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [null, function () {
-                lob1.emit('data', 'test1');
-                lob1.emit('data', '\ntest2');
-                lob1.emit('end');
-            }, function () {
-                lob2.emit('data', '123');
-                lob2.emit('data', '456');
-                lob2.emit('end');
-            }];
+            var dbEvents = [
+                null,
+                function () {
+                    lob1.emit('data', 'test1');
+                    lob1.emit('data', '\ntest2');
+                    lob1.emit('end');
+                },
+                function () {
+                    lob2.emit('data', '123');
+                    lob2.emit('data', '456');
+                    lob2.emit('end');
+                }
+            ];
 
             var resultData = [
                 {

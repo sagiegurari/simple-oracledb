@@ -1,5 +1,6 @@
 'use strict';
-/*global describe: false, it: false */
+
+/*global describe: false, it: false*/
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -19,7 +20,9 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.write({
-                LOBCOL1: [writable]
+                LOBCOL1: [
+                    writable
+                ]
             }, {
                 BIND1: 'TEST STRING DATA'
             }, function (error) {
@@ -40,7 +43,9 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.write({
-                LOBCOL1: [writable]
+                LOBCOL1: [
+                    writable
+                ]
             }, {
                 BIND1: new Buffer('TEST STRING DATA')
             }, function (error) {
@@ -58,7 +63,9 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.write({
-                LOBCOL1: [writable]
+                LOBCOL1: [
+                    writable
+                ]
             }, {
                 BIND1: null
             }, function (error) {
@@ -76,7 +83,9 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.write({
-                LOBCOL1: [writable]
+                LOBCOL1: [
+                    writable
+                ]
             }, {
                 BIND1: null
             }, function (error) {
@@ -111,7 +120,10 @@ describe('RecordWriter Tests', function () {
 
         it('multiple array outbindings test', function (done) {
             recordWriter.write({
-                LOBCOL1: [{}, {}]
+                LOBCOL1: [
+                    {},
+                    {}
+                ]
             }, {
                 BIND1: 'TEST STRING DATA'
             }, function (error) {
@@ -177,7 +189,10 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.writeMultiple({
-                LOBCOL1: [writable, writable]
+                LOBCOL1: [
+                    writable,
+                    writable
+                ]
             }, {
                 BIND1: 'TEST STRING DATA'
             }, function (error) {
@@ -198,7 +213,10 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.writeMultiple({
-                LOBCOL1: [writable, writable]
+                LOBCOL1: [
+                    writable,
+                    writable
+                ]
             }, {
                 BIND1: new Buffer('TEST STRING DATA')
             }, function (error) {
@@ -216,7 +234,10 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.writeMultiple({
-                LOBCOL1: [writable, writable]
+                LOBCOL1: [
+                    writable,
+                    writable
+                ]
             }, {
                 BIND1: null
             }, function (error) {
@@ -234,7 +255,10 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.writeMultiple({
-                LOBCOL1: [writable, writable]
+                LOBCOL1: [
+                    writable,
+                    writable
+                ]
             }, {
                 BIND1: null
             }, function (error) {
@@ -269,7 +293,10 @@ describe('RecordWriter Tests', function () {
 
         it('multiple array outbindings test', function (done) {
             recordWriter.writeMultiple({
-                LOBCOL1: [{}, {}]
+                LOBCOL1: [
+                    {},
+                    {}
+                ]
             }, {
                 BIND1: 'TEST STRING DATA'
             }, function (error) {
@@ -304,10 +331,30 @@ describe('RecordWriter Tests', function () {
             };
 
             recordWriter.writeMultiple({
-                BIND1: [writable1, writable1, writable1, writable1],
-                BIND2: [writable1, writable1, writable1, writable1],
-                BIND3: [writable2, writable2, writable2, writable2],
-                BIND4: [writable2, writable2, writable2, writable2]
+                BIND1: [
+                    writable1,
+                    writable1,
+                    writable1,
+                    writable1
+                ],
+                BIND2: [
+                    writable1,
+                    writable1,
+                    writable1,
+                    writable1
+                ],
+                BIND3: [
+                    writable2,
+                    writable2,
+                    writable2,
+                    writable2
+                ],
+                BIND4: [
+                    writable2,
+                    writable2,
+                    writable2,
+                    writable2
+                ]
             }, {
                 BIND1: 'TEST STRING DATA',
                 BIND2: 'TEST STRING DATA',
