@@ -12,6 +12,10 @@ var SimpleOracleDB = require('../..');
 var extensions = require('../../lib/extensions');
 
 describe('Connection Tests', function () {
+    var asArray = function (args) {
+        return Array.prototype.slice.call(args, 0);
+    };
+
     var noop = function () {
         return undefined;
     };
@@ -1085,8 +1089,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
-                assert.isUndefined(arguments[2].stream);
-                assert.isTrue(arguments[2].splitResults);
+                var args = asArray(arguments);
+                assert.isUndefined(args[2].stream);
+                assert.isTrue(args[2].splitResults);
 
                 var dbData = [
                     [
@@ -1226,8 +1231,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
-                assert.isUndefined(arguments[2].stream);
-                assert.isTrue(arguments[2].splitResults);
+                var args = asArray(arguments);
+                assert.isUndefined(args[2].stream);
+                assert.isTrue(args[2].splitResults);
 
                 var dbData = [
                     [
@@ -1325,8 +1331,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
-                assert.isUndefined(arguments[2].stream);
-                assert.isTrue(arguments[2].streamResults);
+                var args = asArray(arguments);
+                assert.isUndefined(args[2].stream);
+                assert.isTrue(args[2].streamResults);
 
                 var dbData = [
                     [
@@ -1488,8 +1495,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
-                assert.isUndefined(arguments[2].stream);
-                assert.isUndefined(arguments[2].streamResults);
+                var args = asArray(arguments);
+                assert.isUndefined(args[2].stream);
+                assert.isUndefined(args[2].streamResults);
 
                 var dbData = [
                     [
@@ -1787,8 +1795,9 @@ describe('Connection Tests', function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
 
-                assert.isUndefined(arguments[2].stream);
-                assert.isTrue(arguments[2].streamResults);
+                var args = asArray(arguments);
+                assert.isUndefined(args[2].stream);
+                assert.isTrue(args[2].streamResults);
 
                 var dbData = [
                     {
