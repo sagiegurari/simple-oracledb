@@ -229,8 +229,8 @@ pool.run(function (connection, callback) {
 
 <a name="usage-terminate"></a>
 ### 'Pool.terminate([callback]) ⇒ [Promise]'
-### 'Pool.close([callback]) ⇒ [Promise]'<!-- markdownlint-disable MD009 MD031 MD036 -->
-
+### 'Pool.close([callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
@@ -641,8 +641,8 @@ connection.run([
 
 <a name="usage-release"></a>
 ### 'Connection.release([options], [callback]) ⇒ [Promise]'
-### 'Connection.close([options], [callback]) ⇒ [Promise]'<!-- markdownlint-disable MD009 MD031 MD036 -->
-
+### 'Connection.close([options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
 This function modifies the existing connection.release function by enabling the input
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
@@ -833,7 +833,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-09-21  | v1.1.19 | Maintenance |
+| 2016-09-21  | v1.1.20 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
 | 2016-08-15  | v1.1.1  | Maintenance |
 | 2016-08-10  | v1.1.0  | Breaking change connection.run and connection.transaction default is now sequence instead of parallel |
