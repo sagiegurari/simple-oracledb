@@ -165,12 +165,15 @@ This events is triggered when a connection is released successfully.
 This events is triggered after the pool is released successfully.
 
 <a name="usage-getconnection"></a>
-### 'pool.getConnection([callback]) ⇒ [Promise]'
-This function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Pool.getConnection([callback]) ⇒ Promise'
+Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
+In addition, this function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
 See [getConnection](https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool) for official API details.<br>
 See [createPool](https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool) for extended createPool API details.
 
+**Example**  
 ```js
 oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
@@ -184,15 +187,18 @@ oracledb.createPool({
   });
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-pool-run"></a>
-### 'pool.run(action, [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Pool.run(action, [options], [callback]) ⇒ Promise'
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
 The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
 This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.
 
+**Example**  
 ```js
 pool.run(function (connection, callback) {
   //run some query and the output will be available in the 'run' callback
@@ -214,15 +220,17 @@ pool.run(function (connection, callback) {
     sequence: true
   }, callback); //at end of transaction, call the pool provided callback
 }, {
-  ignoreReleaseErrors: false //enable/disable ignoring any release error (default not to ignore
+  ignoreReleaseErrors: false //enable/disable ignoring any release error (default not to ignore)
 }, function onActionDone(error, result) {
   //do something with the result/error
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-terminate"></a>
-### 'pool.terminate([callback]) ⇒ [Promise]'
-### 'pool.close([callback]) ⇒ [Promise]'
+### 'Pool.terminate([callback]) ⇒ [Promise]'
+### 'Pool.close([callback]) ⇒ [Promise]'<!-- markdownlint-disable MD009 MD031 MD036 -->
+
 This function modifies the existing pool.terminate function by enabling the input
 callback to be an optional parameter.<br>
 Since there is no real way to release the pool that fails to be terminated, all that you can do in the callback
@@ -230,6 +238,7 @@ is just log the error and continue.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.<br>
 The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
+**Example**  
 ```js
 pool.terminate(); //no callback needed
 
@@ -243,6 +252,7 @@ pool.terminate(function onTerminate(error) {
 //can also use close
 pool.close();
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-connection"></a>
 ## Class: Connection
@@ -252,14 +262,17 @@ pool.close();
 This events is triggered when the connection is released successfully.
 
 <a name="usage-query"></a>
-### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ResultSetReadStream|Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.query(sql, [bindParams], [options], [callback]) ⇒ ResultSetReadStream &#124; Promise'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
+**Example**  
 ```js
+//read all rows and get an array of objects with all data
 connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], function onResults(error, results) {
   if (error) {
     //handle error...
@@ -268,15 +281,12 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
     console.log(results[3].DEPARTMENT_ID);
   }
 });
-```
 
-In order to split results into bulks, you can provide the splitResults = true option.<br>
-The callback will be called for each bulk with array of objects.<br>
-Once all rows are read, the callback will be called with an empty array.
-
-```js
+//In order to split results into bulks, you can provide the splitResults = true option.
+//The callback will be called for each bulk with array of objects.
+//Once all rows are read, the callback will be called with an empty array.
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
-  splitResults: true, //True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results)
+  splitResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
 }, function onResults(error, results) {
   if (error) {
@@ -287,15 +297,10 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
     //all rows read
   }
 });
-```
 
-In order to stream results into a read stream, you can provide the streamResults = true option.<br>
-The callback will be called with a read stream instance which can be used to fetch/pipe the data.<br>
-Once all rows are read, the proper stream events will be called.
-
-```js
-//stream all rows (options.streamResults)
-//if callback is provided, the stream is provided in the result as well
+//In order to stream results into a read stream, you can provide the streamResults = true option.
+//The optional callback will be called with a read stream instance which can be used to fetch/pipe the data.
+//Once all rows are read, the proper stream events will be called.
 var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true
 });
@@ -316,14 +321,17 @@ stream.on('metadata', function (metaData) {
 
 //listen to other events such as end/close/error....
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-insert"></a>
-### 'connection.insert(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.insert(sql, [bindParams], [options], [callback]) ⇒ Promise'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
+**Example**  
 ```js
 connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
   id: 110,
@@ -361,14 +369,17 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-update"></a>
-### 'connection.update(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.update(sql, [bindParams], [options], [callback]) ⇒ Promise'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
 The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
+**Example**  
 ```js
 connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
   id: 110,
@@ -385,14 +396,17 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-queryJSON"></a>
-### 'connection.queryJSON(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.queryJSON(sql, [bindParams], [options], [callback]) ⇒ Promise'
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
 The json property will hold a single JSON object in case the returned row count is 1, and an array of JSONs in case the row count is higher.<br>
 The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
 The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
 
+**Example**  
 ```js
 connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], function onResults(error, results) {
   if (error) {
@@ -410,9 +424,11 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
   }
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-batchInsert"></a>
-### 'connection.batchInsert(sql, bindParamsArray, options, [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.batchInsert(sql, bindParamsArray, options, [callback]) ⇒ Promise'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
 This allows to insert to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -420,6 +436,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
+**Example**  
 ```js
 connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
@@ -442,9 +459,11 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-batchUpdate"></a>
-### 'connection.batchUpdate(sql, bindParamsArray, options, [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.batchUpdate(sql, bindParamsArray, options, [callback]) ⇒ Promise'
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
 This allows to update to same table multiple different rows with one single call.<br>
 The callback output will be an array of objects of same as oracledb connection.execute (per row).<br>
@@ -452,6 +471,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
+**Example**  
 ```js
 connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
@@ -474,9 +494,11 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-transaction"></a>
-### 'connection.transaction(actions, [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.transaction(actions, [options], [callback]) ⇒ Promise'
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
@@ -487,6 +509,7 @@ When calling any connection operation (execute, insert, update, ...) the connect
 This is done to prevent commits in the middle of the transaction.<br>
 In addition, you can not start a transaction while another transaction is in progress.
 
+**Example**  
 ```js
 //run all actions in parallel
 connection.transaction([
@@ -525,9 +548,11 @@ connection.transaction([
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-connection-run"></a>
-### 'connection.run(actions, [options], [callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.run(actions, [options], [callback]) ⇒ Promise'
 Enables to run multiple oracle operations in sequence or parallel.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
 All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
@@ -537,6 +562,7 @@ This function is basically the same as connection.transaction with few exception
   <li>You can invoke connection.run inside connection.run as many times as needed (for example if you execute connection.run with option.sequence=false meaning parallel and inside invoke connection.run with option.sequence=true for a subset of operations)</li>
 </ul>
 
+**Example**  
 ```js
 //run all actions in parallel
 connection.run([
@@ -611,13 +637,17 @@ connection.run([
   //continue flow...
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-release"></a>
-### 'connection.release([options], [callback]) ⇒ [Promise]'
-### 'connection.close([options], [callback]) ⇒ [Promise]'
-This function modifies the existing connection.release function by enabling the input callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
+### 'Connection.release([options], [callback]) ⇒ [Promise]'
+### 'Connection.close([options], [callback]) ⇒ [Promise]'<!-- markdownlint-disable MD009 MD031 MD036 -->
+
+This function modifies the existing connection.release function by enabling the input
+callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
+**Example**  
 ```js
 connection.release(); //no callback needed
 
@@ -655,14 +685,17 @@ connection.close({
   }
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-rollback"></a>
-### 'connection.rollback([callback]) ⇒ [Promise]'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'Connection.rollback([callback]) ⇒ Promise'
 This function modifies the existing connection.rollback function by enabling the input
 callback to be an optional parameter.<br>
 If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
 
+**Example**  
 ```js
 connection.rollback(); //no callback needed
 
@@ -673,6 +706,7 @@ connection.rollback(function onRollback(error) {
   }
 });
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-simple-oracledb"></a>
 ## Class: SimpleOracleDB
@@ -716,12 +750,14 @@ True if the monitoring is enabled and it will listen and store pool/connection d
 By default this is set to false.
 
 <a name="usage-extensions"></a>
-### 'SimpleOracleDB.addExtension(type, name, extension, [options])'
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'SimpleOracleDB.addExtension(type, name, extension, [options]) ⇒ boolean'
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
 Extension functions automatically get promisified unless specified differently in the optional options.
 
+**Example**  
 ```js
 //define a new function for all new connection objects called 'myConnFunc' which accepts 2 arguments
 SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2, callback) {
@@ -751,6 +787,7 @@ SimpleOracleDB.addExtension('pool', 'myPoolFunc', function () {
 //get pool and start using the new function
 pool.myPoolFunc();
 ```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 An example of an existing extension can be found at: [oracledb-upsert](https://github.com/sagiegurari/oracledb-upsert) which adds the connection.upsert (insert/update) functionality.
 
@@ -796,7 +833,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-09-15  | v1.1.18 | Maintenance |
+| 2016-09-21  | v1.1.19 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
 | 2016-08-15  | v1.1.1  | Maintenance |
 | 2016-08-10  | v1.1.0  | Breaking change connection.run and connection.transaction default is now sequence instead of parallel |

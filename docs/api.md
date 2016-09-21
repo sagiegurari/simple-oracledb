@@ -112,7 +112,9 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
   }
 });
 
-//read all rows in bulks (split results via option.splitResults)
+//In order to split results into bulks, you can provide the splitResults = true option.
+//The callback will be called for each bulk with array of objects.
+//Once all rows are read, the callback will be called with an empty array.
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   splitResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
@@ -126,8 +128,9 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   }
 });
 
-//stream all rows (options.streamResults)
-//if callback is provided, the stream is provided in the result as well
+//In order to stream results into a read stream, you can provide the streamResults = true option.
+//The optional callback will be called with a read stream instance which can be used to fetch/pipe the data.
+//Once all rows are read, the proper stream events will be called.
 var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true
 });
@@ -729,8 +732,8 @@ Marker property.
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
 In addition, this function will attempt to fetch a connection from the pool and in case of any error will reattempt for a configurable amount of times.<br>
 It will also ensure the provided connection is valid by running a test SQL and if validation fails, it will fetch another connection (continue to reattempt).<br>
-See https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool for official API details.<br>
-See https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool for extended createPool API details.<br>
+See [getConnection](https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool) for official API details.<br>
+See [createPool](https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool) for extended createPool API details.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Emits**: <code>event:connection-created</code>  
