@@ -43,6 +43,9 @@ module.exports = function (grunt) {
                                 },
                                 'usage-rollback': 'Connection+rollback',
                                 'usage-extensions': 'SimpleOracleDB+addExtension'
+                            },
+                            modifySignature: function (line) {
+                                return line.split('Pool.').join('pool.').split('Connection.').join('connection.');
                             }
                         }
                     }

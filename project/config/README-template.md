@@ -169,8 +169,8 @@ This events is triggered after the pool is released successfully.
 <a name="usage-pool-run"></a>
 
 <a name="usage-terminate"></a>
-### 'Pool.terminate([callback]) ⇒ [Promise]'
-### 'Pool.close([callback]) ⇒ [Promise]'
+### 'pool.terminate([callback]) ⇒ [Promise]'
+### 'pool.close([callback]) ⇒ [Promise]'
 
 <a name="usage-connection"></a>
 ## Class: Connection
@@ -196,8 +196,8 @@ This events is triggered when the connection is released successfully.
 <a name="usage-connection-run"></a>
 
 <a name="usage-release"></a>
-### 'Connection.release([options], [callback]) ⇒ [Promise]'
-### 'Connection.close([options], [callback]) ⇒ [Promise]'
+### 'connection.release([options], [callback]) ⇒ [Promise]'
+### 'connection.close([options], [callback]) ⇒ [Promise]'
 
 <a name="usage-rollback"></a>
 
