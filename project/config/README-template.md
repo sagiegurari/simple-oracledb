@@ -51,7 +51,7 @@
 ## Overview
 This library enables to modify the oracledb main object, oracledb pool and oracledb connection of the [official oracle node.js driver](https://github.com/oracle/node-oracledb).<br>
 The main goal is to provide an extended oracledb connection which provides more functionality for most use cases.<br>
-The new functionality aim is to be simpler and more strait forward to enable quicker development.
+The new functionality aim is to be simpler and more straightforward to enable quicker development.
 
 <a name="usage"></a>
 ## Usage
