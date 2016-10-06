@@ -191,7 +191,7 @@ describe('Connection Tests', function () {
             Connection.extend(testConnection);
 
             testConnection.execute('');
-            assert.isUndefined(testConnection.diagnosticInfo.lastSQL);
+            assert.equal(testConnection.diagnosticInfo.lastSQL, '');
         });
 
         it('no args', function () {
@@ -1890,7 +1890,7 @@ describe('Connection Tests', function () {
     });
 
     describe('insert', function () {
-        it('no lobs no optional params', function (done) {
+        it('no lobs to insert, no optional params', function (done) {
             var connection = {};
             Connection.extend(connection);
 
@@ -2540,7 +2540,7 @@ describe('Connection Tests', function () {
     });
 
     describe('update', function () {
-        it('no lobs no optional params', function (done) {
+        it('no lobs to update, no optional params', function (done) {
             var connection = {};
             Connection.extend(connection);
 
@@ -3632,17 +3632,28 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+            connection.baseExecute = function (sql, bindParams, options, callback) {
+                assert.strictEqual('test', sql);
+                assert.deepEqual(bindParams, {
+                    bind: true
+                });
+                assert.deepEqual(options, {
+                    options: true,
+                    resultSet: true
+                });
 
-                argumentsArray.pop()(null, [
+                callback(null, [
                     {
                         data: 'not json text'
                     }
                 ]);
             };
 
-            connection.queryJSON(1, 2, {}, function (error) {
+            connection.queryJSON('test', {
+                bind: true
+            }, {
+                options: true
+            }, function (error) {
                 assert.isDefined(error);
             });
         });
@@ -3651,13 +3662,18 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+            connection.query = function (sql, bindParams, callback) {
+                assert.strictEqual('test', sql);
+                assert.deepEqual(bindParams, {
+                    bind: true
+                });
 
-                argumentsArray.pop()(null, []);
+                callback(null, []);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', {
+                bind: true
+            }, function (error, results) {
                 assert.isNull(error);
                 assert.equal(0, results.rowCount);
                 assert.deepEqual([], results.json);
@@ -3668,11 +3684,13 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(0, results.rowCount);
                 assert.deepEqual([], results.json);
@@ -3683,11 +3701,13 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, null);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(0, results.rowCount);
                 assert.deepEqual([], results.json);
@@ -3698,7 +3718,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: ''
@@ -3706,7 +3728,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(1, results.rowCount);
                 assert.deepEqual({}, results.json);
@@ -3717,7 +3739,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: undefined
@@ -3725,7 +3749,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(1, results.rowCount);
                 assert.deepEqual({}, results.json);
@@ -3736,7 +3760,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: 'some text'
@@ -3744,7 +3770,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error) {
+            connection.queryJSON('test', function (error) {
                 assert.isDefined(error);
             });
         });
@@ -3753,7 +3779,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: ''
@@ -3764,7 +3792,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(2, results.rowCount);
                 assert.deepEqual([{}, {}], results.json);
@@ -3775,7 +3803,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: undefined
@@ -3786,7 +3816,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(2, results.rowCount);
                 assert.deepEqual([{}, {}], results.json);
@@ -3797,7 +3827,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 setTimeout(function () {
                     callback(null, [
                         {
@@ -3814,7 +3846,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.queryJSON(function (error, results) {
+            var output = connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(1, results.rowCount);
                 assert.deepEqual({
@@ -3834,7 +3866,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 setTimeout(function () {
                     callback(null, [
                         {
@@ -3853,7 +3887,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.queryJSON();
+            var promise = connection.queryJSON('test');
 
             promise.then(function (results) {
                 assert.equal(1, results.rowCount);
@@ -3874,7 +3908,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 setTimeout(function () {
                     callback(null, [
                         {
@@ -3896,7 +3932,7 @@ describe('Connection Tests', function () {
             var errorFound = false;
 
             try {
-                connection.queryJSON();
+                connection.queryJSON('test');
             } catch (error) {
                 errorFound = true;
             }
@@ -3910,7 +3946,9 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            connection.query = function (callback) {
+            connection.query = function (sql, callback) {
+                assert.strictEqual('test', sql);
+
                 callback(null, [
                     {
                         data: JSON.stringify({
@@ -3936,7 +3974,7 @@ describe('Connection Tests', function () {
                 ]);
             };
 
-            connection.queryJSON(function (error, results) {
+            connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(2, results.rowCount);
                 assert.deepEqual([

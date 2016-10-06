@@ -57,7 +57,7 @@ describe('OracleDB Tests', function () {
 
             OracleDB.extend(oracledb);
 
-            var output = oracledb.getConnection(function (error, connection) {
+            var output = oracledb.getConnection({}, function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -79,11 +79,11 @@ describe('OracleDB Tests', function () {
             var oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
-            oracledb.baseGetConnection = function (callback) {
+            oracledb.baseGetConnection = function (attrs, callback) {
                 callback(new Error('test'));
             };
 
-            oracledb.getConnection(function (error, connection) {
+            oracledb.getConnection({}, function (error, connection) {
                 assert.isDefined(error);
                 assert.isUndefined(connection);
 
@@ -98,7 +98,7 @@ describe('OracleDB Tests', function () {
 
             global.Promise = PromiseLib;
 
-            oracledb.getConnection().then(function (connection) {
+            oracledb.getConnection({}).then(function (connection) {
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
                 assert.isDefined(connection.diagnosticInfo.id);
@@ -120,11 +120,11 @@ describe('OracleDB Tests', function () {
 
             global.Promise = PromiseLib;
 
-            oracledb.baseGetConnection = function (callback) {
+            oracledb.baseGetConnection = function (attrs, callback) {
                 callback(new Error('test'));
             };
 
-            oracledb.getConnection().then(function () {
+            oracledb.getConnection({}).then(function () {
                 assert.fail();
             }, function (error) {
                 assert.isDefined(error);
@@ -140,11 +140,11 @@ describe('OracleDB Tests', function () {
 
             global.Promise = PromiseLib;
 
-            oracledb.baseGetConnection = function (callback) {
+            oracledb.baseGetConnection = function (attrs, callback) {
                 callback(new Error('test'));
             };
 
-            oracledb.getConnection().then(function () {
+            oracledb.getConnection({}).then(function () {
                 assert.fail();
             }).catch(function (error) {
                 assert.isDefined(error);
@@ -165,7 +165,7 @@ describe('OracleDB Tests', function () {
             var errorFound = false;
 
             try {
-                oracledb.getConnection().then(function () {
+                oracledb.getConnection({}).then(function () {
                     assert.fail();
                 }).catch(function () {
                     assert.fail();
