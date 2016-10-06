@@ -80,6 +80,17 @@ Extends the original oracledb connection.execute to provide additional behavior.
 | [options] | <code>object</code> | Optional execute options |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
+**Example**  
+```js
+//see oracledb documentation for more examples
+connection.execute('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else {
+    //continue
+  }
+});
+```
 <a name="Connection+query"></a>
 
 ### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
