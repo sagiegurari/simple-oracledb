@@ -1099,6 +1099,17 @@ connection objects via oracledb.getConnection or via pool.getConnection
 | --- | --- | --- |
 | oracledb | <code>oracledb</code> | The oracledb library |
 
+**Example**  
+```js
+//load the oracledb library
+var oracledb = require('oracledb');
+
+//load the simple oracledb
+var SimpleOracleDB = require('simple-oracledb');
+
+//modify the original oracledb library
+SimpleOracleDB.extend(oracledb);
+```
 <a name="SimpleOracleDB+extend"></a>
 
 ### SimpleOracleDB#extend(pool)
@@ -1111,6 +1122,27 @@ connection objects via pool.getConnection
 | --- | --- | --- |
 | pool | <code>[Pool](#Pool)</code> | The oracledb pool instance |
 
+**Example**  
+```js
+//load the simple oracledb
+var SimpleOracleDB = require('simple-oracledb');
+
+function myFunction(pool) {
+  //modify the original oracledb pool instance
+  SimpleOracleDB.extend(pool);
+
+  //from this point connections fetched via pool.getConnection(...)
+  //have access to additional functionality.
+  pool.getConnection(function onConnection(error, connection) {
+    if (error) {
+      //handle error
+    } else {
+      //work with new capabilities or original oracledb capabilities
+      connection.query(...);
+    }
+  });
+}
+```
 <a name="SimpleOracleDB+extend"></a>
 
 ### SimpleOracleDB#extend(connection)
@@ -1123,6 +1155,19 @@ the extended capabilities of this library.
 | --- | --- | --- |
 | connection | <code>[Connection](#Connection)</code> | The oracledb connection instance |
 
+**Example**  
+```js
+//load the simple oracledb
+var SimpleOracleDB = require('simple-oracledb');
+
+function doSomething(connection, callback) {
+  //modify the original oracledb connection instance
+  SimpleOracleDB.extend(connection);
+
+  //from this point the connection has access to additional functionality as well as the original oracledb capabilities.
+  connection.query(...);
+}
+```
 <a name="SimpleOracleDB+addExtension"></a>
 
 ### SimpleOracleDB#addExtension(type, name, extension, [options]) ⇒ <code>boolean</code>

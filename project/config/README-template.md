@@ -99,10 +99,10 @@ function myFunction(pool) {
     //have access to additional functionality.
     pool.getConnection(function onConnection(error, connection) {
         if (error) {
-            //handle error
+          //handle error
         } else {
-            //work with new capabilities or original oracledb capabilities
-            connection.query(...);
+          //work with new capabilities or original oracledb capabilities
+          connection.query(...);
         }
     });
 }
