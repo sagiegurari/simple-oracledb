@@ -23,7 +23,7 @@ describe('Pool Tests', function () {
             Pool.extend(testPool);
 
             assert.isTrue(testPool.simplified);
-            assert.isFunction(testPool.getConnectionOrg);
+            assert.isFunction(testPool.baseGetConnection);
         });
 
         it('with extensions', function (done) {
@@ -44,7 +44,7 @@ describe('Pool Tests', function () {
             Pool.extend(testPool);
 
             assert.isTrue(testPool.simplified);
-            assert.isFunction(testPool.getConnectionOrg);
+            assert.isFunction(testPool.baseGetConnection);
             assert.isFunction(testPool.testPoolFunc);
             assert.isTrue(testPool.coreFunc());
 
@@ -78,7 +78,7 @@ describe('Pool Tests', function () {
             Pool.extend(testPool);
 
             assert.isTrue(testPool.simplified);
-            assert.isFunction(testPool.getConnectionOrg);
+            assert.isFunction(testPool.baseGetConnection);
             assert.isFunction(testPool.testPoolFunc);
             assert.isTrue(testPool.coreFunc());
 

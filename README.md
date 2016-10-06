@@ -9,6 +9,10 @@
 * [Overview](#overview)
 * [Usage](#usage)
   * [OracleDB](#usage-oracledb)
+    * [Event: pool-created](#event-pool-created-oracledb)
+    * [Event: pool-released](#event-pool-released-oracledb)
+    * [Event: connection-created](#event-connection-created-oracledb)
+    * [Event: connection-released](#event-connection-released-oracledb)
     * [createPool](#usage-createpool)
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
@@ -33,6 +37,7 @@
     * [rollback](#usage-rollback)
   * [SimpleOracleDB](#usage-simple-oracledb)
     * [Event: pool-created](#event-pool-created-simpleoracledb)
+    * [Event: pool-released](#event-pool-released-simpleoracledb)
     * [Event: connection-created](#event-connection-created-simpleoracledb)
     * [Event: connection-released](#event-connection-released-simpleoracledb)
     * [diagnosticInfo](#usage-diagnostic-info)
@@ -121,6 +126,34 @@ function doSomething(connection, callback) {
 
 <a name="usage-oracledb"></a>
 ## Class: OracleDB
+
+<a name="event-pool-created-oracledb"></a>
+### Event: 'pool-created'
+
+* pool - The pool instance
+
+This events is triggered when a pool is created.
+
+<a name="event-pool-released-oracledb"></a>
+### Event: 'pool-released'
+
+* pool - The pool instance
+
+This events is triggered after a pool is released.
+
+<a name="event-connection-created-oracledb"></a>
+### Event: 'connection-created'
+
+* connection - The connection instance
+
+This events is triggered when a connection is created via oracledb.
+
+<a name="event-connection-released-oracledb"></a>
+### Event: 'connection-released'
+
+* connection - The connection instance
+
+This events is triggered when a connection is released successfully.
 
 <a name="usage-createpool"></a>
 ### 'oracledb.createPool(poolAttributes, [callback]) ⇒ [Promise]'
@@ -833,7 +866,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-10-04  | v1.1.23 | Maintenance |
+| 2016-10-06  | v1.1.24 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
 | 2016-08-15  | v1.1.1  | Maintenance |
 | 2016-08-10  | v1.1.0  | Breaking change connection.run and connection.transaction default is now sequence instead of parallel |
