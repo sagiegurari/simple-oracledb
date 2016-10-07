@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                         'usage-extensions': 'SimpleOracleDB+addExtension'
                     },
                     modifySignature: function (line) {
-                        return line.split('Pool.').join('pool.').split('Connection.').join('connection.');
+                        return line.split('Pool.').join('pool.').split('Connection.').join('connection.').split('OracleDB.').join('oracledb.').split('Promise').join('[Promise]').split('ResultSetReadStream').join('[ResultSetReadStream]');
                     }
                 }
             }
