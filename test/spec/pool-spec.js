@@ -563,6 +563,12 @@ describe('Pool Tests', function () {
                         release: function (callback) {
                             releaseCalled = true;
                             callback();
+                        },
+                        break: function (callback) {
+                            callback();
+                        },
+                        rollback: function (callback) {
+                            callback();
                         }
                     });
                 }

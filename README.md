@@ -14,6 +14,7 @@
     * [Event: connection-created](#event-connection-created-oracledb)
     * [Event: connection-released](#event-connection-released-oracledb)
     * [createPool](#usage-createpool)
+    * [run](#usage-oracledb-run)
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
     * [Event: connection-released](#event-connection-released)
@@ -172,6 +173,52 @@ oracledb.createPool({
   //continue flow
 });
 ```
+
+<a name="usage-oracledb-run"></a>
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'OracleDB.run(connectionAttributes, action, [callback]) ⇒ Promise'
+This function invokes the provided action (function) with a valid connection object and a callback.<br>
+The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
+must call the callback with an error (if any) and result.<br>
+This function will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
+This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.<br>
+It is recommanded to create a pool and use the pool.run instead of oracledb.run as this function will create a new connection (and release it) for each invocation,
+on the other hand, pool.run will reuse pool managed connections which will result in improved performance.
+
+**Example**  
+```js
+oracledb.run({
+ user: process.env.ORACLE_USER,
+ password: process.env.ORACLE_PASSWORD,
+ connectString: process.env.ORACLE_CONNECTION_STRING
+}, function onConnection(connection, callback) {
+  //run some query and the output will be available in the 'run' callback
+  connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
+}, function onActionDone(error, result) {
+  //do something with the result/error
+});
+
+oracledb.run({
+ user: process.env.ORACLE_USER,
+ password: process.env.ORACLE_PASSWORD,
+ connectString: process.env.ORACLE_CONNECTION_STRING
+}, function (connection, callback) {
+  //run some database operations in a transaction
+  connection.transaction([
+    function firstAction(callback) {
+      connection.insert(...., callback);
+    },
+    function secondAction(callback) {
+      connection.update(...., callback);
+    }
+  ], {
+    sequence: true
+  }, callback); //at end of transaction, call the oracledb provided callback
+}, function onActionDone(error, result) {
+  //do something with the result/error
+});
+```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
 
 <a name="usage-pool"></a>
 ## Class: Pool
@@ -866,6 +913,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-10-07  | v1.1.26 | Added oracledb.run |
 | 2016-10-06  | v1.1.25 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
 | 2016-08-15  | v1.1.1  | Maintenance |

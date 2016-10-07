@@ -14,6 +14,7 @@
     * [Event: connection-created](#event-connection-created-oracledb)
     * [Event: connection-released](#event-connection-released-oracledb)
     * [createPool](#usage-createpool)
+    * [run](#usage-oracledb-run)
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
     * [Event: connection-released](#event-connection-released)
@@ -172,6 +173,8 @@ oracledb.createPool({
   //continue flow
 });
 ```
+
+<a name="usage-oracledb-run"></a>
 
 <a name="usage-pool"></a>
 ## Class: Pool

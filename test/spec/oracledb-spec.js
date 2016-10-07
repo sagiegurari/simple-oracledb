@@ -13,7 +13,7 @@ describe('OracleDB Tests', function () {
         return undefined;
     };
 
-    var createOracleDB = function () {
+    var createOracleDB = function (extend) {
         var oracledb = {
             getConnection: function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
@@ -30,6 +30,10 @@ describe('OracleDB Tests', function () {
         };
 
         emitter(oracledb);
+
+        if (extend) {
+            OracleDB.extend(oracledb);
+        }
 
         return oracledb;
     };
@@ -177,6 +181,711 @@ describe('OracleDB Tests', function () {
             global.Promise = PromiseLib;
 
             assert.isTrue(errorFound);
+        });
+    });
+
+    describe('run', function () {
+        it('missing callback with connection attributes with promise', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb();
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+
+                callback();
+            });
+
+            promise.then(function () {
+                assert.isTrue(releaseCalled);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('missing callback with connection attributes, no promise support', function () {
+            var oracledb = createOracleDB(true);
+
+            delete global.Promise;
+
+            var errorFound = false;
+
+            try {
+                oracledb.run({}, noop);
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('missing callback without connection attributes, using promise', function (done) {
+            var oracledb = createOracleDB(true);
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run(function () {
+                assert.fail();
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('missing callback without connection attributes, no promise support', function () {
+            var oracledb = createOracleDB(true);
+
+            delete global.Promise;
+
+            var errorFound = false;
+
+            try {
+                oracledb.run(noop);
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('missing action with connection attributes', function (done) {
+            var oracledb = createOracleDB(true);
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run(noop);
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('action not a function', function (done) {
+            var oracledb = createOracleDB(true);
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({}, 'test');
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('get connection error', function (done) {
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                setTimeout(function () {
+                    callback(new Error('test'));
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function () {
+                assert.fail();
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('sync action error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                callback(null, {
+                    release: function (options, cb) {
+                        assert.isDefined(options);
+                        releaseCalled = true;
+
+                        cb();
+                    }
+                });
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function () {
+                throw new Error('test');
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+
+                done();
+            });
+        });
+
+        it('async action error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb();
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection, callback) {
+                setTimeout(function () {
+                    callback(new Error('test'));
+                }, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'test');
+
+                done();
+            });
+        });
+
+        it('async action error and release error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection, callback) {
+                setTimeout(function () {
+                    callback(new Error('test'));
+                }, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'test');
+
+                done();
+            });
+        });
+
+        it('async action error and release error and ignore release error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    ignoreReleaseErrors: true
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                ignoreReleaseErrors: true
+            }, function (connection, callback) {
+                setTimeout(function () {
+                    callback(new Error('test'));
+                }, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'test');
+
+                done();
+            });
+        });
+
+        it('async action error and release error and not ignore release error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    ignoreReleaseErrors: false
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                ignoreReleaseErrors: false
+            }, function (connection, callback) {
+                setTimeout(function () {
+                    callback(new Error('test'));
+                }, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'test');
+
+                done();
+            });
+        });
+
+        it('release error and no ignore release error definition', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+                setTimeout(callback, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'release');
+
+                done();
+            });
+        });
+
+        it('release error and ignore release error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    ignoreReleaseErrors: true
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                ignoreReleaseErrors: true
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+                setTimeout(callback, 0);
+            });
+
+            promise.then(function () {
+                assert.isTrue(releaseCalled);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('release error and not ignore release error', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    ignoreReleaseErrors: false
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        release: function (options, cb) {
+                            assert.isDefined(options);
+                            releaseCalled = true;
+
+                            cb(new Error('release'));
+                        }
+                    });
+                }, 0);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                ignoreReleaseErrors: false
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+                setTimeout(callback, 0);
+            });
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.isTrue(releaseCalled);
+                assert.strictEqual(error.message, 'release');
+
+                done();
+            });
+        });
+
+        it('release options', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    releaseOptions: {
+                        force: true,
+                        test: true
+                    }
+                });
+
+                callback(null, {
+                    release: function (options, cb) {
+                        assert.deepEqual(options, {
+                            force: true,
+                            test: true
+                        });
+
+                        releaseCalled = true;
+
+                        cb();
+                    }
+                });
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                releaseOptions: {
+                    test: true
+                }
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+
+                callback();
+            });
+
+            promise.then(function () {
+                assert.isTrue(releaseCalled);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('release options, force false', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    releaseOptions: {
+                        force: false,
+                        test: true
+                    }
+                });
+
+                callback(null, {
+                    release: function (options, cb) {
+                        assert.deepEqual(options, {
+                            force: false,
+                            test: true
+                        });
+
+                        releaseCalled = true;
+
+                        cb();
+                    }
+                });
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                releaseOptions: {
+                    force: false,
+                    test: true
+                }
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+
+                callback();
+            });
+
+            promise.then(function () {
+                assert.isTrue(releaseCalled);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('valid', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                callback(null, {
+                    release: function (options, cb) {
+                        assert.deepEqual(options, {
+                            force: true
+                        });
+
+                        releaseCalled = true;
+
+                        setTimeout(cb, 0);
+                    }
+                });
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+
+                setTimeout(function () {
+                    callback(null, {
+                        result: true,
+                        number: 123
+                    });
+                }, 0);
+            });
+
+            promise.then(function (result) {
+                assert.isTrue(releaseCalled);
+                assert.deepEqual(result, {
+                    result: true,
+                    number: 123
+                });
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
         });
     });
 });

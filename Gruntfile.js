@@ -16,6 +16,7 @@ module.exports = function (grunt) {
             readme: {
                 options: {
                     tags: {
+                        'usage-oracledb-run': 'OracleDB+run',
                         'usage-getconnection': 'Pool+getConnection',
                         'usage-pool-run': 'Pool+run',
                         'usage-terminate': {
