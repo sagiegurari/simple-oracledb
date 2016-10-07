@@ -35,6 +35,8 @@ describe('OracleDB Tests', function () {
             OracleDB.extend(oracledb);
         }
 
+        global.Promise = PromiseLib;
+
         return oracledb;
     };
 
@@ -100,8 +102,6 @@ describe('OracleDB Tests', function () {
 
             OracleDB.extend(oracledb);
 
-            global.Promise = PromiseLib;
-
             oracledb.getConnection({}).then(function (connection) {
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -122,8 +122,6 @@ describe('OracleDB Tests', function () {
 
             OracleDB.extend(oracledb);
 
-            global.Promise = PromiseLib;
-
             oracledb.baseGetConnection = function (attrs, callback) {
                 callback(new Error('test'));
             };
@@ -141,8 +139,6 @@ describe('OracleDB Tests', function () {
             var oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
-
-            global.Promise = PromiseLib;
 
             oracledb.baseGetConnection = function (attrs, callback) {
                 callback(new Error('test'));
@@ -162,8 +158,6 @@ describe('OracleDB Tests', function () {
 
             OracleDB.extend(oracledb);
 
-            global.Promise = PromiseLib;
-
             delete global.Promise;
 
             var errorFound = false;
@@ -177,8 +171,6 @@ describe('OracleDB Tests', function () {
             } catch (error) {
                 errorFound = true;
             }
-
-            global.Promise = PromiseLib;
 
             assert.isTrue(errorFound);
         });
@@ -208,8 +200,6 @@ describe('OracleDB Tests', function () {
                     });
                 }, 0);
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -243,15 +233,11 @@ describe('OracleDB Tests', function () {
                 errorFound = true;
             }
 
-            global.Promise = PromiseLib;
-
             assert.isTrue(errorFound);
         });
 
         it('missing callback without connection attributes, using promise', function (done) {
             var oracledb = createOracleDB(true);
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run(function () {
                 assert.fail();
@@ -279,15 +265,11 @@ describe('OracleDB Tests', function () {
                 errorFound = true;
             }
 
-            global.Promise = PromiseLib;
-
             assert.isTrue(errorFound);
         });
 
         it('missing action with connection attributes', function (done) {
             var oracledb = createOracleDB(true);
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run(noop);
 
@@ -302,8 +284,6 @@ describe('OracleDB Tests', function () {
 
         it('action not a function', function (done) {
             var oracledb = createOracleDB(true);
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({}, 'test');
 
@@ -330,8 +310,6 @@ describe('OracleDB Tests', function () {
                     callback(new Error('test'));
                 }, 0);
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -371,8 +349,6 @@ describe('OracleDB Tests', function () {
                     }
                 });
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -415,8 +391,6 @@ describe('OracleDB Tests', function () {
                     });
                 }, 0);
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -463,8 +437,6 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            global.Promise = PromiseLib;
-
             var promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
@@ -510,8 +482,6 @@ describe('OracleDB Tests', function () {
                     });
                 }, 0);
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -560,8 +530,6 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            global.Promise = PromiseLib;
-
             var promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
@@ -608,8 +576,6 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            global.Promise = PromiseLib;
-
             var promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
@@ -655,8 +621,6 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            global.Promise = PromiseLib;
-
             var promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
@@ -700,8 +664,6 @@ describe('OracleDB Tests', function () {
                     });
                 }, 0);
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -753,8 +715,6 @@ describe('OracleDB Tests', function () {
                     }
                 });
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
@@ -808,8 +768,6 @@ describe('OracleDB Tests', function () {
                 });
             };
 
-            global.Promise = PromiseLib;
-
             var promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
@@ -857,8 +815,6 @@ describe('OracleDB Tests', function () {
                     }
                 });
             };
-
-            global.Promise = PromiseLib;
 
             var promise = oracledb.run({
                 user: 'test',
