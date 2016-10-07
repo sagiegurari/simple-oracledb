@@ -124,6 +124,52 @@ describe('Integration Tests', function () {
                     });
                 });
             });
+
+            describe('run', function () {
+                it('promise', function (done) {
+                    var table = 'TEST_ORA_CONN2';
+                    initDB(table, [
+                        {
+                            COL1: 'PK1',
+                            COL2: 2,
+                            COL3: 30
+                        },
+                        {
+                            COL1: 'PK2',
+                            COL2: 200,
+                            COL3: 30
+                        }
+                    ], function () {
+                        oracledb.run(connAttrs, function (connection, callback) {
+                            connection.query('SELECT * FROM ' + table, [], {
+                                resultSet: false
+                            }, callback);
+                        }, function (error, results) {
+                            assert.isNull(error);
+                            assert.deepEqual([
+                                {
+                                    COL1: 'PK1',
+                                    COL2: 2,
+                                    COL3: 30,
+                                    COL4: undefined,
+                                    LOB1: undefined,
+                                    LOB2: undefined
+                                },
+                                {
+                                    COL1: 'PK2',
+                                    COL2: 200,
+                                    COL3: 30,
+                                    COL4: undefined,
+                                    LOB1: undefined,
+                                    LOB2: undefined
+                                }
+                            ], results);
+
+                            done();
+                        });
+                    });
+                });
+            });
         });
 
         describe('pool', function () {
