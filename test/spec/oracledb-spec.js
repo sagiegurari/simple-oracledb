@@ -21,8 +21,8 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (cb) {
-                            setTimeout(cb, 0);
+                        release: function () {
+                            setTimeout(arguments[arguments.length - 1], 0);
                         }
                     });
                 }, 0);
@@ -154,9 +154,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection promise not supported', function () {
-            var oracledb = createOracleDB();
-
-            OracleDB.extend(oracledb);
+            var oracledb = createOracleDB(true);
 
             delete global.Promise;
 
@@ -236,23 +234,7 @@ describe('OracleDB Tests', function () {
             assert.isTrue(errorFound);
         });
 
-        it('missing callback without connection attributes, using promise', function (done) {
-            var oracledb = createOracleDB(true);
-
-            var promise = oracledb.run(function () {
-                assert.fail();
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
-                assert.isDefined(error);
-
-                done();
-            });
-        });
-
-        it('missing callback without connection attributes, no promise support', function () {
+        it('no connection attributes', function () {
             var oracledb = createOracleDB(true);
 
             delete global.Promise;
@@ -260,7 +242,9 @@ describe('OracleDB Tests', function () {
             var errorFound = false;
 
             try {
-                oracledb.run(noop);
+                oracledb.run(noop, function () {
+                    assert.fail();
+                });
             } catch (error) {
                 errorFound = true;
             }
@@ -268,32 +252,20 @@ describe('OracleDB Tests', function () {
             assert.isTrue(errorFound);
         });
 
-        it('missing action with connection attributes', function (done) {
+        it('action not a function', function () {
             var oracledb = createOracleDB(true);
 
-            var promise = oracledb.run(noop);
+            var errorFound = false;
 
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
-                assert.isDefined(error);
+            try {
+                oracledb.run({}, 'test', function () {
+                    assert.fail();
+                });
+            } catch (error) {
+                errorFound = true;
+            }
 
-                done();
-            });
-        });
-
-        it('action not a function', function (done) {
-            var oracledb = createOracleDB(true);
-
-            var promise = oracledb.run({}, 'test');
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
-                assert.isDefined(error);
-
-                done();
-            });
+            assert.isTrue(errorFound);
         });
 
         it('get connection error', function (done) {
@@ -311,17 +283,13 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
             }, function () {
                 assert.fail();
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
 
                 done();
@@ -345,22 +313,18 @@ describe('OracleDB Tests', function () {
                         assert.isDefined(options);
                         releaseCalled = true;
 
-                        cb();
+                        setTimeout(cb);
                     }
                 });
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
             }, function () {
                 throw new Error('test');
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
 
@@ -392,7 +356,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
@@ -400,11 +364,7 @@ describe('OracleDB Tests', function () {
                 setTimeout(function () {
                     callback(new Error('test'));
                 }, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'test');
@@ -437,7 +397,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
@@ -445,11 +405,7 @@ describe('OracleDB Tests', function () {
                 setTimeout(function () {
                     callback(new Error('test'));
                 }, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'test');
@@ -483,7 +439,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -492,11 +448,7 @@ describe('OracleDB Tests', function () {
                 setTimeout(function () {
                     callback(new Error('test'));
                 }, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'test');
@@ -530,7 +482,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -539,11 +491,7 @@ describe('OracleDB Tests', function () {
                 setTimeout(function () {
                     callback(new Error('test'));
                 }, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'test');
@@ -576,18 +524,14 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
             }, function (connection, callback) {
                 assert.isDefined(connection);
                 setTimeout(callback, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'release');
@@ -621,7 +565,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -629,14 +573,11 @@ describe('OracleDB Tests', function () {
             }, function (connection, callback) {
                 assert.isDefined(connection);
                 setTimeout(callback, 0);
-            });
-
-            promise.then(function () {
+            }, function (error) {
+                assert.isNull(error);
                 assert.isTrue(releaseCalled);
 
                 done();
-            }).catch(function () {
-                assert.fail();
             });
         });
 
@@ -665,7 +606,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -673,11 +614,7 @@ describe('OracleDB Tests', function () {
             }, function (connection, callback) {
                 assert.isDefined(connection);
                 setTimeout(callback, 0);
-            });
-
-            promise.then(function () {
-                assert.fail();
-            }).catch(function (error) {
+            }, function (error) {
                 assert.isDefined(error);
                 assert.isTrue(releaseCalled);
                 assert.strictEqual(error.message, 'release');
@@ -716,7 +653,7 @@ describe('OracleDB Tests', function () {
                 });
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -727,14 +664,11 @@ describe('OracleDB Tests', function () {
                 assert.isDefined(connection);
 
                 callback();
-            });
-
-            promise.then(function () {
+            }, function (error) {
+                assert.isNull(error);
                 assert.isTrue(releaseCalled);
 
                 done();
-            }).catch(function () {
-                assert.fail();
             });
         });
 
@@ -768,7 +702,7 @@ describe('OracleDB Tests', function () {
                 });
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb',
@@ -780,14 +714,11 @@ describe('OracleDB Tests', function () {
                 assert.isDefined(connection);
 
                 callback();
-            });
-
-            promise.then(function () {
+            }, function (error) {
+                assert.isNull(error);
                 assert.isTrue(releaseCalled);
 
                 done();
-            }).catch(function () {
-                assert.fail();
             });
         });
 
@@ -816,7 +747,7 @@ describe('OracleDB Tests', function () {
                 });
             };
 
-            var promise = oracledb.run({
+            oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
@@ -829,9 +760,8 @@ describe('OracleDB Tests', function () {
                         number: 123
                     });
                 }, 0);
-            });
-
-            promise.then(function (result) {
+            }, function (error, result) {
+                assert.isNull(error);
                 assert.isTrue(releaseCalled);
                 assert.deepEqual(result, {
                     result: true,
@@ -839,8 +769,6 @@ describe('OracleDB Tests', function () {
                 });
 
                 done();
-            }).catch(function () {
-                assert.fail();
             });
         });
     });
