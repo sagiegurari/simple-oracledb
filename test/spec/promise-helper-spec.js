@@ -162,5 +162,30 @@ describe('PromiseHelper Tests', function () {
                 assert.fail();
             });
         });
+
+        it('no promise support, no default, no force', function () {
+            var func = promiseHelper.promisify(function (num, callback) {
+                assert.equal(num, 15);
+
+                callback(null, 20);
+            }, {
+                force: false,
+                defaultCallback: false
+            });
+
+            delete global.Promise;
+
+            var errorFound = false;
+
+            try {
+                func(15);
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
     });
 });

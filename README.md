@@ -831,7 +831,7 @@ By default this is set to false.
 
 <a name="usage-extensions"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
-### 'Simpleoracledb.addExtension(type, name, extension, [options]) ⇒ boolean'
+### 'SimpleOracleDB.addExtension(type, name, extension, [options]) ⇒ boolean'
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
