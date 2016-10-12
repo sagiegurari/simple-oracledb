@@ -913,7 +913,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-10-12  | v1.1.30 | Maintenance |
+| 2016-10-12  | v1.1.31 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
 | 2016-10-06  | v1.1.25 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |

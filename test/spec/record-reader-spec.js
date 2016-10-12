@@ -10,91 +10,121 @@ var RecordReader = require('../../lib/record-reader');
 describe('RecordReader Tests', function () {
     describe('getValue tests', function () {
         it('null', function (done) {
-            RecordReader.getValue(null, function (error, value) {
+            var info = {};
+            RecordReader.getValue(null, info, function (error, value) {
                 assert.isUndefined(error);
                 assert.isUndefined(value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('undefined', function (done) {
-            RecordReader.getValue(undefined, function (error, value) {
+            var info = {};
+            RecordReader.getValue(undefined, info, function (error, value) {
                 assert.isUndefined(error);
                 assert.isUndefined(value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('boolean - true', function (done) {
-            RecordReader.getValue(true, function (error, value) {
+            var info = {};
+            RecordReader.getValue(true, info, function (error, value) {
                 assert.isNull(error);
                 assert.isTrue(value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('boolean - false', function (done) {
-            RecordReader.getValue(false, function (error, value) {
+            var info = {};
+            RecordReader.getValue(false, info, function (error, value) {
                 assert.isNull(error);
                 assert.isFalse(value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('number - 0', function (done) {
-            RecordReader.getValue(0, function (error, value) {
+            var info = {};
+            RecordReader.getValue(0, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(0, value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('number - int', function (done) {
-            RecordReader.getValue(1, function (error, value) {
+            var info = {};
+            RecordReader.getValue(1, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(1, value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('number - float', function (done) {
-            RecordReader.getValue(1.5, function (error, value) {
+            var info = {};
+            RecordReader.getValue(1.5, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(1.5, value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('string - empty', function (done) {
-            RecordReader.getValue('', function (error, value) {
+            var info = {};
+            RecordReader.getValue('', info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('', value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('string - with text', function (done) {
-            RecordReader.getValue('TEST', function (error, value) {
+            var info = {};
+            RecordReader.getValue('TEST', info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('TEST', value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('date', function (done) {
+            var info = {};
             var date = new Date();
-            RecordReader.getValue(date, function (error, value) {
+            RecordReader.getValue(date, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(date, value);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
@@ -103,9 +133,12 @@ describe('RecordReader Tests', function () {
         it('LOB', function (done) {
             var testStream = helper.createCLOB();
 
-            RecordReader.getValue(testStream, function (error, value) {
+            var info = {};
+            RecordReader.getValue(testStream, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('first line\nsecond line, second part.', value);
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });
@@ -117,8 +150,11 @@ describe('RecordReader Tests', function () {
         });
 
         it('unsupported', function (done) {
-            RecordReader.getValue({}, function (error) {
+            var info = {};
+            RecordReader.getValue({}, info, function (error) {
                 assert.isDefined(error);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
@@ -127,10 +163,13 @@ describe('RecordReader Tests', function () {
         it('error', function (done) {
             var testStream = helper.createCLOB();
 
-            RecordReader.getValue(testStream, function (error, value) {
+            var info = {};
+            RecordReader.getValue(testStream, info, function (error, value) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'test error');
                 assert.isUndefined(value);
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });
@@ -144,15 +183,19 @@ describe('RecordReader Tests', function () {
 
     describe('read tests', function () {
         it('empty', function (done) {
-            RecordReader.read([], [], function (error, jsObject) {
+            var info = {};
+            RecordReader.read([], [], info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({}, jsObject);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
         });
 
         it('array - basic js types', function (done) {
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -171,7 +214,7 @@ describe('RecordReader Tests', function () {
                 'test',
                 50,
                 undefined
-            ], function (error, jsObject) {
+            ], info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -180,11 +223,14 @@ describe('RecordReader Tests', function () {
                     COL4: undefined
                 }, jsObject);
 
+                assert.isUndefined(info.lobFound);
+
                 done();
             });
         });
 
         it('object - basic js types', function (done) {
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -203,7 +249,7 @@ describe('RecordReader Tests', function () {
                 COL2: 'test',
                 COL3: 50,
                 COL4: undefined
-            }, function (error, jsObject) {
+            }, info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -211,6 +257,8 @@ describe('RecordReader Tests', function () {
                     COL3: 50,
                     COL4: undefined
                 }, jsObject);
+
+                assert.isUndefined(info.lobFound);
 
                 done();
             });
@@ -220,6 +268,7 @@ describe('RecordReader Tests', function () {
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
 
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -246,7 +295,7 @@ describe('RecordReader Tests', function () {
                 undefined,
                 lob1,
                 lob2
-            ], function (error, jsObject) {
+            ], info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -256,6 +305,8 @@ describe('RecordReader Tests', function () {
                     LOB1: 'test1\ntest2',
                     LOB2: '123456'
                 }, jsObject);
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });
@@ -275,6 +326,7 @@ describe('RecordReader Tests', function () {
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
 
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -301,7 +353,7 @@ describe('RecordReader Tests', function () {
                 COL4: undefined,
                 LOB1: lob1,
                 LOB2: lob2
-            }, function (error, jsObject) {
+            }, info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({
                     COL1: 1,
@@ -311,6 +363,8 @@ describe('RecordReader Tests', function () {
                     LOB1: 'test1\ntest2',
                     LOB2: '123456'
                 }, jsObject);
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });
@@ -330,6 +384,7 @@ describe('RecordReader Tests', function () {
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
 
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -356,9 +411,11 @@ describe('RecordReader Tests', function () {
                 undefined,
                 lob1,
                 lob2
-            ], function (error) {
+            ], info, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob1 error');
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });
@@ -377,6 +434,7 @@ describe('RecordReader Tests', function () {
             var lob1 = helper.createCLOB();
             var lob2 = helper.createCLOB();
 
+            var info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -403,9 +461,11 @@ describe('RecordReader Tests', function () {
                 COL4: undefined,
                 LOB1: lob1,
                 LOB2: lob2
-            }, function (error) {
+            }, info, function (error) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'lob1 error');
+
+                assert.isTrue(info.lobFound);
 
                 done();
             });

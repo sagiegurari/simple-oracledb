@@ -18,6 +18,12 @@ describe('Defer Tests', function () {
             later(done);
         });
 
+        it('ioSafe', function (done) {
+            var later = defer(true);
+            assert.strictEqual(setImmediate, later);
+            later(done);
+        });
+
         it('0.12.0', function (done) {
             var later = defer('0.12.0');
             assert.strictEqual(process.nextTick, later);
