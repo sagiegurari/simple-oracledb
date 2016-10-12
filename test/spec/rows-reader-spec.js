@@ -156,7 +156,9 @@ describe('RowsReader Tests', function () {
                 {
                     name: 'COL4'
                 }
-            ], data, function (error, jsRows) {
+            ], data, {
+                flattenStackEveryRows: 50
+            }, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual(result, jsRows);
 
