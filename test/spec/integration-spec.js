@@ -447,17 +447,13 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                 COL1: 'PK1',
                                 COL2: 2,
                                 COL3: 30,
-                                COL4: '123',
-                                LOB1: null,
-                                LOB2: null
+                                COL4: '123'
                             },
                             {
                                 COL1: 'PK2',
                                 COL2: 200,
                                 COL3: 30,
-                                COL4: 'SOME TEST HERE',
-                                LOB1: null,
-                                LOB2: null
+                                COL4: 'SOME TEST HERE'
                             },
                             {
                                 COL1: 'PK3',
@@ -479,7 +475,15 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                                 var eventCounter = 0;
                                 stream.on('data', function (row) {
-                                    assert.deepEqual(dbData[eventCounter], row);
+                                    var orgData = dbData[eventCounter];
+                                    if (!orgData.LOB1) {
+                                        orgData.LOB1 = null;
+                                    }
+                                    if (!orgData.LOB2) {
+                                        orgData.LOB2 = null;
+                                    }
+
+                                    assert.deepEqual(row, orgData);
                                     eventCounter++;
                                 });
 
