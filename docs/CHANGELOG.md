@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-10-17  | v1.1.35 | Maintenance |
+| 2016-10-17  | v1.1.36 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
 | 2016-10-06  | v1.1.25 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
