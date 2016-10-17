@@ -447,13 +447,17 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                 COL1: 'PK1',
                                 COL2: 2,
                                 COL3: 30,
-                                COL4: '123'
+                                COL4: '123',
+                                LOB1: null,
+                                LOB2: null
                             },
                             {
                                 COL1: 'PK2',
                                 COL2: 200,
                                 COL3: 30,
-                                COL4: 'SOME TEST HERE'
+                                COL4: 'SOME TEST HERE',
+                                LOB1: null,
+                                LOB2: null
                             },
                             {
                                 COL1: 'PK3',
