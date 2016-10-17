@@ -287,7 +287,7 @@ describe('resultSetReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: undefined
+                        COL4: null
                     },
                     {
                         COL1: 10,
@@ -613,7 +613,7 @@ describe('resultSetReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: undefined
+                        COL4: null
                     }
                 ],
                 [
@@ -1004,7 +1004,7 @@ describe('resultSetReader Tests', function () {
                     COL1: 'a',
                     COL2: date,
                     COL3: undefined,
-                    COL4: undefined
+                    COL4: null
                 },
                 {
                     COL1: 10,
@@ -1096,7 +1096,7 @@ describe('resultSetReader Tests', function () {
                     COL1: 'a',
                     COL2: date,
                     COL3: undefined,
-                    COL4: undefined
+                    COL4: null
                 }
             ];
 
@@ -1207,7 +1207,7 @@ describe('resultSetReader Tests', function () {
                     COL1: 'a',
                     COL2: date,
                     COL3: undefined,
-                    COL4: undefined
+                    COL4: null
                 },
                 {
                     COL1: 10,

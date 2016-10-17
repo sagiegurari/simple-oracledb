@@ -12,8 +12,8 @@ describe('RecordReader Tests', function () {
         it('null', function (done) {
             var info = {};
             RecordReader.getValue(null, info, function (error, value) {
-                assert.isUndefined(error);
-                assert.isUndefined(value);
+                assert.isNull(error);
+                assert.isNull(value);
 
                 assert.isUndefined(info.lobFound);
 
@@ -24,7 +24,7 @@ describe('RecordReader Tests', function () {
         it('undefined', function (done) {
             var info = {};
             RecordReader.getValue(undefined, info, function (error, value) {
-                assert.isUndefined(error);
+                assert.isNull(error);
                 assert.isUndefined(value);
 
                 assert.isUndefined(info.lobFound);

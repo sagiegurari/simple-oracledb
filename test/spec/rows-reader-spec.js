@@ -59,7 +59,7 @@ describe('RowsReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: undefined
+                        COL4: null
                     }
                 ], jsRows);
 

@@ -53,17 +53,17 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                         COL1: 'PK1',
                                         COL2: 2,
                                         COL3: 30,
-                                        COL4: undefined,
-                                        LOB1: undefined,
-                                        LOB2: undefined
+                                        COL4: null,
+                                        LOB1: null,
+                                        LOB2: null
                                     },
                                     {
                                         COL1: 'PK2',
                                         COL2: 200,
                                         COL3: 30,
-                                        COL4: undefined,
-                                        LOB1: undefined,
-                                        LOB2: undefined
+                                        COL4: null,
+                                        LOB1: null,
+                                        LOB2: null
                                     }
                                 ], results);
 
@@ -129,17 +129,17 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                         COL1: 'PK1',
                                         COL2: 2,
                                         COL3: 30,
-                                        COL4: undefined,
-                                        LOB1: undefined,
-                                        LOB2: undefined
+                                        COL4: null,
+                                        LOB1: null,
+                                        LOB2: null
                                     },
                                     {
                                         COL1: 'PK2',
                                         COL2: 200,
                                         COL3: 30,
-                                        COL4: undefined,
-                                        LOB1: undefined,
-                                        LOB2: undefined
+                                        COL4: null,
+                                        LOB1: null,
+                                        LOB2: null
                                     }
                                 ], jsRows);
 
@@ -269,16 +269,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL2: 2,
                                             COL3: 30,
                                             COL4: '123',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         },
                                         {
                                             COL1: 'PK2',
                                             COL2: 200,
                                             COL3: 30,
                                             COL4: 'SOME TEST HERE',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         }
                                     ], jsRows);
 
@@ -317,16 +317,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL2: 2,
                                             COL3: 30,
                                             COL4: '123',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         },
                                         {
                                             COL1: 'PK2',
                                             COL2: 200,
                                             COL3: 30,
                                             COL4: 'SOME TEST HERE',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         }
                                     ], jsRows);
 
@@ -368,16 +368,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL2: 2,
                                                 COL3: 30,
                                                 COL4: '123',
-                                                LOB1: undefined,
-                                                LOB2: undefined
+                                                LOB1: null,
+                                                LOB2: null
                                             },
                                             {
                                                 COL1: 'PK2',
                                                 COL2: 200,
                                                 COL3: 30,
                                                 COL4: 'SOME TEST HERE',
-                                                LOB1: undefined,
-                                                LOB2: undefined
+                                                LOB1: null,
+                                                LOB2: null
                                             }
                                         ], jsRows);
                                     } else { //end of bulks
@@ -554,16 +554,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL2: 2,
                                             COL3: 30,
                                             COL4: '123',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         },
                                         {
                                             COL1: 'PK2',
                                             COL2: 200,
                                             COL3: 30,
                                             COL4: 'SOME TEST HERE',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         }
                                     ], jsRows);
 
@@ -603,16 +603,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL2: 2,
                                             COL3: 30,
                                             COL4: '123',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         },
                                         {
                                             COL1: 'PK2',
                                             COL2: 200,
                                             COL3: 30,
                                             COL4: 'SOME TEST HERE',
-                                            LOB1: undefined,
-                                            LOB2: undefined
+                                            LOB1: null,
+                                            LOB2: null
                                         }
                                     ], jsRows);
 
@@ -662,10 +662,10 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
-                                                LOB1: undefined,
-                                                LOB2: undefined
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
                                             }
                                         ], jsRows);
 
@@ -714,8 +714,8 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             }
@@ -771,9 +771,9 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                         assert.deepEqual([
                                             {
                                                 COL1: '123',
-                                                COL2: undefined,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL2: null,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             }
@@ -833,18 +833,18 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 {
                                                     COL1: 'test',
                                                     COL2: 123,
-                                                    COL3: undefined,
-                                                    COL4: undefined,
-                                                    LOB1: undefined,
-                                                    LOB2: undefined
+                                                    COL3: null,
+                                                    COL4: null,
+                                                    LOB1: null,
+                                                    LOB2: null
                                                 },
                                                 {
                                                     COL1: 'test2',
                                                     COL2: 234,
-                                                    COL3: undefined,
-                                                    COL4: undefined,
-                                                    LOB1: undefined,
-                                                    LOB2: undefined
+                                                    COL3: null,
+                                                    COL4: null,
+                                                    LOB1: null,
+                                                    LOB2: null
                                                 }
                                             ], jsRows);
 
@@ -864,17 +864,17 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                             COL1: 'test',
                                                             COL2: 123,
                                                             COL3: 1000,
-                                                            COL4: undefined,
-                                                            LOB1: undefined,
-                                                            LOB2: undefined
+                                                            COL4: null,
+                                                            LOB1: null,
+                                                            LOB2: null
                                                         },
                                                         {
                                                             COL1: 'test2',
                                                             COL2: 234,
                                                             COL3: 1000,
-                                                            COL4: undefined,
-                                                            LOB1: undefined,
-                                                            LOB2: undefined
+                                                            COL4: null,
+                                                            LOB1: null,
+                                                            LOB2: null
                                                         }
                                                     ], jsRows2);
 
@@ -935,16 +935,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 {
                                                     COL1: 'test',
                                                     COL2: 123,
-                                                    COL3: undefined,
-                                                    COL4: undefined,
+                                                    COL3: null,
+                                                    COL4: null,
                                                     LOB1: longClobText,
                                                     LOB2: new Buffer('blob text here')
                                                 },
                                                 {
                                                     COL1: 'test2',
                                                     COL2: 333,
-                                                    COL3: undefined,
-                                                    COL4: undefined,
+                                                    COL3: null,
+                                                    COL4: null,
                                                     LOB1: longClobText,
                                                     LOB2: new Buffer('second blob text here')
                                                 }
@@ -971,7 +971,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                             COL1: 'test',
                                                             COL2: 123,
                                                             COL3: 7777,
-                                                            COL4: undefined,
+                                                            COL4: null,
                                                             LOB1: 'NEW CLOB TEXT VALUE',
                                                             LOB2: new Buffer('blob text here')
                                                         },
@@ -979,7 +979,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                             COL1: 'test2',
                                                             COL2: 333,
                                                             COL3: 7777,
-                                                            COL4: undefined,
+                                                            COL4: null,
                                                             LOB1: 'NEW CLOB TEXT VALUE',
                                                             LOB2: new Buffer('second blob text here')
                                                         }
@@ -1185,16 +1185,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'test2',
                                                 COL2: 455,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             }
@@ -1233,18 +1233,18 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
-                                                LOB1: undefined,
-                                                LOB2: undefined
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
                                             },
                                             {
                                                 COL1: 'test2',
                                                 COL2: 455,
-                                                COL3: undefined,
-                                                COL4: undefined,
-                                                LOB1: undefined,
-                                                LOB2: undefined
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
                                             }
                                         ], jsRows);
 
@@ -1305,16 +1305,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'test2',
                                                 COL2: 455,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             }
@@ -1353,16 +1353,16 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                     {
                                                         COL1: 'testU1',
                                                         COL2: 123,
-                                                        COL3: undefined,
-                                                        COL4: undefined,
+                                                        COL3: null,
+                                                        COL4: null,
                                                         LOB1: 'NEW CLOB1',
                                                         LOB2: new Buffer('NEW BLOB')
                                                     },
                                                     {
                                                         COL1: 'testU2',
                                                         COL2: 455,
-                                                        COL3: undefined,
-                                                        COL4: undefined,
+                                                        COL3: null,
+                                                        COL4: null,
                                                         LOB1: 'NEW CLOB2',
                                                         LOB2: new Buffer('AND ANOTHER NEW BLOB')
                                                     }
@@ -1448,32 +1448,32 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'test2',
                                                 COL2: 455,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             },
                                             {
                                                 COL1: 'testI2',
                                                 COL2: 1000,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'testI3',
                                                 COL2: 2000,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             }
@@ -1640,32 +1640,32 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             {
                                                 COL1: 'test',
                                                 COL2: 123,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'test2',
                                                 COL2: 455,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             },
                                             {
                                                 COL1: 'testI2',
                                                 COL2: 1000,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('blob text here')
                                             },
                                             {
                                                 COL1: 'testI3',
                                                 COL2: 2000,
-                                                COL3: undefined,
-                                                COL4: undefined,
+                                                COL3: null,
+                                                COL4: null,
                                                 LOB1: longClobText,
                                                 LOB2: new Buffer('second row')
                                             }
