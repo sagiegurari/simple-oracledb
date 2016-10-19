@@ -58,8 +58,8 @@ if (process.env.TEST_STABILITY) {
                                         assert.deepEqual({
                                             COL1: 'test' + index,
                                             COL2: index,
-                                            COL3: undefined,
-                                            COL4: undefined,
+                                            COL3: null,
+                                            COL4: null,
                                             LOB1: longClobText,
                                             LOB2: new Buffer('blob text here')
                                         }, jsRows[index]);
