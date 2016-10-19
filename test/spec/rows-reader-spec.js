@@ -8,6 +8,64 @@ var helper = require('../helpers/test-oracledb');
 var RowsReader = require('../../lib/rows-reader');
 
 describe('RowsReader Tests', function () {
+    describe('getFlattenRowsCount tests', function () {
+        it('no flattenStackEveryRows value', function () {
+            var count = RowsReader.getFlattenRowsCount(['test'], {});
+            assert.strictEqual(count, 100);
+        });
+
+        it('flattenStackEveryRows value provided', function () {
+            var count = RowsReader.getFlattenRowsCount(['test'], {
+                flattenStackEveryRows: 5000
+            });
+            assert.strictEqual(count, 5000);
+        });
+
+        it('lots of columns', function () {
+            var columnNames = [];
+            var index;
+            for (index = 0; index < 6000; index++) {
+                columnNames.push('test' + index);
+            }
+
+            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            assert.strictEqual(count, 1);
+        });
+
+        it('fews columns', function () {
+            var columnNames = [];
+            var index;
+            for (index = 0; index < 23; index++) {
+                columnNames.push('test' + index);
+            }
+
+            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            assert.strictEqual(count, 4);
+        });
+
+        it('exact check columns amount', function () {
+            var columnNames = [];
+            var index;
+            for (index = 0; index < 100; index++) {
+                columnNames.push('test' + index);
+            }
+
+            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            assert.strictEqual(count, 1);
+        });
+
+        it('almost exact check columns amount', function () {
+            var columnNames = [];
+            var index;
+            for (index = 0; index < 99; index++) {
+                columnNames.push('test' + index);
+            }
+
+            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            assert.strictEqual(count, 1);
+        });
+    });
+
     describe('read tests', function () {
         it('empty', function (done) {
             RowsReader.read([], [], function (error, jsRows) {

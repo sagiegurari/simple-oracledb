@@ -3642,7 +3642,7 @@ describe('Connection Tests', function () {
                     resultSet: true
                 });
 
-                callback(null, [
+                callback(['JSON'], [
                     {
                         data: 'not json text'
                     }
