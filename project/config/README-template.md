@@ -14,28 +14,28 @@
     * [Event: connection-created](#event-connection-created-oracledb)
     * [Event: connection-released](#event-connection-released-oracledb)
     * [createPool](#usage-createpool)
-    * [run](#usage-oracledb-run)
+    * [run](#OracleDB+run)
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
     * [Event: connection-released](#event-connection-released)
     * [Event: release](#event-pool-release)
-    * [getConnection](#usage-getconnection)
-    * [run](#usage-pool-run)
-    * [terminate](#usage-terminate)
-    * [close](#usage-terminate)
+    * [getConnection](#Pool+getConnection)
+    * [run](#Pool+run)
+    * [terminate](#Pool+terminate)
+    * [close](#Pool+terminate)
   * [Connection](#usage-connection)
     * [Event: release](#event-connection-release)
-    * [query](#usage-query)
-    * [insert](#usage-insert)
-    * [update](#usage-update)
-    * [queryJSON](#usage-queryJSON)
-    * [batchInsert](#usage-batchInsert)
-    * [batchUpdate](#usage-batchUpdate)
-    * [transaction](#usage-transaction)
-    * [run](#usage-connection-run)
-    * [release](#usage-release)
-    * [close](#usage-release)
-    * [rollback](#usage-rollback)
+    * [query](#Connection+query)
+    * [insert](#Connection+insert)
+    * [update](#Connection+update)
+    * [queryJSON](#Connection+queryJSON)
+    * [batchInsert](#Connection+batchInsert)
+    * [batchUpdate](#Connection+batchUpdate)
+    * [transaction](#Connection+transaction)
+    * [run](#Connection+run)
+    * [release](#Connection+release)
+    * [close](#Connection+release)
+    * [rollback](#Connection+rollback)
   * [SimpleOracleDB](#usage-simple-oracledb)
     * [Event: pool-created](#event-pool-created-simpleoracledb)
     * [Event: pool-released](#event-pool-released-simpleoracledb)
@@ -43,7 +43,7 @@
     * [Event: connection-released](#event-connection-released-simpleoracledb)
     * [diagnosticInfo](#usage-diagnostic-info)
     * [enableDiagnosticInfo](#usage-enable-diagnostic-info)
-  * [Extensions](#usage-extensions)
+  * [Extensions](#SimpleOracleDB+addExtension)
     * [connection.upsert](#usage-extension-connection.upsert)
 * [Debug](#debug)
 * [Installation](#installation)
@@ -174,7 +174,7 @@ oracledb.createPool({
 });
 ```
 
-<a name="usage-oracledb-run"></a>
+<a name="OracleDB+run"></a>
 
 <a name="usage-pool"></a>
 ## Class: Pool
@@ -200,11 +200,11 @@ This events is triggered when a connection is released successfully.
 
 This events is triggered after the pool is released successfully.
 
-<a name="usage-getconnection"></a>
+<a name="Pool+getConnection"></a>
 
-<a name="usage-pool-run"></a>
+<a name="Pool+run"></a>
 
-<a name="usage-terminate"></a>
+<a name="Pool+terminate"></a>
 ### 'pool.terminate([callback]) ⇒ [Promise]'
 ### 'pool.close([callback]) ⇒ [Promise]'
 
@@ -215,27 +215,27 @@ This events is triggered after the pool is released successfully.
 ### Event: 'release'
 This events is triggered when the connection is released successfully.
 
-<a name="usage-query"></a>
+<a name="Connection+query"></a>
 
-<a name="usage-insert"></a>
+<a name="Connection+insert"></a>
 
-<a name="usage-update"></a>
+<a name="Connection+update"></a>
 
-<a name="usage-queryJSON"></a>
+<a name="Connection+queryJSON"></a>
 
-<a name="usage-batchInsert"></a>
+<a name="Connection+batchInsert"></a>
 
-<a name="usage-batchUpdate"></a>
+<a name="Connection+batchUpdate"></a>
 
-<a name="usage-transaction"></a>
+<a name="Connection+transaction"></a>
 
-<a name="usage-connection-run"></a>
+<a name="Connection+run"></a>
 
-<a name="usage-release"></a>
+<a name="Connection+release"></a>
 ### 'connection.release([options], [callback]) ⇒ [Promise]'
 ### 'connection.close([options], [callback]) ⇒ [Promise]'
 
-<a name="usage-rollback"></a>
+<a name="Connection+rollback"></a>
 
 <a name="usage-simple-oracledb"></a>
 ## Class: SimpleOracleDB
@@ -278,7 +278,7 @@ This includes info of all live pools (including live time and create time) and a
 True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
 By default this is set to false.
 
-<a name="usage-extensions"></a>
+<a name="SimpleOracleDB+addExtension"></a>
 
 An example of an existing extension can be found at: [oracledb-upsert](https://github.com/{"gitdown": "gitinfo", "name": "username"}/oracledb-upsert) which adds the connection.upsert (insert/update) functionality.
 

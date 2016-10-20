@@ -16,27 +16,27 @@ module.exports = function (grunt) {
             readme: {
                 options: {
                     tags: {
-                        'usage-oracledb-run': 'OracleDB+run',
-                        'usage-getconnection': 'Pool+getConnection',
-                        'usage-pool-run': 'Pool+run',
-                        'usage-terminate': {
+                        'OracleDB+run': 'OracleDB+run',
+                        'Pool+getConnection': 'Pool+getConnection',
+                        'Pool+run': 'Pool+run',
+                        'Pool+terminate': {
                             tag: 'Pool+terminate',
                             skipSignature: true
                         },
-                        'usage-query': 'Connection+query',
-                        'usage-insert': 'Connection+insert',
-                        'usage-update': 'Connection+update',
-                        'usage-queryJSON': 'Connection+queryJSON',
-                        'usage-batchInsert': 'Connection+batchInsert',
-                        'usage-batchUpdate': 'Connection+batchUpdate',
-                        'usage-transaction': 'Connection+transaction',
-                        'usage-connection-run': 'Connection+run',
-                        'usage-release': {
+                        'Connection+query': 'Connection+query',
+                        'Connection+insert': 'Connection+insert',
+                        'Connection+update': 'Connection+update',
+                        'Connection+queryJSON': 'Connection+queryJSON',
+                        'Connection+batchInsert': 'Connection+batchInsert',
+                        'Connection+batchUpdate': 'Connection+batchUpdate',
+                        'Connection+transaction': 'Connection+transaction',
+                        'Connection+run': 'Connection+run',
+                        'Connection+release': {
                             tag: 'Connection+release',
                             skipSignature: true
                         },
-                        'usage-rollback': 'Connection+rollback',
-                        'usage-extensions': 'SimpleOracleDB+addExtension'
+                        'Connection+rollback': 'Connection+rollback',
+                        'SimpleOracleDB+addExtension': 'SimpleOracleDB+addExtension'
                     },
                     modifySignature: function (line) {
                         return line.split('Pool.').join('pool.').split('Connection.').join('connection.').split('\'OracleDB.').join('\'oracledb.').split('Promise').join('[Promise]').split('ResultSetReadStream').join('[ResultSetReadStream]');

@@ -14,28 +14,28 @@
     * [Event: connection-created](#event-connection-created-oracledb)
     * [Event: connection-released](#event-connection-released-oracledb)
     * [createPool](#usage-createpool)
-    * [run](#usage-oracledb-run)
+    * [run](#OracleDB+run)
   * [Pool](#usage-pool)
     * [Event: connection-created](#event-connection-created)
     * [Event: connection-released](#event-connection-released)
     * [Event: release](#event-pool-release)
-    * [getConnection](#usage-getconnection)
-    * [run](#usage-pool-run)
-    * [terminate](#usage-terminate)
-    * [close](#usage-terminate)
+    * [getConnection](#Pool+getConnection)
+    * [run](#Pool+run)
+    * [terminate](#Pool+terminate)
+    * [close](#Pool+terminate)
   * [Connection](#usage-connection)
     * [Event: release](#event-connection-release)
-    * [query](#usage-query)
-    * [insert](#usage-insert)
-    * [update](#usage-update)
-    * [queryJSON](#usage-queryJSON)
-    * [batchInsert](#usage-batchInsert)
-    * [batchUpdate](#usage-batchUpdate)
-    * [transaction](#usage-transaction)
-    * [run](#usage-connection-run)
-    * [release](#usage-release)
-    * [close](#usage-release)
-    * [rollback](#usage-rollback)
+    * [query](#Connection+query)
+    * [insert](#Connection+insert)
+    * [update](#Connection+update)
+    * [queryJSON](#Connection+queryJSON)
+    * [batchInsert](#Connection+batchInsert)
+    * [batchUpdate](#Connection+batchUpdate)
+    * [transaction](#Connection+transaction)
+    * [run](#Connection+run)
+    * [release](#Connection+release)
+    * [close](#Connection+release)
+    * [rollback](#Connection+rollback)
   * [SimpleOracleDB](#usage-simple-oracledb)
     * [Event: pool-created](#event-pool-created-simpleoracledb)
     * [Event: pool-released](#event-pool-released-simpleoracledb)
@@ -43,7 +43,7 @@
     * [Event: connection-released](#event-connection-released-simpleoracledb)
     * [diagnosticInfo](#usage-diagnostic-info)
     * [enableDiagnosticInfo](#usage-enable-diagnostic-info)
-  * [Extensions](#usage-extensions)
+  * [Extensions](#SimpleOracleDB+addExtension)
     * [connection.upsert](#usage-extension-connection.upsert)
 * [Debug](#debug)
 * [Installation](#installation)
@@ -174,7 +174,7 @@ oracledb.createPool({
 });
 ```
 
-<a name="usage-oracledb-run"></a>
+<a name="OracleDB+run"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'oracledb.run(connectionAttributes, action, [callback]) ⇒ [Promise]'
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
@@ -244,7 +244,7 @@ This events is triggered when a connection is released successfully.
 
 This events is triggered after the pool is released successfully.
 
-<a name="usage-getconnection"></a>
+<a name="Pool+getConnection"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'pool.getConnection([callback]) ⇒ [Promise]'
 Wraps the original oracledb getConnection in order to provide an extended connection object.<br>
@@ -269,7 +269,7 @@ oracledb.createPool({
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-pool-run"></a>
+<a name="Pool+run"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'pool.run(action, [options], [callback]) ⇒ [Promise]'
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
@@ -307,7 +307,7 @@ pool.run(function (connection, callback) {
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-terminate"></a>
+<a name="Pool+terminate"></a>
 ### 'pool.terminate([callback]) ⇒ [Promise]'
 ### 'pool.close([callback]) ⇒ [Promise]'
 <!-- markdownlint-disable MD009 MD031 MD036 -->
@@ -341,7 +341,7 @@ pool.close();
 ### Event: 'release'
 This events is triggered when the connection is released successfully.
 
-<a name="usage-query"></a>
+<a name="Connection+query"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ResultSetReadStream] &#124; [Promise]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
@@ -403,7 +403,7 @@ stream.on('metadata', function (metaData) {
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-insert"></a>
+<a name="Connection+insert"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.insert(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple insert invocation with LOB support.<br>
@@ -451,7 +451,7 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-update"></a>
+<a name="Connection+update"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.update(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple update invocation with LOB support.<br>
@@ -478,7 +478,7 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-queryJSON"></a>
+<a name="Connection+queryJSON"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.queryJSON(sql, [bindParams], [options], [callback]) ⇒ [Promise]'
 This function will invoke the provided SQL SELECT and return a results object with the returned row count and the JSONs.<br>
@@ -506,7 +506,7 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-batchInsert"></a>
+<a name="Connection+batchInsert"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.batchInsert(sql, bindParamsArray, options, [callback]) ⇒ [Promise]'
 Enables to run an INSERT SQL statement multiple times for each of the provided bind params.<br>
@@ -541,7 +541,7 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-batchUpdate"></a>
+<a name="Connection+batchUpdate"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.batchUpdate(sql, bindParamsArray, options, [callback]) ⇒ [Promise]'
 Enables to run an UPDATE SQL statement multiple times for each of the provided bind params.<br>
@@ -576,7 +576,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-transaction"></a>
+<a name="Connection+transaction"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.transaction(actions, [options], [callback]) ⇒ [Promise]'
 Enables to run multiple oracle operations in a single transaction.<br>
@@ -630,7 +630,7 @@ connection.transaction([
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-connection-run"></a>
+<a name="Connection+run"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.run(actions, [options], [callback]) ⇒ [Promise]'
 Enables to run multiple oracle operations in sequence or parallel.<br>
@@ -719,7 +719,7 @@ connection.run([
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-release"></a>
+<a name="Connection+release"></a>
 ### 'connection.release([options], [callback]) ⇒ [Promise]'
 ### 'connection.close([options], [callback]) ⇒ [Promise]'
 <!-- markdownlint-disable MD009 MD031 MD036 -->
@@ -767,7 +767,7 @@ connection.close({
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
-<a name="usage-rollback"></a>
+<a name="Connection+rollback"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'connection.rollback([callback]) ⇒ [Promise]'
 This function modifies the existing connection.rollback function by enabling the input
@@ -829,7 +829,7 @@ This includes info of all live pools (including live time and create time) and a
 True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
 By default this is set to false.
 
-<a name="usage-extensions"></a>
+<a name="SimpleOracleDB+addExtension"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
 ### 'SimpleOracleDB.addExtension(type, name, extension, [options]) ⇒ boolean'
 Adds an extension to all newly created objects of the requested type.<br>
@@ -913,7 +913,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-10-19  | v1.1.38 | Maintenance |
+| 2016-10-20  | v1.1.39 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
 | 2016-10-06  | v1.1.25 | Maintenance |
 | 2016-08-15  | v1.1.2  | Added 'metadata' event for connection.query with streaming |
