@@ -13,12 +13,12 @@
     * [Event: pool-released](#event-pool-released-oracledb)
     * [Event: connection-created](#event-connection-created-oracledb)
     * [Event: connection-released](#event-connection-released-oracledb)
-    * [createPool](#usage-createpool)
+    * [createPool](#OracleDB-createpool)
     * [run](#OracleDB+run)
   * [Pool](#usage-pool)
-    * [Event: connection-created](#event-connection-created)
-    * [Event: connection-released](#event-connection-released)
-    * [Event: release](#event-pool-release)
+    * [Event: connection-created](#Pool+Event+connection-created)
+    * [Event: connection-released](#Pool+Event+connection-released)
+    * [Event: release](#Pool+Event+Pool-released)
     * [getConnection](#Pool+getConnection)
     * [run](#Pool+run)
     * [terminate](#Pool+terminate)
@@ -156,7 +156,7 @@ This events is triggered when a connection is created via oracledb.
 
 This events is triggered when a connection is released successfully.
 
-<a name="usage-createpool"></a>
+<a name="OracleDB-createpool"></a>
 ### 'oracledb.createPool(poolAttributes, [callback]) ⇒ [Promise]'
 This function modifies the existing oracledb.createPool function by enhancing the returned pool to support retry in the getConnection function.<br>
 The pool.getConnection will retry configurable amount of times with configurable interval between attempts to return a connection in the getConnection function.<br>
@@ -179,21 +179,21 @@ oracledb.createPool({
 <a name="usage-pool"></a>
 ## Class: Pool
 
-<a name="event-connection-created"></a>
+<a name="Pool+Event+connection-created"></a>
 ### Event: 'connection-created'
 
 * connection - The connection instance
 
 This events is triggered when a connection is created via pool.
 
-<a name="event-connection-released"></a>
+<a name="Pool+Event+connection-released"></a>
 ### Event: 'connection-released'
 
 * connection - The connection instance
 
 This events is triggered when a connection is released successfully.
 
-<a name="event-pool-release"></a>
+<a name="Pool+Event+Pool-released"></a>
 ### Event: 'release'
 
 * pool - The pool instance
