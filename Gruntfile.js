@@ -31,6 +31,7 @@ module.exports = function (grunt) {
                         'Connection+batchUpdate': 'Connection+batchUpdate',
                         'Connection+transaction': 'Connection+transaction',
                         'Connection+run': 'Connection+run',
+                        'Connection+executeFile': 'Connection+executeFile',
                         'Connection+release': {
                             tag: 'Connection+release',
                             skipSignature: true

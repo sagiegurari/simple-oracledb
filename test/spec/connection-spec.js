@@ -1,10 +1,14 @@
 'use strict';
 
 /*global describe: false, it: false */
+/*jslint stupid: true*/
+/*eslint-disable no-sync*/
 
 var chai = require('chai');
 var assert = chai.assert;
 var PromiseLib = global.Promise || require('promiscuous');
+var path = require('path');
+var fs = require('fs');
 var helper = require('../helpers/test-oracledb');
 var constants = require('../../lib/constants');
 var Connection = require('../../lib/connection');
@@ -6116,6 +6120,167 @@ describe('Connection Tests', function () {
                 assert.equal('commit error', error.message);
                 assert.isTrue(commitDone);
                 assert.isTrue(rollbackDone);
+
+                done();
+            });
+        });
+    });
+
+    describe('executeFile', function () {
+        var sqlFile = path.join(__dirname, '../helpers/test.sql');
+        var sqlStatement = fs.readFileSync(sqlFile, {
+            encoding: 'utf8'
+        });
+        sqlStatement = sqlStatement.trim();
+
+        it('no file', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.executeFile(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('no file', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.executeFile(function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('all params', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindParams, options, callback) {
+                assert.strictEqual(sql, sqlStatement);
+                assert.deepEqual(bindParams, []);
+                assert.deepEqual(options, {
+                    test: 1,
+                    another: 'test'
+                });
+
+                callback(null, 'done');
+            };
+
+            connection.executeFile(sqlFile, {
+                test: 1,
+                another: 'test'
+            }, function (error, output) {
+                assert.isNull(error);
+                assert.strictEqual(output, 'done');
+
+                done();
+            });
+        });
+
+        it('all params - promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindParams, options, callback) {
+                assert.strictEqual(sql, sqlStatement);
+                assert.deepEqual(bindParams, []);
+                assert.deepEqual(options, {
+                    test: 1,
+                    another: 'test'
+                });
+
+                callback(null, 'done');
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = connection.executeFile(sqlFile, {
+                test: 1,
+                another: 'test'
+            });
+
+            promise.then(function (output) {
+                assert.strictEqual(output, 'done');
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
+        it('no callback, no promise support', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var errorFound = false;
+
+            delete global.Promise;
+
+            try {
+                connection.executeFile(sqlFile, {});
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('no options', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindParams, options, callback) {
+                assert.strictEqual(sql, sqlStatement);
+                assert.deepEqual(bindParams, []);
+                assert.isNull(options);
+
+                callback(null, 'done');
+            };
+
+            connection.executeFile(sqlFile, function (error, output) {
+                assert.isNull(error);
+                assert.strictEqual(output, 'done');
+
+                done();
+            });
+        });
+
+        it('error during file read', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.readFile = function (file, callback) {
+                assert.strictEqual(file, sqlFile);
+
+                callback(new Error('test'));
+            };
+
+            connection.executeFile(sqlFile, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('error during execute', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.execute = function (sql, bindParams, options, callback) {
+                assert.strictEqual(sql, sqlStatement);
+                assert.deepEqual(bindParams, []);
+
+                callback(new Error('test'));
+            };
+
+            connection.executeFile(sqlFile, function (error) {
+                assert.isDefined(error);
 
                 done();
             });

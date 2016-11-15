@@ -33,6 +33,7 @@
     * [batchUpdate](#Connection+batchUpdate)
     * [transaction](#Connection+transaction)
     * [run](#Connection+run)
+    * [executeFile](#Connection+executeFile)
     * [release](#Connection+release)
     * [close](#Connection+release)
     * [rollback](#Connection+rollback)
@@ -230,6 +231,8 @@ This events is triggered when the connection is released successfully.
 <a name="Connection+transaction"></a>
 
 <a name="Connection+run"></a>
+
+<a name="Connection+executeFile"></a>
 
 <a name="Connection+release"></a>
 ### 'connection.release([options], [callback]) ⇒ [Promise]'

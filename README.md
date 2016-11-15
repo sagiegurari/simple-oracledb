@@ -33,6 +33,7 @@
     * [batchUpdate](#Connection+batchUpdate)
     * [transaction](#Connection+transaction)
     * [run](#Connection+run)
+    * [executeFile](#Connection+executeFile)
     * [release](#Connection+release)
     * [close](#Connection+release)
     * [rollback](#Connection+rollback)
@@ -719,6 +720,25 @@ connection.run([
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
+<a name="Connection+executeFile"></a>
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'connection.executeFile(file, [options], [callback]) ⇒ [Promise]'
+Reads the sql string from the provided file and executes it.<br>
+The file content must be a single valid SQL command string.<br>
+This function is basically a quick helper to reduce the coding needed to read the sql file.
+
+**Example**  
+```js
+connection.executeFile('./populate_table.sql', function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else {
+    //continue
+  }
+});
+```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
+
 <a name="Connection+release"></a>
 ### 'connection.release([options], [callback]) ⇒ [Promise]'
 ### 'connection.close([options], [callback]) ⇒ [Promise]'
@@ -913,6 +933,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
 | 2016-11-05  | v1.1.40 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
 | 2016-10-06  | v1.1.25 | Maintenance |

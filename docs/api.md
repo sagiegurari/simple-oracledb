@@ -48,6 +48,7 @@
     * [#batchUpdate(sql, bindParamsArray, options, [callback])](#Connection+batchUpdate) ⇒ <code>Promise</code>
     * [#run(actions, [options], [callback])](#Connection+run) ⇒ <code>Promise</code>
     * [#transaction(actions, [options], [callback])](#Connection+transaction) ⇒ <code>Promise</code>
+    * [#executeFile(file, [options], [callback])](#Connection+executeFile) ⇒ <code>Promise</code>
     * _instance_
         * ["release"](#Connection+event_release)
     * _static_
@@ -672,6 +673,32 @@ connection.transaction([
   sequence: true
 }, function onTransactionResults(error, output) {
   //continue flow...
+});
+```
+<a name="Connection+executeFile"></a>
+
+### Connection#executeFile(file, [options], [callback]) ⇒ <code>Promise</code>
+Reads the sql string from the provided file and executes it.<br>
+The file content must be a single valid SQL command string.<br>
+This function is basically a quick helper to reduce the coding needed to read the sql file.
+
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| file | <code>string</code> | The file which contains the sql command |
+| [options] | <code>object</code> | Optional execute options |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
+
+**Example**  
+```js
+connection.executeFile('./populate_table.sql', function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else {
+    //continue
+  }
 });
 ```
 <a name="Connection+event_release"></a>
