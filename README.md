@@ -933,7 +933,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-11-25  | v1.1.45 | Maintenance |
+| 2016-11-26  | v1.1.46 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
 | 2016-11-05  | v1.1.40 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
