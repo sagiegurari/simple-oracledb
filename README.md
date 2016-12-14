@@ -267,6 +267,19 @@ oracledb.createPool({
     //continue flow (connection, if provided, has been tested to ensure it is valid)
   });
 });
+
+//another example but with promise support
+oracledb.createPool({
+  retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
+  retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
+  runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
+  //any other oracledb pool attributes
+}).then(function onPoolCreated(pool) {
+  pool.getConnection(function onConnection(poolError, connection) {
+    //continue flow (connection, if provided, has been tested to ensure it is valid)
+  });
+});
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
@@ -303,6 +316,14 @@ pool.run(function (connection, callback) {
 }, {
   ignoreReleaseErrors: false //enable/disable ignoring any release error (default not to ignore)
 }, function onActionDone(error, result) {
+  //do something with the result/error
+});
+
+//another example but with promise support
+pool.run(function (connection, callback) {
+  //run some query and the output will be available in the 'run' callback
+  connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
+}).then(function onActionDone(error, result) {
   //do something with the result/error
 });
 ```
