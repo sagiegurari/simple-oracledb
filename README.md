@@ -323,8 +323,8 @@ pool.run(function (connection, callback) {
 pool.run(function (connection, callback) {
   //run some query and the output will be available in the 'run' callback
   connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
-}).then(function onActionDone(error, result) {
-  //do something with the result/error
+}).then(function onActionDone(result) {
+  //do something with the result
 });
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
