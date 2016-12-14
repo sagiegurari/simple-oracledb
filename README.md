@@ -363,6 +363,12 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
   }
 });
 
+//same as previous example but with promise support
+connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110]).then(function (results) {
+  //print the 4th row DEPARTMENT_ID column value
+  console.log(results[3].DEPARTMENT_ID);
+});
+
 //In order to split results into bulks, you can provide the splitResults = true option.
 //The callback will be called for each bulk with array of objects.
 //Once all rows are read, the callback will be called with an empty array.
@@ -449,6 +455,21 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 }, function onResults(error, output) {
   //continue flow...
 });
+
+//another example but with promise support
+connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}).then(function (results) {
+  console.log(results.rowsAffected);
+});
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
@@ -476,6 +497,22 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 }, function onResults(error, output) {
   //continue flow...
 });
+
+//another example but with promise support
+connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
+  id: 110,
+  name: 'My Name',
+  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+}, {
+  autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind variable name
+    blob_column2: 'blobBuffer2'
+  }
+}).then(function (results) {
+  console.log(results.rowsAffected);
+});
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
@@ -502,6 +539,19 @@ connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], f
     });
   } else {
     console.log('Did not find any results');
+  }
+});
+
+//another example but with promise support
+connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110]).then(function (results) {
+  if (results.rowCount === 1) { //single JSON is returned
+    //print the JSON
+    console.log(results.json);
+  } else if (results.rowCount > 1) { //multiple JSONs are returned
+    //print the JSON
+    results.json.forEach(function printJSON(json) {
+      console.log(json);
+    });
   }
 });
 ```
@@ -628,6 +678,20 @@ connection.transaction([
 }, function onTransactionResults(error, output) {
   //continue flow...
 });
+
+//another example but with promise support
+connection.transaction([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}).then(function onTransactionResults(output) {
+  //continue flow...
+});
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
@@ -715,6 +779,20 @@ connection.run([
 ], {
   sequence: true
 }, function onActionsResults(error, output) {
+  //continue flow...
+});
+
+//another example but with promise support
+connection.run([
+  function firstAction(callback) {
+    connection.insert(...., callback);
+  },
+  function secondAction(callback) {
+    connection.update(...., callback);
+  }
+], {
+  sequence: true
+}).then(function onActionsResults(output) {
   //continue flow...
 });
 ```
@@ -933,7 +1011,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-11-26  | v1.1.46 | Maintenance |
+| 2016-12-14  | v1.1.47 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
 | 2016-11-05  | v1.1.40 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
