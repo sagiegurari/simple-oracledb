@@ -1032,7 +1032,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-12-14  | v1.1.47 | Maintenance |
+| 2016-12-16  | v1.1.48 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
 | 2016-11-05  | v1.1.40 | Maintenance |
 | 2016-10-07  | v1.1.26 | Added oracledb.run |
