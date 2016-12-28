@@ -21,6 +21,7 @@
     * [Event: release](#Pool+Event+Pool-released)
     * [getConnection](#Pool+getConnection)
     * [run](#Pool+run)
+    * [parallelQuery](#Pool+parallelQuery)
     * [terminate](#Pool+terminate)
     * [close](#Pool+terminate)
   * [Connection](#usage-connection)
@@ -325,6 +326,57 @@ pool.run(function (connection, callback) {
   connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
 }).then(function onActionDone(result) {
   //do something with the result
+});
+```
+<!-- markdownlint-enable MD009 MD031 MD036 -->
+
+<a name="Pool+parallelQuery"></a>
+<!-- markdownlint-disable MD009 MD031 MD036 -->
+### 'pool.parallelQuery(querySpec, [options], [callback]) ⇒ [Promise]'
+This function invokes the requested queries in parallel (limiting it based on the amount of node.js thread pool size).<br>
+In order for the queries to run in parallel, multiple connections will be used so use this with caution.
+
+**Example**  
+```js
+pool.parallelQuery([
+  {
+    sql: 'SELECT department_id, department_name FROM departments WHERE manager_id = :id',
+    bindParams: [100],
+    options: {
+      //any options here
+    }
+  },
+  {
+    sql: 'SELECT * FROM employees WHERE manager_id = :id',
+    bindParams: {
+      id: 100
+    }
+  }
+], function onQueriesDone(error, results) {
+  //do something with the result/error
+  var query1Results = results[0];
+  var query2Results = results[1];
+});
+
+//another example but with promise support
+pool.parallelQuery([
+  {
+    sql: 'SELECT department_id, department_name FROM departments WHERE manager_id = :id',
+    bindParams: [100],
+    options: {
+      //any options here
+    }
+  },
+  {
+    sql: 'SELECT * FROM employees WHERE manager_id = :id',
+    bindParams: {
+      id: 100
+    }
+  }
+]).then(function onQueriesDone(results) {
+  //do something with the result
+  var query1Results = results[0];
+  var query2Results = results[1];
 });
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
@@ -1032,6 +1084,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enable parallel queries using multiple connections |
 | 2016-12-20  | v1.1.49 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
 | 2016-11-05  | v1.1.40 | Maintenance |

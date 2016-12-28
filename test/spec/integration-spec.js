@@ -148,6 +148,55 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                         });
                     });
                 });
+
+                describe('parallelQuery', function () {
+                    it('multiple queries', function (done) {
+                        var table = 'TEST_ORA_POOL3';
+                        initDB(table, [
+                            {
+                                COL1: 'PK1',
+                                COL2: 2,
+                                COL3: 30
+                            },
+                            {
+                                COL1: 'PK2',
+                                COL2: 200,
+                                COL3: 30
+                            }
+                        ], function (pool) {
+                            pool.parallelQuery([
+                                {
+                                    sql: 'SELECT COL2 FROM ' + table + ' WHERE COL1 = :pk',
+                                    bindParams: {
+                                        pk: 'PK1'
+                                    }
+                                },
+                                {
+                                    sql: 'SELECT COL2 FROM ' + table + ' WHERE COL1 = :pk',
+                                    bindParams: {
+                                        pk: 'PK2'
+                                    }
+                                }
+                            ], function (error, results) {
+                                assert.isNull(error);
+                                assert.deepEqual([
+                                    [
+                                        {
+                                            COL2: 2
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            COL2: 200
+                                        }
+                                    ]
+                                ], results);
+
+                                done();
+                            });
+                        });
+                    });
+                });
             });
 
             describe('connection', function () {

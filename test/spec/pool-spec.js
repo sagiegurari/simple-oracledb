@@ -501,32 +501,43 @@ describe('Pool Tests', function () {
             assert.isTrue(errorFound);
         });
 
-        it('missing action with options', function () {
+        it('missing action with options', function (done) {
             var pool = {};
             Pool.extend(pool);
 
-            var errorFound = false;
+            pool.run(null, {}, function (error) {
+                assert.isDefined(error);
 
-            try {
-                pool.run(null, {}, noop);
-            } catch (error) {
-                errorFound = true;
-            }
-
-            assert.isTrue(errorFound);
+                done();
+            });
         });
 
-        it('action not a function', function () {
+        it('action not a function with callback', function (done) {
             var pool = {};
             Pool.extend(pool);
+
+            pool.run('test', {}, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('action not a function without callback', function () {
+            var pool = {};
+            Pool.extend(pool);
+
+            delete global.Promise;
 
             var errorFound = false;
 
             try {
-                pool.run('test', {}, noop);
+                pool.run('test', {});
             } catch (error) {
                 errorFound = true;
             }
+
+            global.Promise = PromiseLib;
 
             assert.isTrue(errorFound);
         });
@@ -983,6 +994,215 @@ describe('Pool Tests', function () {
             });
 
             assert.isUndefined(output);
+        });
+    });
+
+    describe('parallelQuery', function () {
+        it('callback not provided', function () {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            delete global.Promise;
+
+            var errorFound = false;
+
+            try {
+                testPool.parallelQuery([
+                    {
+                        sql: 'test'
+                    }
+                ]);
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('callback not provided, with options', function () {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            delete global.Promise;
+
+            var errorFound = false;
+
+            try {
+                testPool.parallelQuery([
+                    {
+                        sql: 'test'
+                    }
+                ], {});
+            } catch (error) {
+                errorFound = true;
+            }
+
+            global.Promise = PromiseLib;
+
+            assert.isTrue(errorFound);
+        });
+
+        it('query spec not provided', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.parallelQuery(undefined, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('query spec not provided, with options', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.parallelQuery(undefined, {}, function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('empty query spec', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.parallelQuery([], function (error) {
+                assert.isDefined(error);
+
+                done();
+            });
+        });
+
+        it('multiple queries, no options', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.poolAttributes.runValidationSQL = false;
+
+            testPool.modifyTestConnection = function (connection) {
+                connection.query = function (sql, bindParams, options, callback) {
+                    if (sql === 'test1') {
+                        assert.deepEqual(bindParams, [1, 2, 3]);
+                        assert.deepEqual(options, {
+                            test: '1'
+                        });
+
+                        callback(null, 'good1');
+                    } else if (sql === 'test2') {
+                        assert.deepEqual(bindParams, ['a', 'b', 'c']);
+                        assert.deepEqual(options, {
+                            test: '2'
+                        });
+
+                        callback(null, 'good2');
+                    } else {
+                        callback(new Error('invalid sql'));
+                    }
+                };
+
+                return connection;
+            };
+
+            testPool.parallelQuery([
+                {
+                    sql: 'test1',
+                    options: {
+                        test: '1'
+                    },
+                    bindParams: [1, 2, 3]
+                },
+                {
+                    sql: 'test2',
+                    options: {
+                        test: '2'
+                    },
+                    bindParams: ['a', 'b', 'c']
+                }
+            ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual(results, [
+                    'good1',
+                    'good2'
+                ]);
+
+                done();
+            });
+        });
+
+        it('multiple queries, limit option provided', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.poolAttributes.runValidationSQL = false;
+
+            testPool.modifyTestConnection = function (connection) {
+                connection.query = function (sql, bindParams, options, callback) {
+                    if (sql === 'test1') {
+                        assert.deepEqual(bindParams, [1, 2, 3]);
+                        assert.deepEqual(options, {
+                            test: '1'
+                        });
+
+                        callback(null, 'good1');
+                    } else if (sql === 'test2') {
+                        assert.deepEqual(bindParams, ['a', 'b', 'c']);
+                        assert.deepEqual(options, {
+                            test: '2'
+                        });
+
+                        callback(null, 'good2');
+                    } else {
+                        callback(new Error('invalid sql'));
+                    }
+                };
+
+                return connection;
+            };
+
+            testPool.parallelQuery([
+                {
+                    sql: 'test1',
+                    options: {
+                        test: '1'
+                    },
+                    bindParams: [1, 2, 3]
+                },
+                {
+                    sql: 'test2',
+                    options: {
+                        test: '2'
+                    },
+                    bindParams: ['a', 'b', 'c']
+                }
+            ], {
+                limit: 7
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual(results, [
+                    'good1',
+                    'good2'
+                ]);
+
+                done();
+            });
         });
     });
 

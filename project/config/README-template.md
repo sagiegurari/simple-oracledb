@@ -21,6 +21,7 @@
     * [Event: release](#Pool+Event+Pool-released)
     * [getConnection](#Pool+getConnection)
     * [run](#Pool+run)
+    * [parallelQuery](#Pool+parallelQuery)
     * [terminate](#Pool+terminate)
     * [close](#Pool+terminate)
   * [Connection](#usage-connection)
@@ -204,6 +205,8 @@ This events is triggered after the pool is released successfully.
 <a name="Pool+getConnection"></a>
 
 <a name="Pool+run"></a>
+
+<a name="Pool+parallelQuery"></a>
 
 <a name="Pool+terminate"></a>
 ### 'pool.terminate([callback]) ⇒ [Promise]'

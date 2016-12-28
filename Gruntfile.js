@@ -21,6 +21,7 @@ module.exports = function (grunt) {
                         'OracleDB+run': 'OracleDB+run',
                         'Pool+getConnection': 'Pool+getConnection',
                         'Pool+run': 'Pool+run',
+                        'Pool+parallelQuery': 'Pool+parallelQuery',
                         'Pool+terminate': {
                             tag: 'Pool+terminate',
                             skipSignature: true

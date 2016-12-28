@@ -19,6 +19,9 @@
 <dt><a href="#ConnectionAction">ConnectionAction</a> : <code>function</code></dt>
 <dd><p>An action requested by the pool to be invoked.</p>
 </dd>
+<dt><a href="#QuerySpec">QuerySpec</a> : <code>Object</code></dt>
+<dd><p>Holds query invocation definitions.</p>
+</dd>
 <dt><a href="#AsyncCallback">AsyncCallback</a> : <code>function</code></dt>
 <dd><p>Invoked when an async operation has finished.</p>
 </dd>
@@ -998,6 +1001,7 @@ Extends the provided oracledb instance.
     * [.simplified](#Pool.simplified) : <code>boolean</code>
     * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>Promise</code>
     * [#run(action, [options], [callback])](#Pool+run) ⇒ <code>Promise</code>
+    * [#parallelQuery(querySpec, [options], [callback])](#Pool+parallelQuery) ⇒ <code>Promise</code>
     * [#terminate([callback])](#Pool+terminate) ⇒ <code>Promise</code>
     * [#close([callback])](#Pool+close) ⇒ <code>Promise</code>
     * _instance_
@@ -1116,6 +1120,65 @@ pool.run(function (connection, callback) {
   connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
 }).then(function onActionDone(result) {
   //do something with the result
+});
+```
+<a name="Pool+parallelQuery"></a>
+
+### Pool#parallelQuery(querySpec, [options], [callback]) ⇒ <code>Promise</code>
+This function invokes the requested queries in parallel (limiting it based on the amount of node.js thread pool size).<br>
+In order for the queries to run in parallel, multiple connections will be used so use this with caution.
+
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
+**Access:** public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| querySpec | <code>[Array.&lt;QuerySpec&gt;](#QuerySpec)</code> | Array of query spec objects |
+| [options] | <code>object</code> | Optional runtime options |
+| [options.limit] | <code>number</code> | The max connections to be used in parallel (if not provided, it will be calcaulated based on the current node.js thread pool size) |
+| [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an array of query results |
+
+**Example**  
+```js
+pool.parallelQuery([
+  {
+    sql: 'SELECT department_id, department_name FROM departments WHERE manager_id = :id',
+    bindParams: [100],
+    options: {
+      //any options here
+    }
+  },
+  {
+    sql: 'SELECT * FROM employees WHERE manager_id = :id',
+    bindParams: {
+      id: 100
+    }
+  }
+], function onQueriesDone(error, results) {
+  //do something with the result/error
+  var query1Results = results[0];
+  var query2Results = results[1];
+});
+
+//another example but with promise support
+pool.parallelQuery([
+  {
+    sql: 'SELECT department_id, department_name FROM departments WHERE manager_id = :id',
+    bindParams: [100],
+    options: {
+      //any options here
+    }
+  },
+  {
+    sql: 'SELECT * FROM employees WHERE manager_id = :id',
+    bindParams: {
+      id: 100
+    }
+  }
+]).then(function onQueriesDone(results) {
+  //do something with the result
+  var query1Results = results[0];
+  var query2Results = results[1];
 });
 ```
 <a name="Pool+terminate"></a>
@@ -1459,6 +1522,19 @@ An action requested by the pool to be invoked.
 | --- | --- | --- |
 | connection | <code>[Connection](#Connection)</code> | A valid connection to be used by the action |
 | callback | <code>[AsyncCallback](#AsyncCallback)</code> | The callback to invoke at the end of the action |
+
+<a name="QuerySpec"></a>
+
+## QuerySpec : <code>Object</code>
+Holds query invocation definitions.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>string</code> | The SQL to execute |
+| [bindParams] | <code>object</code> | Optional bind parameters |
+| [options] | <code>object</code> | Optional query options |
 
 <a name="AsyncCallback"></a>
 

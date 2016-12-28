@@ -27,9 +27,17 @@ TestConnection.prototype.break = function (callback) {
     callback();
 };
 
+TestConnection.prototype.rollback = function (callback) {
+    callback();
+};
+
 TestConnection.prototype.release = function () {
     var callback = arguments[arguments.length - 1];
     callback();
+};
+
+TestPool.prototype.modifyTestConnection = function (connection) {
+    return connection;
 };
 
 TestPool.prototype.getConnection = function (callback) {
@@ -41,6 +49,8 @@ TestPool.prototype.getConnection = function (callback) {
         if (this.extendConnection) {
             Connection.extend(connection);
         }
+
+        connection = this.modifyTestConnection(connection);
 
         callback(null, connection);
     }
