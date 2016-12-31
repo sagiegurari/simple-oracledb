@@ -37,7 +37,7 @@
 
 * [Connection](#Connection)
     * [new Connection()](#new_Connection_new)
-    * [.simplified](#Connection.simplified) : <code>boolean</code>
+    * [.simplified](#Connection.simplified) : <code>Boolean</code>
     * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>Promise</code>
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
     * [#insert(sql, [bindParams], [options], [callback])](#Connection+insert) ⇒ <code>Promise</code>
@@ -65,7 +65,7 @@ This class holds all the extended capabilities added the oracledb connection.
 
 <a name="Connection.simplified"></a>
 
-### Connection.simplified : <code>boolean</code>
+### Connection.simplified : <code>Boolean</code>
 Marker property.
 
 **Access:** public  
@@ -79,9 +79,9 @@ Extends the original oracledb connection.execute to provide additional behavior.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| [bindParams] | <code>object</code> | Optional bind parameters |
-| [options] | <code>object</code> | Optional execute options |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParams] | <code>Object</code> | Optional bind parameters |
+| [options] | <code>Object</code> | Optional execute options |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 **Example**  
@@ -109,12 +109,12 @@ The function arguments used to execute the 'query' are exactly as defined in the
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| sql | <code>string</code> |  | The SQL to execute |
-| [bindParams] | <code>object</code> |  | Optional bind parameters |
-| [options] | <code>object</code> |  | Optional execute options |
-| [options.splitResults] | <code>object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results, promise not supported). See also bulkRowsAmount option. |
-| [options.streamResults] | <code>object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
-| [options.bulkRowsAmount] | <code>number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
+| sql | <code>String</code> |  | The SQL to execute |
+| [bindParams] | <code>Object</code> |  | Optional bind parameters |
+| [options] | <code>Object</code> |  | Optional execute options |
+| [options.splitResults] | <code>Object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results, promise not supported). See also bulkRowsAmount option. |
+| [options.streamResults] | <code>Object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
+| [options.bulkRowsAmount] | <code>Number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the query results object holding all data including LOBs |
 
 **Example**  
@@ -187,12 +187,12 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| [bindParams] | <code>object</code> | The bind parameters used to specify the values for the columns |
-| [options] | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParams] | <code>Object</code> | The bind parameters used to specify the values for the columns |
+| [options] | <code>Object</code> | Any execute options |
+| [options.autoCommit] | <code>Object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -261,12 +261,12 @@ The function arguments used to execute the 'update' are exactly as defined in th
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| [bindParams] | <code>object</code> | The bind parameters used to specify the values for the columns |
-| [options] | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParams] | <code>Object</code> | The bind parameters used to specify the values for the columns |
+| [options] | <code>Object</code> | Any execute options |
+| [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -315,10 +315,10 @@ The connection.release also has an alias connection.close for consistent close f
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
-| [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
-| [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
-| [options.force] | <code>boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| [options] | <code>Object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
+| [options.retryCount] | <code>Number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
+| [options.retryInterval] | <code>Number</code> | <code>250</code> | Optional interval in millies between retries |
+| [options.force] | <code>Boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 **Example**  
@@ -370,10 +370,10 @@ Alias for connection.release, see connection.release for more info.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [options] | <code>object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
-| [options.retryCount] | <code>number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
-| [options.retryInterval] | <code>number</code> | <code>250</code> | Optional interval in millies between retries |
-| [options.force] | <code>boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| [options] | <code>Object</code> |  | Optional options used to define error handling (retry is enabled only if options are provided) |
+| [options.retryCount] | <code>Number</code> | <code>10</code> | Optional number of retries in case of any error during the release |
+| [options.retryInterval] | <code>Number</code> | <code>250</code> | Optional interval in millies between retries |
+| [options.force] | <code>Boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | <code>function</code> |  | An optional release callback function (see oracledb docs) |
 
 <a name="Connection+commit"></a>
@@ -441,9 +441,9 @@ The function arguments used to execute the 'queryJSON' are exactly as defined in
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| [bindParams] | <code>object</code> | Optional bind parameters |
-| [options] | <code>object</code> | Optional execute options |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParams] | <code>Object</code> | Optional bind parameters |
+| [options] | <code>Object</code> | Optional execute options |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the query results object holding the row count and JSONs |
 
 **Example**  
@@ -492,12 +492,12 @@ the bind params is now an array of bind params (one per row).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
+| sql | <code>String</code> | The SQL to execute |
 | bindParamsArray | <code>Array</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
-| options | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| options | <code>Object</code> | Any execute options |
+| [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -538,12 +538,12 @@ the bind params is now an array of bind params (one per row).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| bindParamsArray | <code>object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
-| options | <code>object</code> | Any execute options |
-| [options.autoCommit] | <code>object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| sql | <code>String</code> | The SQL to execute |
+| bindParamsArray | <code>Object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>Object</code> | Any execute options |
+| [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -586,9 +586,9 @@ This function is basically the same as connection.transaction with few exception
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| actions | <code>Array</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
-| [options] | <code>object</code> |  | Any run options |
-| [options.sequence] | <code>boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
+| actions | <code>Array.&lt;function()&gt;</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| [options] | <code>Object</code> |  | Any run options |
+| [options.sequence] | <code>Boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the run actions results |
 
 **Example**  
@@ -698,9 +698,9 @@ In addition, you can not start a transaction while another transaction is in pro
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| actions | <code>Array</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
-| [options] | <code>object</code> |  | Any transaction options |
-| [options.sequence] | <code>boolean</code> | <code>true</code> | True to run all actions in sequence, false to run them in parallel |
+| actions | <code>Array.&lt;function()&gt;</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| [options] | <code>Object</code> |  | Any transaction options |
+| [options.sequence] | <code>Boolean</code> | <code>true</code> | True to run all actions in sequence, false to run them in parallel |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the transaction results |
 
 **Example**  
@@ -768,8 +768,8 @@ This function is basically a quick helper to reduce the coding needed to read th
 
 | Param | Type | Description |
 | --- | --- | --- |
-| file | <code>string</code> | The file which contains the sql command |
-| [options] | <code>object</code> | Optional execute options |
+| file | <code>String</code> | The file which contains the sql command |
+| [options] | <code>Object</code> | Optional execute options |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Callback function with the execution results |
 
 **Example**  
@@ -812,7 +812,7 @@ Extends the provided oracledb connection instance.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| connection | <code>object</code> | The oracledb connection instance |
+| connection | <code>Object</code> | The oracledb connection instance |
 
 <a name="OracleDB"></a>
 
@@ -823,7 +823,7 @@ Extends the provided oracledb connection instance.
 
 * [OracleDB](#OracleDB)
     * [new OracleDB()](#new_OracleDB_new)
-    * [.simplified](#OracleDB.simplified) : <code>boolean</code>
+    * [.simplified](#OracleDB.simplified) : <code>Boolean</code>
     * [#getConnection(connectionAttributes, [callback])](#OracleDB+getConnection) ⇒ <code>Promise</code>
     * [#createPool(poolAttributes, [callback])](#OracleDB+createPool) ⇒ <code>Promise</code>
     * [#run(connectionAttributes, action, [callback])](#OracleDB+run) ⇒ <code>Promise</code>
@@ -842,7 +842,7 @@ This class holds all the extended capabilities added the oracledb.
 
 <a name="OracleDB.simplified"></a>
 
-### OracleDB.simplified : <code>boolean</code>
+### OracleDB.simplified : <code>Boolean</code>
 Marker property.
 
 **Access:** public  
@@ -856,7 +856,7 @@ Wraps the original oracledb getConnection in order to provide an extended connec
 
 | Param | Type | Description |
 | --- | --- | --- |
-| connectionAttributes | <code>object</code> | The connection attributes object |
+| connectionAttributes | <code>Object</code> | The connection attributes object |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or the oracle connection instance |
 
 <a name="OracleDB+createPool"></a>
@@ -869,11 +869,11 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| poolAttributes | <code>object</code> |  | The connection pool attributes object (see https://github.com/oracle/node-oracledb/blob/master/doc/api.md#createpool for more attributes) |
-| [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
-| [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
-| [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
-| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
+| poolAttributes | <code>Object</code> |  | The connection pool attributes object (see https://github.com/oracle/node-oracledb/blob/master/doc/api.md#createpool for more attributes) |
+| [poolAttributes.retryCount] | <code>Number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
+| [poolAttributes.retryInterval] | <code>Number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
+| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
+| [poolAttributes.validationSQL] | <code>String</code> | <code>SELECT 1 FROM DUAL</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection pool instance |
 
 <a name="OracleDB+run"></a>
@@ -892,10 +892,10 @@ on the other hand, pool.run will reuse pool managed connections which will resul
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| connectionAttributes | <code>object</code> |  | The connection attributes object (see oracledb.getConnection for more details) |
-| [connectionAttributes.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked internally will be ignored |
-| [connectionAttributes.releaseOptions] | <code>object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
-| [connectionAttributes.releaseOptions.force] | <code>boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| connectionAttributes | <code>Object</code> |  | The connection attributes object (see oracledb.getConnection for more details) |
+| [connectionAttributes.ignoreReleaseErrors] | <code>Boolean</code> | <code>false</code> | If true, errors during connection.release() invoked internally will be ignored |
+| [connectionAttributes.releaseOptions] | <code>Object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
+| [connectionAttributes.releaseOptions.force] | <code>Boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | action | <code>[ConnectionAction](#ConnectionAction)</code> |  | An action requested to be invoked. |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the oracle connection instance |
 
@@ -986,7 +986,7 @@ Extends the provided oracledb instance.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| oracledb | <code>object</code> | The oracledb instance |
+| oracledb | <code>Object</code> | The oracledb instance |
 
 <a name="Pool"></a>
 
@@ -998,7 +998,7 @@ Extends the provided oracledb instance.
 
 * [Pool](#Pool)
     * [new Pool()](#new_Pool_new)
-    * [.simplified](#Pool.simplified) : <code>boolean</code>
+    * [.simplified](#Pool.simplified) : <code>Boolean</code>
     * [#getConnection([callback])](#Pool+getConnection) ⇒ <code>Promise</code>
     * [#run(action, [options], [callback])](#Pool+run) ⇒ <code>Promise</code>
     * [#parallelQuery(querySpec, [options], [callback])](#Pool+parallelQuery) ⇒ <code>Promise</code>
@@ -1018,7 +1018,7 @@ This class holds all the extended capabilities added the oracledb pool.
 
 <a name="Pool.simplified"></a>
 
-### Pool.simplified : <code>boolean</code>
+### Pool.simplified : <code>Boolean</code>
 Marker property.
 
 **Access:** public  
@@ -1081,10 +1081,10 @@ This function basically will remove the need of caller code to get and release a
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | action | <code>[ConnectionAction](#ConnectionAction)</code> |  | An action requested by the pool to be invoked. |
-| [options] | <code>object</code> |  | Optional runtime options |
-| [options.ignoreReleaseErrors] | <code>boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
-| [options.releaseOptions] | <code>object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
-| [options.releaseOptions.force] | <code>boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| [options] | <code>Object</code> |  | Optional runtime options |
+| [options.ignoreReleaseErrors] | <code>Boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
+| [options.releaseOptions] | <code>Object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
+| [options.releaseOptions.force] | <code>Boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the result of the action after the connection was released by the pool |
 
 **Example**  
@@ -1134,8 +1134,8 @@ In order for the queries to run in parallel, multiple connections will be used s
 | Param | Type | Description |
 | --- | --- | --- |
 | querySpec | <code>[Array.&lt;QuerySpec&gt;](#QuerySpec)</code> | Array of query spec objects |
-| [options] | <code>object</code> | Optional runtime options |
-| [options.limit] | <code>number</code> | The max connections to be used in parallel (if not provided, it will be calcaulated based on the current node.js thread pool size) |
+| [options] | <code>Object</code> | Optional runtime options |
+| [options.limit] | <code>Number</code> | The max connections to be used in parallel (if not provided, it will be calcaulated based on the current node.js thread pool size) |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> | Invoked with an error or an array of query results |
 
 **Example**  
@@ -1262,12 +1262,12 @@ Extends the provided oracledb pool instance.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| pool | <code>object</code> |  | The oracledb pool instance |
-| [poolAttributes] | <code>object</code> |  | The connection pool attributes object |
-| [poolAttributes.retryCount] | <code>number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
-| [poolAttributes.retryInterval] | <code>number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
-| [poolAttributes.runValidationSQL] | <code>boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
-| [poolAttributes.validationSQL] | <code>string</code> | <code>&quot;SELECT 1 FROM DUAL&quot;</code> | The test SQL to invoke before returning a connection to validate the connection is open |
+| pool | <code>Object</code> |  | The oracledb pool instance |
+| [poolAttributes] | <code>Object</code> |  | The connection pool attributes object |
+| [poolAttributes.retryCount] | <code>Number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
+| [poolAttributes.retryInterval] | <code>Number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
+| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
+| [poolAttributes.validationSQL] | <code>String</code> | <code>SELECT 1 FROM DUAL</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 
 <a name="ResultSetReadStream"></a>
 
@@ -1301,12 +1301,12 @@ It will also free the connection to enable using it to invoke more operations.
 
 * [SimpleOracleDB](#SimpleOracleDB)
     * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
-    * [.diagnosticInfo](#SimpleOracleDB.diagnosticInfo) : <code>object</code>
-    * [.enableDiagnosticInfo](#SimpleOracleDB.enableDiagnosticInfo) : <code>boolean</code>
+    * [.diagnosticInfo](#SimpleOracleDB.diagnosticInfo) : <code>Object</code>
+    * [.enableDiagnosticInfo](#SimpleOracleDB.enableDiagnosticInfo) : <code>Boolean</code>
     * [#extend(oracledb)](#SimpleOracleDB+extend)
     * [#extend(pool)](#SimpleOracleDB+extend)
     * [#extend(connection)](#SimpleOracleDB+extend)
-    * [#addExtension(type, name, extension, [options])](#SimpleOracleDB+addExtension) ⇒ <code>boolean</code>
+    * [#addExtension(type, name, extension, [options])](#SimpleOracleDB+addExtension) ⇒ <code>Boolean</code>
     * _instance_
         * ["pool-created" (pool)](#SimpleOracleDB+event_pool-created)
         * ["pool-released" (pool)](#SimpleOracleDB+event_pool-released)
@@ -1321,14 +1321,14 @@ See extend function for more info.
 
 <a name="SimpleOracleDB.diagnosticInfo"></a>
 
-### SimpleOracleDB.diagnosticInfo : <code>object</code>
+### SimpleOracleDB.diagnosticInfo : <code>Object</code>
 The pool/connection diagnostics info.<br>
 This includes info of all live pools (including live time and create time) and all live connections (including parent pool if any, live time, create time and last SQL)
 
 **Access:** public  
 <a name="SimpleOracleDB.enableDiagnosticInfo"></a>
 
-### SimpleOracleDB.enableDiagnosticInfo : <code>boolean</code>
+### SimpleOracleDB.enableDiagnosticInfo : <code>Boolean</code>
 True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
 By default this is set to false.
 
@@ -1416,26 +1416,26 @@ function doSomething(connection, callback) {
 ```
 <a name="SimpleOracleDB+addExtension"></a>
 
-### SimpleOracleDB#addExtension(type, name, extension, [options]) ⇒ <code>boolean</code>
+### SimpleOracleDB#addExtension(type, name, extension, [options]) ⇒ <code>Boolean</code>
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
 Extension functions automatically get promisified unless specified differently in the optional options.
 
-**Returns**: <code>boolean</code> - True if added, false if ignored  
+**Returns**: <code>Boolean</code> - True if added, false if ignored  
 **Access:** public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| type | <code>string</code> |  | Either 'connection' or 'pool' |
-| name | <code>string</code> |  | The function name which will be added to the object |
+| type | <code>String</code> |  | Either 'connection' or 'pool' |
+| name | <code>String</code> |  | The function name which will be added to the object |
 | extension | <code>function</code> |  | The function to be added |
-| [options] | <code>object</code> |  | Any extension options needed |
-| [options.promise] | <code>object</code> |  | Promise options |
-| [options.promise.noPromise] | <code>boolean</code> | <code>false</code> | If true, do not promisify function |
-| [options.promise.force] | <code>boolean</code> | <code>false</code> | If true, do not check if promise is supported |
-| [options.promise.defaultCallback] | <code>boolean</code> | <code>false</code> | If true and no callback provided, generate an empty callback |
-| [options.promise.callbackMinIndex] | <code>number</code> | <code>0</code> | The minimum index in the arguments that the callback is found in |
+| [options] | <code>Object</code> |  | Any extension options needed |
+| [options.promise] | <code>Object</code> |  | Promise options |
+| [options.promise.noPromise] | <code>Boolean</code> | <code>false</code> | If true, do not promisify function |
+| [options.promise.force] | <code>Boolean</code> | <code>false</code> | If true, do not check if promise is supported |
+| [options.promise.defaultCallback] | <code>Boolean</code> | <code>false</code> | If true and no callback provided, generate an empty callback |
+| [options.promise.callbackMinIndex] | <code>Number</code> | <code>0</code> | The minimum index in the arguments that the callback is found in |
 
 **Example**  
 ```js
@@ -1532,9 +1532,9 @@ Holds query invocation definitions.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sql | <code>string</code> | The SQL to execute |
-| [bindParams] | <code>object</code> | Optional bind parameters |
-| [options] | <code>object</code> | Optional query options |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParams] | <code>Object</code> | Optional bind parameters |
+| [options] | <code>Object</code> | Optional query options |
 
 <a name="AsyncCallback"></a>
 
@@ -1545,6 +1545,6 @@ Invoked when an async operation has finished.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [error] | <code>error</code> | Any possible error |
-| [output] | <code>object</code> | The operation output |
+| [error] | <code>Error</code> | Any possible error |
+| [output] | <code>Object</code> | The operation output |
 

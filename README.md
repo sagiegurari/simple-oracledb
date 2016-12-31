@@ -1002,7 +1002,7 @@ By default this is set to false.
 
 <a name="SimpleOracleDB+addExtension"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
-### 'SimpleOracleDB.addExtension(type, name, extension, [options]) ⇒ boolean'
+### 'SimpleOracleDB.addExtension(type, name, extension, [options]) ⇒ Boolean'
 Adds an extension to all newly created objects of the requested type.<br>
 An extension, is a function which will be added to any pool or connection instance created after the extension was added.<br>
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
@@ -1084,6 +1084,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2016-12-31  | v1.1.51 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enable parallel queries using multiple connections |
 | 2016-12-20  | v1.1.49 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
