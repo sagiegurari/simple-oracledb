@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2016-12-31  | v1.1.52 | Maintenance |
+| 2017-01-01  | v1.1.53 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enable parallel queries using multiple connections |
 | 2016-12-20  | v1.1.49 | Maintenance |
 | 2016-11-15  | v1.1.41 | Added connection.executeFile to read SQL statement from file and execute it |
