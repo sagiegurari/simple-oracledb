@@ -291,7 +291,8 @@ This function invokes the provided action (function) with a valid connection obj
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
 The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
-This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.
+This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.<br>
+For extended promise support, the action provided can return a promise instead of calling the provided callback (see examples).
 
 **Example**  
 ```js
@@ -322,8 +323,16 @@ pool.run(function (connection, callback) {
 
 //another example but with promise support
 pool.run(function (connection, callback) {
-  //run some query and the output will be available in the 'run' callback
+  //run some query and the output will be available in the 'run' promise 'then'
   connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], callback);
+}).then(function onActionDone(result) {
+  //do something with the result
+});
+
+//extended promise support (action is returning a promise instead of using the callback)
+pool.run(function (connection) {
+  //run some query and the output will be available in the 'run' promise 'then'
+  return connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110]); //no need for a callback, instead return a promise
 }).then(function onActionDone(result) {
   //do something with the result
 });
@@ -1084,6 +1093,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |
 | 2016-12-20  | v1.1.49 | Maintenance |

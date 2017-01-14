@@ -7,6 +7,7 @@ var assert = chai.assert;
 var PromiseLib = global.Promise || require('promiscuous');
 var oracledb = require('../helpers/test-oracledb');
 var Pool = require('../../lib/pool');
+var Connection = require('../../lib/connection');
 var SimpleOracleDB = require('../..');
 var extensions = require('../../lib/extensions');
 var emitter = require('../../lib/emitter');
@@ -994,6 +995,110 @@ describe('Pool Tests', function () {
             });
 
             assert.isUndefined(output);
+        });
+
+        it('actions are a promise chain', function (done) {
+            var releaseCalled = false;
+            var pool = {};
+            Pool.extend(pool);
+
+            pool.getConnection = function (cb) {
+                var connection = {
+                    execute: function (sql) {
+                        var callback = arguments[arguments.length - 1];
+
+                        setTimeout(function () {
+                            if (sql === 'lastSQL') {
+                                return callback(null, {
+                                    metaData: [
+                                        {
+                                            name: 'COL1'
+                                        },
+                                        {
+                                            name: 'COL2'
+                                        },
+                                        {
+                                            name: 'COL3'
+                                        },
+                                        {
+                                            name: 'COL4'
+                                        }
+                                    ],
+                                    rows: [
+                                        {
+                                            COL1: 1,
+                                            COL2: 'test',
+                                            COL3: 50,
+                                            COL4: undefined
+                                        },
+                                        {
+                                            COL1: 'a',
+                                            COL2: 123456,
+                                            COL3: undefined,
+                                            COL4: undefined
+                                        }
+                                    ]
+                                });
+                            }
+
+                            callback(null, {
+                                metaData: [],
+                                rows: []
+                            });
+                        }, 5);
+                    }
+                };
+
+                Connection.extend(connection);
+
+                connection.release = function (options, callback) {
+                    releaseCalled = true;
+
+                    setTimeout(callback, 5);
+                };
+
+                cb(null, connection);
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = pool.run(function (connection) {
+                assert.isDefined(connection);
+
+                global.Promise = PromiseLib;
+
+                return connection.query('firstSQL').then(function () {
+                    global.Promise = PromiseLib;
+
+                    return connection.query('lastSQL');
+                });
+            });
+
+            assert.isDefined(promise);
+            assert.isFunction(promise.then);
+            assert.isFunction(promise.catch);
+
+            promise.then(function (result) {
+                assert.isTrue(releaseCalled);
+                assert.deepEqual([
+                    {
+                        COL1: 1,
+                        COL2: 'test',
+                        COL3: 50,
+                        COL4: undefined
+                    },
+                    {
+                        COL1: 'a',
+                        COL2: 123456,
+                        COL3: undefined,
+                        COL4: undefined
+                    }
+                ], result);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
         });
     });
 

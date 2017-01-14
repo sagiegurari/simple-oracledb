@@ -8,6 +8,61 @@ var PromiseLib = global.Promise || require('promiscuous');
 var promiseHelper = require('../../lib/promise-helper');
 
 describe('PromiseHelper Tests', function () {
+    describe('isPromise', function () {
+        it('undefined', function () {
+            var output = promiseHelper.isPromise();
+            assert.isFalse(output);
+        });
+
+        it('null', function () {
+            var output = promiseHelper.isPromise(null);
+            assert.isFalse(output);
+        });
+
+        it('not an object', function () {
+            var output = promiseHelper.isPromise(1);
+            assert.isFalse(output);
+        });
+
+        it('missing then', function () {
+            var output = promiseHelper.isPromise({
+                catch: promiseHelper.noop
+            });
+            assert.isFalse(output);
+        });
+
+        it('missing catch', function () {
+            var output = promiseHelper.isPromise({
+                then: promiseHelper.noop
+            });
+            assert.isFalse(output);
+        });
+
+        it('then not a function', function () {
+            var output = promiseHelper.isPromise({
+                then: true,
+                catch: promiseHelper.noop
+            });
+            assert.isFalse(output);
+        });
+
+        it('catch not a function', function () {
+            var output = promiseHelper.isPromise({
+                then: promiseHelper.noop,
+                catch: true
+            });
+            assert.isFalse(output);
+        });
+
+        it('valid', function () {
+            var output = promiseHelper.isPromise({
+                then: promiseHelper.noop,
+                catch: promiseHelper.noop
+            });
+            assert.isTrue(output);
+        });
+    });
+
     describe('runPromise', function () {
         it('Promise not supported', function () {
             delete global.Promise;

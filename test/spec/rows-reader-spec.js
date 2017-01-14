@@ -8,7 +8,7 @@ var helper = require('../helpers/test-oracledb');
 var RowsReader = require('../../lib/rows-reader');
 
 describe('RowsReader Tests', function () {
-    describe('getFlattenRowsCount tests', function () {
+    describe('getFlattenRowsCount', function () {
         it('no flattenStackEveryRows value', function () {
             var count = RowsReader.getFlattenRowsCount(['test'], {});
             assert.strictEqual(count, 100);
@@ -66,7 +66,7 @@ describe('RowsReader Tests', function () {
         });
     });
 
-    describe('read tests', function () {
+    describe('read', function () {
         it('empty', function (done) {
             RowsReader.read([], [], function (error, jsRows) {
                 assert.isNull(error);
@@ -569,7 +569,7 @@ describe('RowsReader Tests', function () {
         });
     });
 
-    describe('readJSON tests', function () {
+    describe('readJSON', function () {
         it('undefined', function () {
             var json = RowsReader.readJSON();
             assert.isUndefined(json);
