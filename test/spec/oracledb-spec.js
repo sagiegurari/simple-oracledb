@@ -771,5 +771,60 @@ describe('OracleDB Tests', function () {
                 done();
             });
         });
+
+        it('valid full promise support', function (done) {
+            var releaseCalled = false;
+
+            var oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb'
+                });
+
+                callback(null, {
+                    release: function (options, cb) {
+                        assert.deepEqual(options, {
+                            force: true
+                        });
+
+                        releaseCalled = true;
+
+                        setTimeout(cb, 0);
+                    }
+                });
+            };
+
+            global.Promise = PromiseLib;
+
+            oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb'
+            }, function (connection) {
+                assert.isDefined(connection);
+
+                return new PromiseLib(function (resolve) {
+                    setTimeout(function () {
+                        resolve({
+                            result: true,
+                            number: 123
+                        });
+                    }, 0);
+                });
+            }).then(function (result) {
+                assert.isTrue(releaseCalled);
+                assert.deepEqual(result, {
+                    result: true,
+                    number: 123
+                });
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
     });
 });

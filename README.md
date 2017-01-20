@@ -182,6 +182,7 @@ oracledb.createPool({
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
+For promise support, the action can simply return a promise instead of calling the provided callback.<br>
 This function will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
 This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.<br>
 It is recommanded to create a pool and use the pool.run instead of oracledb.run as this function will create a new connection (and release it) for each invocation,
@@ -218,6 +219,25 @@ oracledb.run({
   }, callback); //at end of transaction, call the oracledb provided callback
 }, function onActionDone(error, result) {
   //do something with the result/error
+});
+
+//full promise support for both oracledb.run and the action
+oracledb.run({
+ user: process.env.ORACLE_USER,
+ password: process.env.ORACLE_PASSWORD,
+ connectString: process.env.ORACLE_CONNECTION_STRING
+}, function (connection) {
+  //run some database operations in a transaction and return a promise
+  return connection.transaction([
+    function firstAction() {
+      return connection.insert(....); //returns a promise
+    },
+    function secondAction() {
+      return connection.update(....); //returns a promise
+    }
+  ]);
+}).then(function (result) {
+  //do something with the result
 });
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
@@ -290,6 +310,7 @@ oracledb.createPool({
 This function invokes the provided action (function) with a valid connection object and a callback.<br>
 The action can use the provided connection to run any connection operation/s (execute/query/transaction/...) and after finishing it
 must call the callback with an error (if any) and result.<br>
+For promise support, the action can simply return a promise instead of calling the provided callback.<br>
 The pool will ensure the connection is released properly and only afterwards will call the provided callback with the action error/result.<br>
 This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.<br>
 For extended promise support, the action provided can return a promise instead of calling the provided callback (see examples).
@@ -1123,7 +1144,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-01-20  | v1.1.57 | connection.run and connection.transaction actions now can return a promise instead of using a callback |
+| 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |
