@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-01-20  | v1.1.57 | connection.run and connection.transaction actions now can return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |

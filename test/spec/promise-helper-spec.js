@@ -63,6 +63,58 @@ describe('PromiseHelper Tests', function () {
         });
     });
 
+    describe('runAsync', function () {
+        it('async valid', function (done) {
+            promiseHelper.runAsync(function (callback) {
+                callback(null, 'test output');
+            }, function (error, output) {
+                assert.isNull(error);
+                assert.strictEqual(output, 'test output');
+
+                done();
+            });
+        });
+
+        it('async error', function (done) {
+            promiseHelper.runAsync(function (callback) {
+                callback(new Error('test'));
+            }, function (error, output) {
+                assert.isDefined(error);
+                assert.strictEqual(error.message, 'test');
+                assert.isUndefined(output);
+
+                done();
+            });
+        });
+
+        it('promise valid', function (done) {
+            promiseHelper.runAsync(function () {
+                return new PromiseLib(function (resolve) {
+                    resolve('test output');
+                });
+            }, function (error, output) {
+                assert.isNull(error);
+                assert.strictEqual(output, 'test output');
+
+                done();
+            });
+        });
+
+        it('promise error', function (done) {
+            promiseHelper.runAsync(function () {
+                return new PromiseLib(function (resolve, reject) {
+                    reject(new Error('test'));
+                });
+            }, function (error, output) {
+                assert.isDefined(error);
+                assert.strictEqual(error.message, 'test');
+                assert.isUndefined(output);
+
+                done();
+            });
+        });
+    });
+
     describe('runPromise', function () {
         it('Promise not supported', function () {
             delete global.Promise;

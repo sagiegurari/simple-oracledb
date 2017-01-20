@@ -5453,6 +5453,36 @@ describe('Connection Tests', function () {
             });
         });
 
+        it('single promise action, using promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var commitDone = false;
+            connection.commit = function (callback) {
+                commitDone = true;
+                callback();
+            };
+
+            global.Promise = PromiseLib;
+
+            var promise = connection.run(function () {
+                assert.isFalse(commitDone);
+
+                return new PromiseLib(function (resolve) {
+                    resolve('my result');
+                });
+            });
+
+            promise.then(function (results) {
+                assert.deepEqual(['my result'], results);
+                assert.isFalse(commitDone);
+
+                done();
+            }).catch(function () {
+                assert.fail();
+            });
+        });
+
         it('single action, no promise support', function () {
             var connection = {};
             Connection.extend(connection);
@@ -5499,6 +5529,37 @@ describe('Connection Tests', function () {
                     secondStarted = true;
 
                     callback(null, 'my second');
+                }
+            ], function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    'my first',
+                    'my second'
+                ], results);
+
+                done();
+            });
+        });
+
+        it('multiple actions with mix aysnc/promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var secondStarted = false;
+            connection.run([
+                function (callback) {
+                    setTimeout(function () {
+                        assert.isFalse(secondStarted); //sequence is default
+
+                        callback(null, 'my first');
+                    }, 10);
+                },
+                function () {
+                    secondStarted = true;
+
+                    return new PromiseLib(function (resolve) {
+                        resolve('my second');
+                    });
                 }
             ], function (error, results) {
                 assert.isNull(error);
@@ -5619,6 +5680,31 @@ describe('Connection Tests', function () {
                 },
                 function (callback) {
                     callback(new Error('test error'));
+                }
+            ]);
+
+            promise.then(function () {
+                assert.fail();
+            }).catch(function (error) {
+                assert.isDefined(error);
+                assert.equal('test error', error.message);
+
+                done();
+            });
+        });
+
+        it('error in promise actions, using promise', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var promise = connection.run([
+                function (callback) {
+                    callback(null, 'my first');
+                },
+                function () {
+                    return new PromiseLib(function (resolve, reject) {
+                        reject(new Error('test error'));
+                    });
                 }
             ]);
 

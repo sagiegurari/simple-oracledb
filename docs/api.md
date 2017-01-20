@@ -574,6 +574,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 ### Connection#run(actions, [options], [callback]) ⇒ <code>Promise</code>
 Enables to run multiple oracle operations in sequence or parallel.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+For promise support, actions can simply return a promise instead of using the provided callback.<br>
 All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 This function is basically the same as connection.transaction with few exceptions<br>
 <ul>
@@ -679,6 +680,20 @@ connection.run([
 }).then(function onActionsResults(output) {
   //continue flow...
 });
+
+//actions can return a promise instead of using callback (you can mix actions to either use callback or return a promise)
+connection.run([
+  function firstAction() {
+    return connection.insert(....); //return a promise
+  },
+  function secondAction() {
+    return connection.update(....); //return a promise
+  }
+], {
+  sequence: true
+}).then(function onActionsResults(output) {
+  //continue flow...
+});
 ```
 <a name="Connection+transaction"></a>
 
@@ -686,6 +701,7 @@ connection.run([
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+For promise support, actions can simply return a promise instead of using the provided callback.<br>
 All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
@@ -749,6 +765,20 @@ connection.transaction([
   },
   function secondAction(callback) {
     connection.update(...., callback);
+  }
+], {
+  sequence: true
+}).then(function onTransactionResults(output) {
+  //continue flow...
+});
+
+//actions can return a promise instead of using callback (you can mix actions to either use callback or return a promise)
+connection.transaction([
+  function firstAction() {
+    return connection.insert(....); //return a promise
+  },
+  function secondAction() {
+    return connection.update(....); //return a promise
   }
 ], {
   sequence: true

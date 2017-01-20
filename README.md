@@ -715,6 +715,7 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
 Enables to run multiple oracle operations in a single transaction.<br>
 This function basically allows to automatically commit or rollback once all your actions are done.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+For promise support, actions can simply return a promise instead of using the provided callback.<br>
 All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 Once all actions are done, in case of any error in any action, a rollback will automatically get invoked, otherwise a commit will be invoked.<br>
 Once the rollback/commit is done, the provided callback will be invoked with the error (if any) and results of all actions.<br>
@@ -774,6 +775,20 @@ connection.transaction([
 }).then(function onTransactionResults(output) {
   //continue flow...
 });
+
+//actions can return a promise instead of using callback (you can mix actions to either use callback or return a promise)
+connection.transaction([
+  function firstAction() {
+    return connection.insert(....); //return a promise
+  },
+  function secondAction() {
+    return connection.update(....); //return a promise
+  }
+], {
+  sequence: true
+}).then(function onTransactionResults(output) {
+  //continue flow...
+});
 ```
 <!-- markdownlint-enable MD009 MD031 MD036 -->
 
@@ -782,6 +797,7 @@ connection.transaction([
 ### 'connection.run(actions, [options], [callback]) ⇒ [Promise]'
 Enables to run multiple oracle operations in sequence or parallel.<br>
 Actions are basically javascript functions which get a callback when invoked, and must call that callback with error or result.<br>
+For promise support, actions can simply return a promise instead of using the provided callback.<br>
 All provided actions are executed in sequence unless options.sequence=false is provided (parallel invocation is only for IO operations apart of the oracle driver as the driver will queue operations on same connection).<br>
 This function is basically the same as connection.transaction with few exceptions<br>
 <ul>
@@ -871,6 +887,20 @@ connection.run([
   },
   function secondAction(callback) {
     connection.update(...., callback);
+  }
+], {
+  sequence: true
+}).then(function onActionsResults(output) {
+  //continue flow...
+});
+
+//actions can return a promise instead of using callback (you can mix actions to either use callback or return a promise)
+connection.run([
+  function firstAction() {
+    return connection.insert(....); //return a promise
+  },
+  function secondAction() {
+    return connection.update(....); //return a promise
   }
 ], {
   sequence: true
@@ -1093,6 +1123,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2017-01-20  | v1.1.57 | connection.run and connection.transaction actions now can return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |
