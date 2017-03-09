@@ -32,8 +32,8 @@
 ## Connection
 **Kind**: global class  
 **Emits**: <code>event:release</code>  
-**Access:** public  
-**Author:** Sagie Gur-Ari  
+**Access**: public  
+**Author**: Sagie Gur-Ari  
 
 * [Connection](#Connection)
     * [new Connection()](#new_Connection_new)
@@ -68,14 +68,14 @@ This class holds all the extended capabilities added the oracledb connection.
 ### Connection.simplified : <code>Boolean</code>
 Marker property.
 
-**Access:** public  
+**Access**: public  
 <a name="Connection+execute"></a>
 
 ### Connection#execute(sql, [bindParams], [options], [callback]) ⇒ <code>Promise</code>
 Extends the original oracledb connection.execute to provide additional behavior.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -105,7 +105,7 @@ This function is not recommended for huge results sets or huge LOB values as it 
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
 **Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code> - The stream to read the results from (if streamResults=true in options) or promise if callback not provided  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -183,7 +183,7 @@ All LOBs will be written to the DB via streams and only after all LOBs are writt
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -257,7 +257,7 @@ All LOBs will be written to the DB via streams and only after all LOBs are writt
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -311,7 +311,7 @@ The connection.release also has an alias connection.close for consistent close f
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Emits**: <code>event:release</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -366,7 +366,7 @@ Alias for connection.release, see connection.release for more info.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Emits**: <code>event:release</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -382,7 +382,7 @@ Alias for connection.release, see connection.release for more info.
 Extends the connection.commit to prevent commit being invoked while in the middle of a transaction.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -411,7 +411,7 @@ If rollback fails, you can't really rollback again the data, so the callback is 
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -437,7 +437,7 @@ The query expects that only 1 column is fetched and if more are detected in the 
 The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -488,7 +488,7 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 the bind params is now an array of bind params (one per row).
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -534,7 +534,7 @@ The function arguments used to execute the 'update' are exactly as defined in th
 the bind params is now an array of bind params (one per row).
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -583,7 +583,7 @@ This function is basically the same as connection.transaction with few exception
 </ul>
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -710,7 +710,7 @@ This is done to prevent commits in the middle of the transaction.<br>
 In addition, you can not start a transaction while another transaction is in progress.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -794,7 +794,7 @@ The file content must be a single valid SQL command string.<br>
 This function is basically a quick helper to reduce the coding needed to read the sql file.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -826,7 +826,7 @@ calls the original callback.
 
 **Kind**: static method of <code>[Connection](#Connection)</code>  
 **Returns**: <code>function</code> - The getConnection callback wrapper.  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -838,7 +838,7 @@ calls the original callback.
 Extends the provided oracledb connection instance.
 
 **Kind**: static method of <code>[Connection](#Connection)</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -848,8 +848,8 @@ Extends the provided oracledb connection instance.
 
 ## OracleDB
 **Kind**: global class  
-**Access:** public  
-**Author:** Sagie Gur-Ari  
+**Access**: public  
+**Author**: Sagie Gur-Ari  
 
 * [OracleDB](#OracleDB)
     * [new OracleDB()](#new_OracleDB_new)
@@ -875,14 +875,14 @@ This class holds all the extended capabilities added the oracledb.
 ### OracleDB.simplified : <code>Boolean</code>
 Marker property.
 
-**Access:** public  
+**Access**: public  
 <a name="OracleDB+getConnection"></a>
 
 ### OracleDB#getConnection(connectionAttributes, [callback]) ⇒ <code>Promise</code>
 Wraps the original oracledb getConnection in order to provide an extended connection object.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -895,7 +895,7 @@ Wraps the original oracledb getConnection in order to provide an extended connec
 Wraps the original oracledb createPool in order to provide an extended pool object.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -919,7 +919,7 @@ It is recommanded to create a pool and use the pool.run instead of oracledb.run 
 on the other hand, pool.run will reuse pool managed connections which will result in improved performance.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -1032,7 +1032,7 @@ This events is triggered when a connection is released successfully.
 Extends the provided oracledb instance.
 
 **Kind**: static method of <code>[OracleDB](#OracleDB)</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1043,8 +1043,8 @@ Extends the provided oracledb instance.
 ## Pool
 **Kind**: global class  
 **Emits**: <code>event:connection-created</code>, <code>event:connection-released</code>, <code>event:release</code>  
-**Access:** public  
-**Author:** Sagie Gur-Ari  
+**Access**: public  
+**Author**: Sagie Gur-Ari  
 
 * [Pool](#Pool)
     * [new Pool()](#new_Pool_new)
@@ -1071,7 +1071,7 @@ This class holds all the extended capabilities added the oracledb pool.
 ### Pool.simplified : <code>Boolean</code>
 Marker property.
 
-**Access:** public  
+**Access**: public  
 <a name="Pool+getConnection"></a>
 
 ### Pool#getConnection([callback]) ⇒ <code>Promise</code>
@@ -1083,7 +1083,7 @@ See [createPool](https://github.com/sagiegurari/simple-oracledb/blob/master/docs
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
 **Emits**: <code>event:connection-created</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1128,7 +1128,7 @@ This function basically will remove the need of caller code to get and release a
 For extended promise support, the action provided can return a promise instead of calling the provided callback (see examples).
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -1189,7 +1189,7 @@ This function invokes the requested queries in parallel (limiting it based on th
 In order for the queries to run in parallel, multiple connections will be used so use this with caution.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1252,7 +1252,7 @@ Therefore this function allows you to ignore the need to pass a callback and mak
 The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1278,7 +1278,7 @@ pool.close();
 Alias for pool.terminate, see pool.terminate for more info.
 
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1318,7 +1318,7 @@ This events is triggered after the pool is released successfully.
 Extends the provided oracledb pool instance.
 
 **Kind**: static method of <code>[Pool](#Pool)</code>  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -1333,8 +1333,8 @@ Extends the provided oracledb pool instance.
 
 ## ResultSetReadStream
 **Kind**: global class  
-**Access:** public  
-**Author:** Sagie Gur-Ari  
+**Access**: public  
+**Author**: Sagie Gur-Ari  
 
 * [ResultSetReadStream](#ResultSetReadStream)
     * [new ResultSetReadStream()](#new_ResultSetReadStream_new)
@@ -1351,13 +1351,13 @@ A node.js read stream for resultsets.
 Closes the stream and prevent any more data events from being invoked.<br>
 It will also free the connection to enable using it to invoke more operations.
 
-**Access:** public  
+**Access**: public  
 <a name="SimpleOracleDB"></a>
 
 ## SimpleOracleDB
 **Kind**: global class  
-**Access:** public  
-**Author:** Sagie Gur-Ari  
+**Access**: public  
+**Author**: Sagie Gur-Ari  
 
 * [SimpleOracleDB](#SimpleOracleDB)
     * [new SimpleOracleDB()](#new_SimpleOracleDB_new)
@@ -1385,21 +1385,21 @@ See extend function for more info.
 The pool/connection diagnostics info.<br>
 This includes info of all live pools (including live time and create time) and all live connections (including parent pool if any, live time, create time and last SQL)
 
-**Access:** public  
+**Access**: public  
 <a name="SimpleOracleDB.enableDiagnosticInfo"></a>
 
 ### SimpleOracleDB.enableDiagnosticInfo : <code>Boolean</code>
 True if the monitoring is enabled and it will listen and store pool/connection diagnostics information.<br>
 By default this is set to false.
 
-**Access:** public  
+**Access**: public  
 <a name="SimpleOracleDB+extend"></a>
 
 ### SimpleOracleDB#extend(oracledb)
 Extends the oracledb library which from that point will allow fetching the modified
 connection objects via oracledb.getConnection or via pool.getConnection
 
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1422,7 +1422,7 @@ SimpleOracleDB.extend(oracledb);
 Extends the oracledb pool instance which from that point will allow fetching the modified
 connection objects via pool.getConnection
 
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1455,7 +1455,7 @@ function myFunction(pool) {
 Extends the oracledb connection instance which from that point will allow access to all
 the extended capabilities of this library.
 
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1483,7 +1483,7 @@ This function enables external libraries to further extend oracledb using a very
 Extension functions automatically get promisified unless specified differently in the optional options.
 
 **Returns**: <code>Boolean</code> - True if added, false if ignored  
-**Access:** public  
+**Access**: public  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
