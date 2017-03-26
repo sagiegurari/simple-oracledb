@@ -39,7 +39,7 @@
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>Boolean</code>
     * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>Promise</code>
-    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
+    * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> \| <code>Promise</code>
     * [#insert(sql, [bindParams], [options], [callback])](#Connection+insert) ⇒ <code>Promise</code>
     * [#update(sql, [bindParams], [options], [callback])](#Connection+update) ⇒ <code>Promise</code>
     * [#release([options], [callback])](#Connection+release) ⇒ <code>Promise</code>
@@ -97,14 +97,14 @@ connection.execute('SELECT department_id, department_name FROM departments WHERE
 ```
 <a name="Connection+query"></a>
 
-### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code>
+### Connection#query(sql, [bindParams], [options], [callback]) ⇒ <code>[ResultSetReadStream](#ResultSetReadStream)</code> \| <code>Promise</code>
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
-**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> &#124; <code>Promise</code> - The stream to read the results from (if streamResults=true in options) or promise if callback not provided  
+**Returns**: <code>[ResultSetReadStream](#ResultSetReadStream)</code> \| <code>Promise</code> - The stream to read the results from (if streamResults=true in options) or promise if callback not provided  
 **Access**: public  
 
 | Param | Type | Default | Description |
@@ -587,7 +587,7 @@ This function is basically the same as connection.transaction with few exception
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| actions | <code>Array.&lt;function()&gt;</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| actions | <code>Array.&lt;function()&gt;</code> \| <code>function</code> |  | A single action function or an array of action functions. |
 | [options] | <code>Object</code> |  | Any run options |
 | [options.sequence] | <code>Boolean</code> | <code>false</code> | True to run all actions in sequence, false to run them in parallel (default) |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the run actions results |
@@ -714,7 +714,7 @@ In addition, you can not start a transaction while another transaction is in pro
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| actions | <code>Array.&lt;function()&gt;</code> &#124; <code>function</code> |  | A single action function or an array of action functions. |
+| actions | <code>Array.&lt;function()&gt;</code> \| <code>function</code> |  | A single action function or an array of action functions. |
 | [options] | <code>Object</code> |  | Any transaction options |
 | [options.sequence] | <code>Boolean</code> | <code>true</code> | True to run all actions in sequence, false to run them in parallel |
 | [callback] | <code>[AsyncCallback](#AsyncCallback)</code> |  | Invoked with an error or the transaction results |

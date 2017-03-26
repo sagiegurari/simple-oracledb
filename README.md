@@ -447,7 +447,7 @@ This events is triggered when the connection is released successfully.
 
 <a name="Connection+query"></a>
 <!-- markdownlint-disable MD009 MD031 MD036 -->
-### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ResultSetReadStream] &#124; [Promise]'
+### 'connection.query(sql, [bindParams], [options], [callback]) ⇒ [ResultSetReadStream] \| [Promise]'
 Provides simpler interface than the original oracledb connection.execute function to enable simple query invocation.<br>
 The callback output will be an array of objects, each object holding a property for each field with the actual value.<br>
 All LOBs will be read and all rows will be fetched.<br>
@@ -1144,7 +1144,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-03-09  | v1.1.60 | Maintenance |
+| 2017-03-26  | v1.1.61 | Maintenance |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
