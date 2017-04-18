@@ -2,7 +2,7 @@
 
 [![NPM Version](http://img.shields.io/npm/v/simple-oracledb.svg?style=flat)](https://www.npmjs.org/package/simple-oracledb) [![Build Status](https://travis-ci.org/sagiegurari/simple-oracledb.svg)](http://travis-ci.org/sagiegurari/simple-oracledb) [![Coverage Status](https://coveralls.io/repos/sagiegurari/simple-oracledb/badge.svg)](https://coveralls.io/r/sagiegurari/simple-oracledb) [![bitHound Code](https://www.bithound.io/github/sagiegurari/simple-oracledb/badges/code.svg)](https://www.bithound.io/github/sagiegurari/simple-oracledb) [![Inline docs](http://inch-ci.org/github/sagiegurari/simple-oracledb.svg?branch=master)](http://inch-ci.org/github/sagiegurari/simple-oracledb)<br>
 [![License](https://img.shields.io/npm/l/simple-oracledb.svg?style=flat)](https://github.com/sagiegurari/simple-oracledb/blob/master/LICENSE) [![Total Downloads](https://img.shields.io/npm/dt/simple-oracledb.svg?style=flat)](https://www.npmjs.org/package/simple-oracledb) [![Dependency Status](https://david-dm.org/sagiegurari/simple-oracledb.svg)](https://david-dm.org/sagiegurari/simple-oracledb) [![devDependency Status](https://david-dm.org/sagiegurari/simple-oracledb/dev-status.svg)](https://david-dm.org/sagiegurari/simple-oracledb?type=dev)<br>
-[![Retire Status](http://retire.insecurity.today/api/image?uri=https://raw.githubusercontent.com/sagiegurari/simple-oracledb/master/package.json)](http://retire.insecurity.today/api/image?uri=https://raw.githubusercontent.com/sagiegurari/simple-oracledb/master/package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/sagiegurari/simple-oracledb/badge.svg)](https://snyk.io/test/github/sagiegurari/simple-oracledb) [![Retire Status](http://retire.insecurity.today/api/image?uri=https://raw.githubusercontent.com/sagiegurari/simple-oracledb/master/package.json)](http://retire.insecurity.today/api/image?uri=https://raw.githubusercontent.com/sagiegurari/simple-oracledb/master/package.json)
 
 > Extend capabilities of oracledb with simplified API for quicker development.
 
@@ -1144,7 +1144,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-04-17  | v1.1.64 | Maintenance |
+| 2017-04-18  | v1.1.65 | Maintenance |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
