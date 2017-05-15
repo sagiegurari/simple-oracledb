@@ -115,6 +115,7 @@ The function arguments used to execute the 'query' are exactly as defined in the
 | [options.splitResults] | <code>Object</code> | <code>false</code> | True to enable to split the results into bulks, each bulk will invoke the provided callback (last callback invocation will have empty results, promise not supported). See also bulkRowsAmount option. |
 | [options.streamResults] | <code>Object</code> | <code>false</code> | True to enable to stream the results, the callback will receive a read stream object which can be piped or used with standard stream events (ignored if splitResults=true). |
 | [options.bulkRowsAmount] | <code>Number</code> | <code>100</code> | The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation) |
+| [options.flattenStackEveryRows] | <code>Number</code> |  | The amount of rows after which the JS stack is flattened, low number can result in performance impact, high number can result in stack overflow error |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the query results object holding all data including LOBs |
 
 **Example**  
