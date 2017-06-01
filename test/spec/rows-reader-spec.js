@@ -381,9 +381,13 @@ describe('RowsReader Tests', function () {
                 ]
             ], function (error, jsRows) {
                 assert.isNull(error);
+
+                jsRows[0].COL1 = jsRows[0].COL1.toJSON();
+                jsRows[1].COL4 = jsRows[1].COL4.toJSON();
+
                 assert.deepEqual([
                     {
-                        COL1: new Buffer('test1\ntest2', 'utf8'),
+                        COL1: (new Buffer('test1\ntest2', 'utf8')).toJSON(),
                         COL2: 'test',
                         COL3: 50,
                         COL4: undefined
@@ -392,7 +396,7 @@ describe('RowsReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: new Buffer('123456', 'utf8')
+                        COL4: (new Buffer('123456', 'utf8')).toJSON()
                     }
                 ], jsRows);
 
@@ -443,9 +447,13 @@ describe('RowsReader Tests', function () {
                 }
             ], function (error, jsRows) {
                 assert.isNull(error);
+
+                jsRows[0].COL1 = jsRows[0].COL1.toJSON();
+                jsRows[1].COL4 = jsRows[1].COL4.toJSON();
+
                 assert.deepEqual([
                     {
-                        COL1: new Buffer('test1\ntest2', 'utf8'),
+                        COL1: (new Buffer('test1\ntest2', 'utf8')).toJSON(),
                         COL2: 'test',
                         COL3: 50,
                         COL4: undefined
@@ -454,7 +462,7 @@ describe('RowsReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: new Buffer('123456', 'utf8')
+                        COL4: (new Buffer('123456', 'utf8')).toJSON()
                     }
                 ], jsRows);
 

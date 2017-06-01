@@ -121,7 +121,7 @@ module.exports = {
         var testStream = new EventEmitter();
         testStream.type = require('../../lib/constants').blobType;
         testStream.end = function (data, callback) {
-            assert.deepEqual(data, new Buffer(testStream.testData));
+            assert.deepEqual(data.toJSON(), (new Buffer(testStream.testData)).toJSON());
             assert.isFunction(callback);
 
             this.emit('end');

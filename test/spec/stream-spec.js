@@ -114,7 +114,7 @@ describe('stream Tests', function () {
         it('write Buffer test', function (done) {
             var writable = new EventEmitter();
             writable.end = function (data, callback) {
-                assert.deepEqual(data, new Buffer('TEST STRING DATA'));
+                assert.deepEqual(data.toJSON(), (new Buffer('TEST STRING DATA')).toJSON());
                 assert.isFunction(callback);
 
                 callback();
