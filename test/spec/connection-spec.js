@@ -10,6 +10,7 @@ var PromiseLib = global.Promise || require('promiscuous');
 var path = require('path');
 var fs = require('fs');
 var helper = require('../helpers/test-oracledb');
+var utils = require('../helpers/utils');
 var constants = require('../../lib/constants');
 var Connection = require('../../lib/connection');
 var SimpleOracleDB = require('../..');
@@ -2065,7 +2066,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 autoCommit: true,
                 lobMetaInfo: {
@@ -2152,7 +2153,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 autoCommit: true,
                 lobMetaInfo: {
@@ -2251,7 +2252,7 @@ describe('Connection Tests', function () {
                 },
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 autoCommit: true,
                 lobMetaInfo: {
@@ -2329,7 +2330,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2382,7 +2383,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2437,7 +2438,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2525,7 +2526,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 autoCommit: true,
                 lobMetaInfo: {
@@ -2709,7 +2710,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2788,7 +2789,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2846,7 +2847,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2918,7 +2919,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -2991,7 +2992,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -3047,7 +3048,7 @@ describe('Connection Tests', function () {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
-                lob3: new Buffer('binary data')
+                lob3: utils.createBuffer('binary data')
             }, {
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -4280,13 +4281,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -4389,13 +4390,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -4485,13 +4486,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -4583,13 +4584,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -4666,13 +4667,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -4979,13 +4980,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -5088,13 +5089,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -5184,13 +5185,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -5282,13 +5283,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,
@@ -5365,13 +5366,13 @@ describe('Connection Tests', function () {
                     id: 1,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 },
                 {
                     id: 2,
                     lob1: 'clob text',
                     lob2: 'second clob text',
-                    lob3: new Buffer('binary data')
+                    lob3: utils.createBuffer('binary data')
                 }
             ], {
                 autoCommit: true,

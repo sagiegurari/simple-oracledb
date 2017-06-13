@@ -6,6 +6,7 @@ var chai = require('chai');
 var assert = chai.assert;
 var EventEmitter = require('events').EventEmitter;
 var recordWriter = require('../../lib/record-writer');
+var utils = require('../helpers/utils');
 
 describe('RecordWriter Tests', function () {
     describe('write Tests', function () {
@@ -36,7 +37,7 @@ describe('RecordWriter Tests', function () {
         it('Buffer test', function (done) {
             var writable = new EventEmitter();
             writable.end = function (data, callback) {
-                assert.deepEqual(data, new Buffer('TEST STRING DATA'));
+                assert.deepEqual(data, utils.createBuffer('TEST STRING DATA'));
                 assert.isFunction(callback);
 
                 callback();
@@ -47,7 +48,7 @@ describe('RecordWriter Tests', function () {
                     writable
                 ]
             }, {
-                BIND1: new Buffer('TEST STRING DATA')
+                BIND1: utils.createBuffer('TEST STRING DATA')
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(0, writable.listeners('error').length);
@@ -165,8 +166,8 @@ describe('RecordWriter Tests', function () {
             }, {
                 BIND1: 'TEST STRING DATA',
                 BIND2: 'TEST STRING DATA',
-                BIND3: new Buffer('TEST STRING DATA'),
-                BIND4: new Buffer('TEST STRING DATA')
+                BIND3: utils.createBuffer('TEST STRING DATA'),
+                BIND4: utils.createBuffer('TEST STRING DATA')
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(0, writable1.listeners('error').length);
@@ -206,7 +207,7 @@ describe('RecordWriter Tests', function () {
         it('Buffer test', function (done) {
             var writable = new EventEmitter();
             writable.end = function (data, callback) {
-                assert.deepEqual(data, new Buffer('TEST STRING DATA'));
+                assert.deepEqual(data, utils.createBuffer('TEST STRING DATA'));
                 assert.isFunction(callback);
 
                 callback();
@@ -218,7 +219,7 @@ describe('RecordWriter Tests', function () {
                     writable
                 ]
             }, {
-                BIND1: new Buffer('TEST STRING DATA')
+                BIND1: utils.createBuffer('TEST STRING DATA')
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(0, writable.listeners('error').length);
@@ -358,8 +359,8 @@ describe('RecordWriter Tests', function () {
             }, {
                 BIND1: 'TEST STRING DATA',
                 BIND2: 'TEST STRING DATA',
-                BIND3: new Buffer('TEST STRING DATA'),
-                BIND4: new Buffer('TEST STRING DATA')
+                BIND3: utils.createBuffer('TEST STRING DATA'),
+                BIND4: utils.createBuffer('TEST STRING DATA')
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(0, writable1.listeners('error').length);

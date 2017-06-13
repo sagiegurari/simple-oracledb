@@ -6,6 +6,7 @@ var chai = require('chai');
 var assert = chai.assert;
 var EventEmitter = require('events').EventEmitter;
 var stream = require('../../lib/stream');
+var utils = require('../helpers/utils');
 
 describe('stream Tests', function () {
     describe('read Tests', function () {
@@ -114,13 +115,13 @@ describe('stream Tests', function () {
         it('write Buffer test', function (done) {
             var writable = new EventEmitter();
             writable.end = function (data, callback) {
-                assert.deepEqual(data.toJSON(), (new Buffer('TEST STRING DATA')).toJSON());
+                assert.deepEqual(data.toJSON(), (utils.createBuffer('TEST STRING DATA')).toJSON());
                 assert.isFunction(callback);
 
                 callback();
             };
 
-            stream.write(writable, new Buffer('TEST STRING DATA'), function (error) {
+            stream.write(writable, utils.createBuffer('TEST STRING DATA'), function (error) {
                 assert.isUndefined(error);
                 assert.equal(0, writable.listeners('error').length);
 

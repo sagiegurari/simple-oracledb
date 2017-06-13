@@ -5,6 +5,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var helper = require('../helpers/test-oracledb');
+var utils = require('../helpers/utils');
 var RowsReader = require('../../lib/rows-reader');
 
 describe('RowsReader Tests', function () {
@@ -387,7 +388,7 @@ describe('RowsReader Tests', function () {
 
                 assert.deepEqual([
                     {
-                        COL1: (new Buffer('test1\ntest2', 'utf8')).toJSON(),
+                        COL1: (utils.createBuffer('test1\ntest2', 'utf8')).toJSON(),
                         COL2: 'test',
                         COL3: 50,
                         COL4: undefined
@@ -396,7 +397,7 @@ describe('RowsReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: (new Buffer('123456', 'utf8')).toJSON()
+                        COL4: (utils.createBuffer('123456', 'utf8')).toJSON()
                     }
                 ], jsRows);
 
@@ -404,12 +405,12 @@ describe('RowsReader Tests', function () {
             });
 
             setTimeout(function () {
-                lob1.emit('data', new Buffer('test1', 'utf8'));
-                lob1.emit('data', new Buffer('\ntest2', 'utf8'));
+                lob1.emit('data', utils.createBuffer('test1', 'utf8'));
+                lob1.emit('data', utils.createBuffer('\ntest2', 'utf8'));
                 lob1.emit('end');
 
-                lob2.emit('data', new Buffer('123', 'utf8'));
-                lob2.emit('data', new Buffer('456', 'utf8'));
+                lob2.emit('data', utils.createBuffer('123', 'utf8'));
+                lob2.emit('data', utils.createBuffer('456', 'utf8'));
                 lob2.emit('end');
             }, 10);
         });
@@ -453,7 +454,7 @@ describe('RowsReader Tests', function () {
 
                 assert.deepEqual([
                     {
-                        COL1: (new Buffer('test1\ntest2', 'utf8')).toJSON(),
+                        COL1: (utils.createBuffer('test1\ntest2', 'utf8')).toJSON(),
                         COL2: 'test',
                         COL3: 50,
                         COL4: undefined
@@ -462,7 +463,7 @@ describe('RowsReader Tests', function () {
                         COL1: 'a',
                         COL2: date,
                         COL3: undefined,
-                        COL4: (new Buffer('123456', 'utf8')).toJSON()
+                        COL4: (utils.createBuffer('123456', 'utf8')).toJSON()
                     }
                 ], jsRows);
 
@@ -470,12 +471,12 @@ describe('RowsReader Tests', function () {
             });
 
             setTimeout(function () {
-                lob1.emit('data', new Buffer('test1', 'utf8'));
-                lob1.emit('data', new Buffer('\ntest2', 'utf8'));
+                lob1.emit('data', utils.createBuffer('test1', 'utf8'));
+                lob1.emit('data', utils.createBuffer('\ntest2', 'utf8'));
                 lob1.emit('end');
 
-                lob2.emit('data', new Buffer('123', 'utf8'));
-                lob2.emit('data', new Buffer('456', 'utf8'));
+                lob2.emit('data', utils.createBuffer('123', 'utf8'));
+                lob2.emit('data', utils.createBuffer('456', 'utf8'));
                 lob2.emit('end');
             }, 10);
         });

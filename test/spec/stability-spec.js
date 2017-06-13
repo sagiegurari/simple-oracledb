@@ -5,6 +5,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var integrationHelper = require('../helpers/integration-helper');
+var utils = require('../helpers/utils');
 
 if (process.env.TEST_STABILITY) {
     integrationHelper(function (oracledb, connAttrs, initDB, end) {
@@ -35,7 +36,7 @@ if (process.env.TEST_STABILITY) {
                                     value1: 'test' + index,
                                     value2: index,
                                     clob1: longClobText,
-                                    blob2: new Buffer('blob text here')
+                                    blob2: utils.createBuffer('blob text here')
                                 });
                             }
 
@@ -61,7 +62,7 @@ if (process.env.TEST_STABILITY) {
                                             COL3: null,
                                             COL4: null,
                                             LOB1: longClobText,
-                                            LOB2: new Buffer('blob text here')
+                                            LOB2: utils.createBuffer('blob text here')
                                         }, jsRows[index]);
                                     }
 
