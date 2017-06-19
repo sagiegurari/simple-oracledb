@@ -89,7 +89,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('error', function (done) {
-                        var table = 'TEST_ORA_POOL1';
+                        var table = 'TEST_ORA_POOL2';
                         initDB(table, null, function (pool) {
                             var sql = pool.poolAttributes.validationSQL;
                             pool.poolAttributes.validationSQL = 'SOME BAD SQL';
@@ -106,7 +106,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('run', function () {
                     it('query', function (done) {
-                        var table = 'TEST_ORA_POOL2';
+                        var table = 'TEST_ORA_POOL3';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -152,7 +152,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('parallelQuery', function () {
                     it('multiple queries', function (done) {
-                        var table = 'TEST_ORA_POOL3';
+                        var table = 'TEST_ORA_POOL4';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -1105,7 +1105,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('multiple row', function (done) {
-                        var table = 'TEST_ORA_JSON1';
+                        var table = 'TEST_ORA_JSON2';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
