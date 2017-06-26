@@ -1144,7 +1144,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2017-06-19  | v1.1.83 | Maintenance |
+| 2017-06-26  | v1.1.84 | Maintenance |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2017-01-13  | v1.1.55 | Maintenance |
