@@ -29,4 +29,4 @@ echo "TEST_ORACLE_CONNECTION_STRING: ${TEST_ORACLE_CONNECTION_STRING}"
 #wait for db to be up
 sleep 60
 
-mocha ./test/spec/integration-spec.js
+mocha --exit ./test/spec/integration-spec.js
