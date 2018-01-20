@@ -12,6 +12,8 @@ echo "----------------"
 echo "OCI_INCLUDE_DIR: $OCI_INCLUDE_DIR"
 echo "----------------"
 
+npm --loglevel error -g install mocha
+
 npm --loglevel error install
 
 npm --loglevel error --production --unsafe-perm install oracledb
