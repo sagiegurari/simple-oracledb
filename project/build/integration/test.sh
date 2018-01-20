@@ -14,11 +14,11 @@ echo "----------------"
 
 npm --loglevel error -g --production install mocha
 
-npm --loglevel error --production install
+npm --loglevel error -g --production install
 
-npm --loglevel error --production install chai
+npm --loglevel error -g --production install chai
 
-npm --loglevel error --production --unsafe-perm install oracledb
+npm --loglevel error -g --production --unsafe-perm install oracledb
 
 export TEST_ORACLE_CONNECTION_STRING="(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=${DB_PORT_1521_TCP_ADDR})(PORT=${DB_PORT_1521_TCP_PORT}))(CONNECT_DATA=(SID=xe)))"
 
