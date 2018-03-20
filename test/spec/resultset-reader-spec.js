@@ -644,12 +644,13 @@ describe('resultSetReader Tests', function () {
                 bulkRowsAmount: 2
             }, function (error, jsRows) {
                 assert.isNull(error);
-                assert.deepEqual(outputData.shift(), jsRows);
 
-                if (outputData.length === 0) {
-                    done();
-                } else if (outputData.length < 0) {
-                    assert.fail();
+                if (outputData.length) {
+                    assert.deepEqual(outputData.shift(), jsRows);
+
+                    if (!outputData.length) {
+                        done();
+                    }
                 }
             });
         });
@@ -756,12 +757,13 @@ describe('resultSetReader Tests', function () {
                 bulkRowsAmount: 2
             }, function (error, jsRows) {
                 assert.isNull(error);
-                assert.deepEqual(outputData.shift(), jsRows);
 
-                if (outputData.length === 0) {
-                    done();
-                } else if (outputData.length < 0) {
-                    assert.fail();
+                if (outputData.length) {
+                    assert.deepEqual(outputData.shift(), jsRows);
+
+                    if (outputData.length === 0) {
+                        done();
+                    }
                 }
             });
         });
