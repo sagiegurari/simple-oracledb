@@ -210,6 +210,38 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('executeMany', function () {
+        it('keep sql', function () {
+            var testConnection = {
+                executeMany: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.executeMany('test sql');
+            assert.equal(testConnection.diagnosticInfo.lastSQL, 'test sql');
+        });
+
+        it('empty sql', function () {
+            var testConnection = {
+                executeMany: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.executeMany('');
+            assert.equal(testConnection.diagnosticInfo.lastSQL, '');
+        });
+
+        it('no args', function () {
+            var testConnection = {
+                executeMany: noop
+            };
+            Connection.extend(testConnection);
+
+            testConnection.executeMany();
+            assert.isUndefined(testConnection.diagnosticInfo.lastSQL);
+        });
+    });
+
     describe('query', function () {
         var columnNames = [
             {
@@ -4073,6 +4105,77 @@ describe('Connection Tests', function () {
             assert.isUndefined(output);
         });
 
+        it('no lobs using executeMany', function (done) {
+            var connection = {
+                executeMany: function (sql, bindVars, options, callback) {
+                    assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
+                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(options, {
+                        lobMetaInfo: {},
+                        autoCommit: true,
+                        useExecuteMany: true,
+                        dmlRowCounts: true
+                    });
+
+                    setTimeout(function () {
+                        callback(null, {
+                            rowsAffected: 2,
+                            dmlRowCounts: [
+                                1,
+                                1
+                            ],
+                            outBinds: [
+                                {},
+                                {}
+                            ]
+                        });
+                    }, 5);
+                }
+            };
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ];
+
+            var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ], {
+                lobMetaInfo: {},
+                autoCommit: true
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    },
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    }
+                ], results);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs, using promise', function (done) {
             var connection = {};
             Connection.extend(connection);
@@ -4303,6 +4406,128 @@ describe('Connection Tests', function () {
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(counter, 2);
+                assert.equal(lobsWritten, 6);
+                assert.isTrue(commitCalled);
+
+                done();
+            });
+        });
+
+        it('multiple lobs executeMany', function (done) {
+            var lobsWritten = 0;
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+
+            var commitCalled = false;
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                },
+                executeMany: function (sql, bindVars, options, callback) {
+                    assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(options, {
+                        autoCommit: false,
+                        lobMetaInfo: {
+                            c1: 'lob1',
+                            c2: 'lob2',
+                            b: 'lob3'
+                        },
+                        sqlModified: true,
+                        useExecuteMany: true,
+                        dmlRowCounts: true
+                    });
+
+                    var outBinds = [];
+                    vars.forEach(function () {
+                        var lob1 = helper.createCLOB();
+                        lob1.testData = 'clob text';
+                        lob1.once('end', function () {
+                            lobsWritten++;
+                        });
+                        var lob2 = helper.createCLOB();
+                        lob2.testData = 'second clob text';
+                        lob2.once('end', function () {
+                            lobsWritten++;
+                        });
+                        var lob3 = helper.createBLOB();
+                        lob3.testData = 'binary data';
+                        lob3.once('end', function () {
+                            lobsWritten++;
+                        });
+
+                        outBinds.push({
+                            lob1: [lob1],
+                            lob2: [lob2],
+                            lob3: [lob3]
+                        });
+                    });
+
+                    callback(null, {
+                        rowsAffected: vars.length,
+                        dmlRowCounts: [
+                            1,
+                            1
+                        ],
+                        outBinds: outBinds
+                    });
+                }
+            };
+            Connection.extend(connection);
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error) {
+                assert.isNull(error);
                 assert.equal(lobsWritten, 6);
                 assert.isTrue(commitCalled);
 
@@ -5725,9 +5950,9 @@ describe('Connection Tests', function () {
     });
 
     describe('transaction', function () {
-        it('ensure autocommit false', function (done) {
+        it('execute ensure autocommit false', function (done) {
             var connection = {
-                baseExecute: function (sql, bindings, options, cb) {
+                execute: function (sql, bindings, options, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
                     assert.deepEqual(options, {
@@ -5747,9 +5972,31 @@ describe('Connection Tests', function () {
             assert.isUndefined(output);
         });
 
-        it('no options', function (done) {
+        it('executeMany ensure autocommit false', function (done) {
             var connection = {
-                baseExecute: function (sql, bindings, cb) {
+                executeMany: function (sql, bindings, options, cb) {
+                    assert.equal(sql, 'sql');
+                    assert.deepEqual(bindings, []);
+                    assert.deepEqual(options, {
+                        autoCommit: false
+                    });
+
+                    setTimeout(cb, 5);
+                }
+            };
+            Connection.extend(connection);
+
+            connection.inTransaction = true;
+            var output = connection.executeMany('sql', [], {
+                autoCommit: true
+            }, done);
+
+            assert.isUndefined(output);
+        });
+
+        it('execute no options', function (done) {
+            var connection = {
+                execute: function (sql, bindings, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
 
@@ -5760,6 +6007,21 @@ describe('Connection Tests', function () {
 
             connection.inTransaction = true;
             connection.execute('sql', [], done);
+        });
+
+        it('executeMany no options', function (done) {
+            var connection = {
+                executeMany: function (sql, bindings, cb) {
+                    assert.equal(sql, 'sql');
+                    assert.deepEqual(bindings, []);
+
+                    cb();
+                }
+            };
+            Connection.extend(connection);
+
+            connection.inTransaction = true;
+            connection.executeMany('sql', [], done);
         });
 
         it('no actions', function (done) {

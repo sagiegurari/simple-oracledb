@@ -1195,7 +1195,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                 });
 
                 describe('batchInsert', function () {
-                    it('batchInsert - LOB data', function (done) {
+                    it('batchInsert - execute - LOB data', function (done) {
                         var table = 'TEST_ORA_BTCH_INST1';
 
                         var longClobText = 'this is a really long line of test data\n';
@@ -1225,6 +1225,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                     }
                                 ], {
                                     autoCommit: true,
+                                    useExecuteMany: false,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
@@ -1265,8 +1266,79 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                         });
                     });
 
-                    it('batchInsert - arrays', function (done) {
+                    it('batchInsert - executeMany - LOB data', function (done) {
                         var table = 'TEST_ORA_BTCH_INST2';
+
+                        var longClobText = 'this is a really long line of test data\n';
+                        var index;
+                        var buffer = [];
+                        for (index = 0; index < 1000; index++) {
+                            buffer.push(longClobText);
+                        }
+                        longClobText = buffer.join('');
+
+                        initDB(table, [], function (pool) {
+                            pool.getConnection(function (err, connection) {
+                                assert.isNull(err);
+
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                    {
+                                        value1: 'test',
+                                        value2: 123,
+                                        clob1: longClobText,
+                                        blob2: utils.createBuffer('blob text here')
+                                    },
+                                    {
+                                        value1: 'test2',
+                                        value2: 455,
+                                        clob1: longClobText,
+                                        blob2: utils.createBuffer('second row')
+                                    }
+                                ], {
+                                    autoCommit: true,
+                                    useExecuteMany: true,
+                                    lobMetaInfo: {
+                                        LOB1: 'clob1',
+                                        LOB2: 'blob2'
+                                    }
+                                }, function (error, results) {
+                                    assert.isNull(error);
+                                    assert.equal(2, results.length);
+                                    assert.equal(1, results[0].rowsAffected);
+                                    assert.equal(1, results[1].rowsAffected);
+
+                                    connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                        resultSet: false
+                                    }, function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.deepEqual([
+                                            {
+                                                COL1: 'test',
+                                                COL2: 123,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: longClobText,
+                                                LOB2: utils.createBuffer('blob text here')
+                                            },
+                                            {
+                                                COL1: 'test2',
+                                                COL2: 455,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: longClobText,
+                                                LOB2: utils.createBuffer('second row')
+                                            }
+                                        ], jsRows);
+
+                                        end(done, connection);
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                    it('batchInsert - execute - arrays', function (done) {
+                        var table = 'TEST_ORA_BTCH_INST3';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
@@ -1276,7 +1348,57 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                     ['test', 123],
                                     ['test2', 455]
                                 ], {
-                                    autoCommit: true
+                                    autoCommit: true,
+                                    useExecuteMany: false
+                                }, function (error, results) {
+                                    assert.isNull(error);
+                                    assert.equal(2, results.length);
+                                    assert.equal(1, results[0].rowsAffected);
+                                    assert.equal(1, results[1].rowsAffected);
+
+                                    connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                        resultSet: false
+                                    }, function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.deepEqual([
+                                            {
+                                                COL1: 'test',
+                                                COL2: 123,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
+                                            },
+                                            {
+                                                COL1: 'test2',
+                                                COL2: 455,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
+                                            }
+                                        ], jsRows);
+
+                                        end(done, connection);
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                    it('batchInsert - executeMany - arrays', function (done) {
+                        var table = 'TEST_ORA_BTCH_INST4';
+
+                        initDB(table, [], function (pool) {
+                            pool.getConnection(function (err, connection) {
+                                assert.isNull(err);
+
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2) values (:0, :1)', [
+                                    ['test', 123],
+                                    ['test2', 455]
+                                ], {
+                                    autoCommit: true,
+                                    useExecuteMany: true
                                 }, function (error, results) {
                                     assert.isNull(error);
                                     assert.equal(2, results.length);
@@ -1315,7 +1437,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                 });
 
                 describe('batchUpdate', function () {
-                    it('batchUpdate - LOB data', function (done) {
+                    it('batchUpdate - execute - LOB data', function (done) {
                         var table = 'TEST_ORA_BTCH_UPD1';
 
                         var longClobText = 'this is a really long line of test data\n';
@@ -1345,6 +1467,128 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                     }
                                 ], {
                                     autoCommit: true,
+                                    useExecuteMany: false,
+                                    lobMetaInfo: {
+                                        LOB1: 'clob1',
+                                        LOB2: 'blob2'
+                                    }
+                                }, function (error, results) {
+                                    assert.isNull(error);
+                                    assert.equal(2, results.length);
+                                    assert.equal(1, results[0].rowsAffected);
+                                    assert.equal(1, results[1].rowsAffected);
+
+                                    connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                        resultSet: false
+                                    }, function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.deepEqual([
+                                            {
+                                                COL1: 'test',
+                                                COL2: 123,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: longClobText,
+                                                LOB2: utils.createBuffer('blob text here')
+                                            },
+                                            {
+                                                COL1: 'test2',
+                                                COL2: 455,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: longClobText,
+                                                LOB2: utils.createBuffer('second row')
+                                            }
+                                        ], jsRows);
+
+                                        connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
+                                            {
+                                                value1: 'testU1',
+                                                value2: 123,
+                                                clob1: 'NEW CLOB1',
+                                                blob2: utils.createBuffer('NEW BLOB')
+                                            },
+                                            {
+                                                value1: 'testU2',
+                                                value2: 455,
+                                                clob1: 'NEW CLOB2',
+                                                blob2: utils.createBuffer('AND ANOTHER NEW BLOB')
+                                            }
+                                        ], {
+                                            autoCommit: true,
+                                            lobMetaInfo: {
+                                                LOB1: 'clob1',
+                                                LOB2: 'blob2'
+                                            }
+                                        }, function (updateError, updateResults) {
+                                            assert.isNull(updateError);
+                                            assert.equal(2, updateResults.length);
+                                            assert.equal(1, updateResults[0].rowsAffected);
+                                            assert.equal(1, updateResults[1].rowsAffected);
+
+                                            connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                                resultSet: false
+                                            }, function (queryError2, jsRows2) {
+                                                assert.isNull(queryError2);
+                                                assert.deepEqual([
+                                                    {
+                                                        COL1: 'testU1',
+                                                        COL2: 123,
+                                                        COL3: null,
+                                                        COL4: null,
+                                                        LOB1: 'NEW CLOB1',
+                                                        LOB2: utils.createBuffer('NEW BLOB')
+                                                    },
+                                                    {
+                                                        COL1: 'testU2',
+                                                        COL2: 455,
+                                                        COL3: null,
+                                                        COL4: null,
+                                                        LOB1: 'NEW CLOB2',
+                                                        LOB2: utils.createBuffer('AND ANOTHER NEW BLOB')
+                                                    }
+                                                ], jsRows2);
+
+                                                end(done, connection);
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                    it('batchUpdate - executeMany - LOB data', function (done) {
+                        var table = 'TEST_ORA_BTCH_UPD2';
+
+                        var longClobText = 'this is a really long line of test data\n';
+                        var index;
+                        var buffer = [];
+                        for (index = 0; index < 1000; index++) {
+                            buffer.push(longClobText);
+                        }
+                        longClobText = buffer.join('');
+
+                        initDB(table, [], function (pool) {
+                            pool.getConnection(function (err, connection) {
+                                assert.isNull(err);
+
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                    {
+                                        value1: 'test',
+                                        value2: 123,
+                                        clob1: longClobText,
+                                        blob2: utils.createBuffer('blob text here')
+                                    },
+                                    {
+                                        value1: 'test2',
+                                        value2: 455,
+                                        clob1: longClobText,
+                                        blob2: utils.createBuffer('second row')
+                                    }
+                                ], {
+                                    autoCommit: true,
+                                    useExecuteMany: true,
                                     lobMetaInfo: {
                                         LOB1: 'clob1',
                                         LOB2: 'blob2'
