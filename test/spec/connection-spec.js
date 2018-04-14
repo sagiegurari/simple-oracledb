@@ -4106,6 +4106,17 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs using executeMany', function (done) {
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ];
+
             var connection = {
                 executeMany: function (sql, bindVars, options, callback) {
                     assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
@@ -4133,17 +4144,6 @@ describe('Connection Tests', function () {
                 }
             };
             Connection.extend(connection);
-
-            var vars = [
-                {
-                    id1: 1,
-                    id2: 2
-                },
-                {
-                    id1: 3,
-                    id2: 4
-                }
-            ];
 
             var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
                 {
