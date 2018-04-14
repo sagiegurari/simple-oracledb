@@ -4125,7 +4125,8 @@ describe('Connection Tests', function () {
                         lobMetaInfo: {},
                         autoCommit: true,
                         useExecuteMany: true,
-                        dmlRowCounts: true
+                        dmlRowCounts: true,
+                        forceUseExecuteMany: true
                     });
 
                     setTimeout(function () {
@@ -4156,7 +4157,8 @@ describe('Connection Tests', function () {
                 }
             ], {
                 lobMetaInfo: {},
-                autoCommit: true
+                autoCommit: true,
+                forceUseExecuteMany: true
             }, function (error, results) {
                 assert.isNull(error);
                 assert.deepEqual([
@@ -4466,7 +4468,8 @@ describe('Connection Tests', function () {
                         },
                         sqlModified: true,
                         useExecuteMany: true,
-                        dmlRowCounts: true
+                        dmlRowCounts: true,
+                        forceUseExecuteMany: true
                     });
 
                     var outBinds = [];
@@ -4521,6 +4524,7 @@ describe('Connection Tests', function () {
                 }
             ], {
                 autoCommit: true,
+                forceUseExecuteMany: true,
                 lobMetaInfo: {
                     c1: 'lob1',
                     c2: 'lob2',
