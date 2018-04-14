@@ -39,6 +39,7 @@
     * [new Connection()](#new_Connection_new)
     * [.simplified](#Connection.simplified) : <code>Boolean</code>
     * [#execute(sql, [bindParams], [options], [callback])](#Connection+execute) ⇒ <code>Promise</code>
+    * [#executeMany(sql, [bindParamsArray], [options], [callback])](#Connection+executeMany) ⇒ <code>Promise</code>
     * [#query(sql, [bindParams], [options], [callback])](#Connection+query) ⇒ [<code>ResultSetReadStream</code>](#ResultSetReadStream) \| <code>Promise</code>
     * [#insert(sql, [bindParams], [options], [callback])](#Connection+insert) ⇒ <code>Promise</code>
     * [#update(sql, [bindParams], [options], [callback])](#Connection+update) ⇒ <code>Promise</code>
@@ -88,6 +89,32 @@ Extends the original oracledb connection.execute to provide additional behavior.
 ```js
 //see oracledb documentation for more examples
 connection.execute('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], function onResults(error, results) {
+  if (error) {
+    //handle error...
+  } else {
+    //continue
+  }
+});
+```
+<a name="Connection+executeMany"></a>
+
+### Connection#executeMany(sql, [bindParamsArray], [options], [callback]) ⇒ <code>Promise</code>
+Extends the original oracledb connection.executeMany to provide additional behavior.
+
+**Returns**: <code>Promise</code> - In case of no callback provided in input, this function will return a promise  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sql | <code>String</code> | The SQL to execute |
+| [bindParamsArray] | <code>Array</code> | Optional bind parameters |
+| [options] | <code>Object</code> | Optional execute options |
+| [callback] | [<code>AsyncCallback</code>](#AsyncCallback) | Callback function with the execution results |
+
+**Example**  
+```js
+//see oracledb documentation for more examples
+connection.executeMany('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [[110]], function onResults(error, results) {
   if (error) {
     //handle error...
   } else {
@@ -491,15 +518,16 @@ the bind params is now an array of bind params (one per row).
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access**: public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sql | <code>String</code> | The SQL to execute |
-| bindParamsArray | <code>Array</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
-| options | <code>Object</code> | Any execute options |
-| [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| [callback] | [<code>AsyncCallback</code>](#AsyncCallback) | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sql | <code>String</code> |  | The SQL to execute |
+| bindParamsArray | <code>Array</code> |  | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>Object</code> |  | Any execute options |
+| [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
+| [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -537,15 +565,16 @@ the bind params is now an array of bind params (one per row).
 **Returns**: <code>Promise</code> - In case of no callback provided in input and promise is supported, this function will return a promise  
 **Access**: public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| sql | <code>String</code> | The SQL to execute |
-| bindParamsArray | <code>Object</code> | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
-| options | <code>Object</code> | Any execute options |
-| [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| [callback] | [<code>AsyncCallback</code>](#AsyncCallback) | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| sql | <code>String</code> |  | The SQL to execute |
+| bindParamsArray | <code>Array</code> |  | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
+| options | <code>Object</code> |  | Any execute options |
+| [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
+| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
+| [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
+| [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
@@ -903,7 +932,8 @@ Wraps the original oracledb createPool in order to provide an extended pool obje
 | poolAttributes | <code>Object</code> |  | The connection pool attributes object (see https://github.com/oracle/node-oracledb/blob/master/doc/api.md#createpool for more attributes) |
 | [poolAttributes.retryCount] | <code>Number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
 | [poolAttributes.retryInterval] | <code>Number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
-| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
+| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test ping or validation SQL |
+| [poolAttributes.usePingValidation] | <code>Boolean</code> | <code>true</code> | If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL |
 | [poolAttributes.validationSQL] | <code>String</code> | <code>SELECT 1 FROM DUAL</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the oracle connection pool instance |
 
@@ -1096,6 +1126,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  usePingValidation: true, //If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL
   validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }, function onPoolCreated(error, pool) {
@@ -1109,6 +1140,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  usePingValidation: true, //If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL
   validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }).then(function onPoolCreated(pool) {
@@ -1327,7 +1359,8 @@ Extends the provided oracledb pool instance.
 | [poolAttributes] | <code>Object</code> |  | The connection pool attributes object |
 | [poolAttributes.retryCount] | <code>Number</code> | <code>10</code> | The max amount of retries to get a connection from the pool in case of any error |
 | [poolAttributes.retryInterval] | <code>Number</code> | <code>250</code> | The interval in millies between get connection retry attempts |
-| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test validation SQL |
+| [poolAttributes.runValidationSQL] | <code>Boolean</code> | <code>true</code> | True to ensure the connection returned is valid by running a test ping or validation SQL |
+| [poolAttributes.usePingValidation] | <code>Boolean</code> | <code>true</code> | If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL |
 | [poolAttributes.validationSQL] | <code>String</code> | <code>SELECT 1 FROM DUAL</code> | The test SQL to invoke before returning a connection to validate the connection is open |
 
 <a name="ResultSetReadStream"></a>

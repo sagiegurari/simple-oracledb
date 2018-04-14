@@ -281,6 +281,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  usePingValidation: true, //If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL
   validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }, function onPoolCreated(error, pool) {
@@ -294,6 +295,7 @@ oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
   retryInterval: 500, //The interval in millies between get connection retry attempts (defaults to 250 millies if not provided)
   runValidationSQL: true, //True to ensure the connection returned is valid by running a test validation SQL (defaults to true)
+  usePingValidation: true, //If runValidationSQL, this flag will define if validation should first attempt to use connection.ping instead of running a SQL
   validationSQL: 'SELECT 1 FROM DUAL', //The test SQL to invoke before returning a connection to validate the connection is open (defaults to 'SELECT 1 FROM DUAL')
   //any other oracledb pool attributes
 }).then(function onPoolCreated(pool) {
@@ -1144,7 +1146,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2018-03-20  | v1.1.90 | Maintenance |
+| 2018-04-14  | v1.2.1  | Performance improvements for batch operations and pooled connection fetching (#22 and #23) |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |
