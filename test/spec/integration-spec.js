@@ -1337,8 +1337,63 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                         });
                     });
 
-                    it('batchInsert - execute - arrays', function (done) {
+                    it('batchInsert - executeMany - no LOB', function (done) {
                         var table = 'TEST_ORA_BTCH_INST3';
+
+                        initDB(table, [], function (pool) {
+                            pool.getConnection(function (err, connection) {
+                                assert.isNull(err);
+
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', [
+                                    {
+                                        value1: 'test',
+                                        value2: 123
+                                    },
+                                    {
+                                        value1: 'test2',
+                                        value2: 456
+                                    }
+                                ], {
+                                    autoCommit: true,
+                                    useExecuteMany: true
+                                }, function (error, results) {
+                                    assert.isNull(error);
+                                    assert.equal(2, results.length);
+                                    assert.equal(1, results[0].rowsAffected);
+                                    assert.equal(1, results[1].rowsAffected);
+
+                                    connection.query('SELECT * FROM ' + table + ' ORDER BY COL1 ASC', [], {
+                                        resultSet: false
+                                    }, function (queryError, jsRows) {
+                                        assert.isNull(queryError);
+                                        assert.deepEqual([
+                                            {
+                                                COL1: 'test',
+                                                COL2: 123,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
+                                            },
+                                            {
+                                                COL1: 'test2',
+                                                COL2: 456,
+                                                COL3: null,
+                                                COL4: null,
+                                                LOB1: null,
+                                                LOB2: null
+                                            }
+                                        ], jsRows);
+
+                                        end(done, connection);
+                                    });
+                                });
+                            });
+                        });
+                    });
+
+                    it('batchInsert - execute - arrays', function (done) {
+                        var table = 'TEST_ORA_BTCH_INST4';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
@@ -1387,7 +1442,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchInsert - executeMany - arrays', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST4';
+                        var table = 'TEST_ORA_BTCH_INST5';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
