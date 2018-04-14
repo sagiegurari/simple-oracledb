@@ -46,6 +46,20 @@ TestPool.prototype.getConnection = function (callback) {
     } else {
         var connection = new TestConnection();
 
+        if (this.pingSupport) {
+            if (this.pingError) {
+                connection.ping = function (cb) {
+                    setTimeout(function () {
+                        cb(new Error());
+                    }, 0);
+                };
+            } else {
+                connection.ping = function (cb) {
+                    setTimeout(cb, 0);
+                };
+            }
+        }
+
         if (this.extendConnection) {
             Connection.extend(connection);
         }

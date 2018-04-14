@@ -144,6 +144,49 @@ describe('Pool Tests', function () {
             });
         });
 
+        it('getConnection ping valid', function (done) {
+            var testPool = oracledb.createPool();
+            testPool.extendConnection = true;
+
+            Pool.extend(testPool);
+
+            testPool.pingSupport = true;
+
+            var output = testPool.getConnection(function (error, connection) {
+                assert.isNull(error);
+                assert.isDefined(connection);
+                assert.isTrue(connection.simplified);
+                assert.isDefined(connection.diagnosticInfo.id);
+
+                testPool.once('connection-released', function (releasedConnection) {
+                    assert.isTrue(releasedConnection === connection);
+
+                    done();
+                });
+
+                connection.release();
+            });
+
+            assert.isUndefined(output);
+        });
+
+        it('getConnection ping error', function (done) {
+            var testPool = oracledb.createPool();
+
+            Pool.extend(testPool, {
+                retryInterval: 5
+            });
+
+            testPool.pingSupport = true;
+            testPool.pingError = true;
+            testPool.getConnection(function (error, connection) {
+                assert.isDefined(error);
+                assert.isUndefined(connection);
+
+                done();
+            });
+        });
+
         it('getConnection simple promise', function (done) {
             var testPool = oracledb.createPool();
             testPool.extendConnection = true;
@@ -250,7 +293,8 @@ describe('Pool Tests', function () {
 
             Pool.extend(testPool, {
                 retryCount: 5,
-                runValidationSQL: false
+                runValidationSQL: false,
+                usePingValidation: false
             });
 
             testPool.getConnection(function (error, connection) {
