@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2018-04-14  | v1.2.1  | Performance improvements for batch operations and pooled connection fetching (#22 and #23) |
+| 2018-04-14  | v1.2.2  | Performance improvements for batch operations and pooled connection fetching (#22 and #23) |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
 | 2016-12-28  | v1.1.50 | Added pool.parallelQuery which enables parallel queries using multiple connections |
