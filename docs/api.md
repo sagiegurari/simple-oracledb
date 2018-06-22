@@ -166,6 +166,7 @@ connection.query('SELECT department_id, department_name FROM departments WHERE m
 //In order to split results into bulks, you can provide the splitResults = true option.
 //The callback will be called for each bulk with array of objects.
 //Once all rows are read, the callback will be called with an empty array.
+//Promises are not supported with splitResults=true
 connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   splitResults: true,
   bulkRowsAmount: 100 //The amount of rows to fetch (for splitting results, that is the max rows that the callback will get for each callback invocation)
