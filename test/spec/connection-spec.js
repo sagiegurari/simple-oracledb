@@ -455,7 +455,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -525,7 +525,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -595,7 +595,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -665,7 +665,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -735,7 +735,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -808,7 +808,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -868,7 +868,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -993,7 +993,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -1121,7 +1121,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -1267,7 +1267,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -1367,7 +1367,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -1531,7 +1531,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -1669,7 +1669,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var argumentsArray = Array.prototype.slice.call(arguments, 0);
 
@@ -1831,7 +1831,7 @@ describe('Connection Tests', function () {
             var connection = {};
             Connection.extend(connection);
 
-            var date = new Date();
+            var date = new Date(500);
             connection.baseExecute = function () {
                 var lob1 = helper.createCLOB();
                 var lob2 = helper.createCLOB();
@@ -4125,17 +4125,20 @@ describe('Connection Tests', function () {
                         lobMetaInfo: {},
                         autoCommit: true,
                         useExecuteMany: true,
-                        dmlRowCounts: true,
-                        forceUseExecuteMany: true
+                        forceUseExecuteMany: true,
+                        bindDefs: {
+                            id1: {
+                                type: 2002
+                            },
+                            id2: {
+                                type: 2002
+                            }
+                        }
                     });
 
                     setTimeout(function () {
                         callback(null, {
                             rowsAffected: 2,
-                            dmlRowCounts: [
-                                1,
-                                1
-                            ],
                             outBinds: [
                                 {},
                                 {}
@@ -4158,6 +4161,7 @@ describe('Connection Tests', function () {
             ], {
                 lobMetaInfo: {},
                 autoCommit: true,
+                useExecuteMany: true,
                 forceUseExecuteMany: true
             }, function (error, results) {
                 assert.isNull(error);
@@ -4458,7 +4462,20 @@ describe('Connection Tests', function () {
                 },
                 executeMany: function (sql, bindVars, options, callback) {
                     assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(bindVars, [
+                        {
+                            id: 1,
+                            lob1: undefined,
+                            lob2: undefined,
+                            lob3: undefined
+                        },
+                        {
+                            id: 2,
+                            lob1: undefined,
+                            lob2: undefined,
+                            lob3: undefined
+                        }
+                    ]);
                     assert.deepEqual(options, {
                         autoCommit: false,
                         lobMetaInfo: {
@@ -4468,8 +4485,24 @@ describe('Connection Tests', function () {
                         },
                         sqlModified: true,
                         useExecuteMany: true,
-                        dmlRowCounts: true,
-                        forceUseExecuteMany: true
+                        forceUseExecuteMany: true,
+                        bindDefs: {
+                            id: {
+                                type: 2002
+                            },
+                            lob1: {
+                                dir: 3003,
+                                type: 2006
+                            },
+                            lob2: {
+                                dir: 3003,
+                                type: 2006
+                            },
+                            lob3: {
+                                dir: 3003,
+                                type: 2007
+                            }
+                        }
                     });
 
                     var outBinds = [];
@@ -4499,10 +4532,6 @@ describe('Connection Tests', function () {
 
                     callback(null, {
                         rowsAffected: vars.length,
-                        dmlRowCounts: [
-                            1,
-                            1
-                        ],
                         outBinds: outBinds
                     });
                 }
@@ -4524,6 +4553,7 @@ describe('Connection Tests', function () {
                 }
             ], {
                 autoCommit: true,
+                useExecuteMany: true,
                 forceUseExecuteMany: true,
                 lobMetaInfo: {
                     c1: 'lob1',
@@ -4993,6 +5023,76 @@ describe('Connection Tests', function () {
             assert.isUndefined(output);
         });
 
+        it('no lobs using executeMany', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2,
+                    id3: 'a'
+                },
+                {
+                    id1: 3,
+                    id2: 4,
+                    id3: 'b'
+                }
+            ];
+            var counter = 0;
+            connection.baseExecute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    lobMetaInfo: {},
+                    autoCommit: false,
+                    forceUseExecuteMany: true
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        rowsAffected: 1,
+                        outBinds: {}
+                    });
+                }, 5);
+            };
+
+            var output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+                {
+                    id1: 1,
+                    id2: 2,
+                    id3: 'a'
+                },
+                {
+                    id1: 3,
+                    id2: 4,
+                    id3: 'b'
+                }
+            ], {
+                lobMetaInfo: {},
+                useExecuteMany: true,
+                forceUseExecuteMany: true
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    },
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    }
+                ], results);
+                assert.equal(counter, 2);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs, using promise', function (done) {
             var connection = {};
             Connection.extend(connection);
@@ -5228,6 +5328,122 @@ describe('Connection Tests', function () {
                     c2: 'lob2',
                     b: 'lob3'
                 }
+            }, function (error) {
+                assert.isNull(error);
+                assert.equal(counter, 2);
+                assert.equal(lobsWritten, 6);
+                assert.isTrue(commitCalled);
+
+                done();
+            });
+        });
+
+        it('multiple lobs using executeMany', function (done) {
+            var commitCalled = false;
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                }
+            };
+            Connection.extend(connection);
+
+            var lobsWritten = 0;
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+            var counter = 0;
+            connection.baseExecute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    },
+                    forceUseExecuteMany: true
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                lob1.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+                lob3.once('end', function () {
+                    lobsWritten++;
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.batchUpdate('UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                },
+                useExecuteMany: true,
+                forceUseExecuteMany: true
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(counter, 2);
@@ -6641,6 +6857,195 @@ describe('Connection Tests', function () {
 
                 done();
             });
+        });
+    });
+
+    describe('generateBindDefinitions', function () {
+        it('no options', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            connection.generateBindDefinitions(null, [1, 2, 3]);
+        });
+
+        it('undefined bind params', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {};
+            connection.generateBindDefinitions(options);
+
+            assert.isUndefined(options.bindDefs);
+        });
+
+        it('null bind params', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {};
+            connection.generateBindDefinitions(options, null);
+
+            assert.isUndefined(options.bindDefs);
+        });
+
+        it('empty bind params', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {};
+            connection.generateBindDefinitions(options, []);
+
+            assert.isUndefined(options.bindDefs);
+        });
+
+        it('bind definitions already set', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {
+                bindDefs: true
+            };
+            connection.generateBindDefinitions(options, [1, 2, 3]);
+
+            assert.isTrue(options.bindDefs);
+        });
+
+        it('full', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {};
+            var bindParams = [
+                {
+                    string1: 'text1',
+                    string2: 'text2',
+                    string3: {
+                        val: 'text3',
+                        dir: 1,
+                        type: 2
+                    },
+                    number1: 1,
+                    number2: {
+                        val: 2,
+                        dir: 10,
+                        type: 20
+                    },
+                    date1: new Date(500),
+                    date2: {
+                        val: new Date(500),
+                        dir: 100,
+                        type: 200
+                    },
+                    lob: {
+                        dir: 1000,
+                        type: 2000
+                    }
+                },
+                {
+                    string1: '_text1',
+                    string2: '_text2',
+                    string3: {
+                        val: '_text3',
+                        dir: 1,
+                        type: 2
+                    },
+                    number1: 10,
+                    number2: {
+                        val: 20,
+                        dir: 10,
+                        type: 20
+                    },
+                    date1: new Date(500),
+                    date2: {
+                        val: new Date(500),
+                        dir: 100,
+                        type: 200
+                    },
+                    lob: {
+                        dir: 1000,
+                        type: 2000
+                    }
+                }
+            ];
+            connection.generateBindDefinitions(options, bindParams);
+
+            assert.deepEqual(options.bindDefs, {
+                string1: {
+                    type: 2001,
+                    maxSize: 100000
+                },
+                string2: {
+                    type: 2001,
+                    maxSize: 100000
+                },
+                string3: {
+                    dir: 1,
+                    type: 2001,
+                    maxSize: 100000
+                },
+                number1: {
+                    type: 2002
+                },
+                number2: {
+                    dir: 10,
+                    type: 20
+                },
+                date1: {
+                    type: 2003
+                },
+                date2: {
+                    dir: 100,
+                    type: 200
+                },
+                lob: {
+                    dir: 1000,
+                    type: 2000
+                }
+            });
+            assert.deepEqual(bindParams, [
+                {
+                    string1: 'text1',
+                    string2: 'text2',
+                    string3: 'text3',
+                    number1: 1,
+                    number2: 2,
+                    date1: new Date(500),
+                    date2: new Date(500),
+                    lob: undefined
+                },
+                {
+                    string1: '_text1',
+                    string2: '_text2',
+                    string3: '_text3',
+                    number1: 10,
+                    number2: 20,
+                    date1: new Date(500),
+                    date2: new Date(500),
+                    lob: undefined
+                }
+            ]);
+        });
+
+        it('error', function () {
+            var connection = {};
+            Connection.extend(connection);
+
+            var options = {};
+            var bindParams = [
+                {
+                    bool: true
+                }
+            ];
+
+            var errorFound = false;
+
+            try {
+                connection.generateBindDefinitions(options, bindParams);
+            } catch (error) {
+                errorFound = true;
+            }
+
+            assert.isTrue(errorFound);
         });
     });
 });

@@ -50,4 +50,10 @@ describe('constants Tests', function () {
             assert.equal(output, 2);
         });
     });
+
+    describe('stringMaxSize', function () {
+        it('no env override', function () {
+            assert.strictEqual(constants.stringMaxSize, 100000);
+        });
+    });
 });
