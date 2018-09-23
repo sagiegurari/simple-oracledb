@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2018-06-13  | v1.2.4  | Maintenance |
+| 2018-09-23  | v1.3.0  | Added executeMany support for the batch APIs |
 | 2018-04-14  | v1.2.2  | Performance improvement for pooled connection fetching (#23) |
 | 2017-01-20  | v1.1.57 | connection.run, connection.transaction and oracledb.run actions can now return a promise instead of using a callback |
 | 2017-01-14  | v1.1.56 | pool.run actions now can return a promise instead of using a callback |
