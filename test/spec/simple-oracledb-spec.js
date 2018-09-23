@@ -10,6 +10,9 @@ describe('simple oracledb tests', function () {
     var oracledb = require('../helpers/test-oracledb').create();
     oracledb.BLOB = 2007;
     oracledb.CLOB = 2006;
+    oracledb.STRING = 2001;
+    oracledb.NUMBER = 2002;
+    oracledb.DATE = 2003;
     oracledb.BIND_OUT = 3003;
     var simpleOracleDB = require('../../');
     simpleOracleDB.extend(oracledb);
