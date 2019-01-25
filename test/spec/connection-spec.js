@@ -105,6 +105,118 @@ describe('Connection Tests', function () {
         });
     });
 
+    describe('setupDefaultOptions', function () {
+        it('undefined', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            testConnection.setupDefaultOptions();
+        });
+
+        it('null', function () {
+            var testConnection = {};
+            Connection.extend(testConnection);
+
+            testConnection.setupDefaultOptions();
+        });
+
+        describe('batch', function () {
+            it('empty', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {};
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: true
+                });
+            });
+
+            it('useExecuteMany is true', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {
+                    useExecuteMany: true
+                };
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: true
+                });
+            });
+
+            it('useExecuteMany is false', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {
+                    useExecuteMany: false
+                };
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: false
+                });
+            });
+
+            it('useExecuteMany is null', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {
+                    useExecuteMany: null
+                };
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: true
+                });
+            });
+
+            it('useExecuteMany is undefined', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {
+                    useExecuteMany: undefined
+                };
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: true
+                });
+            });
+
+            it('useExecuteMany is true other', function () {
+                var testConnection = {};
+                Connection.extend(testConnection);
+
+                var options = {
+                    useExecuteMany: 1
+                };
+                testConnection.setupDefaultOptions(options, {
+                    batch: true
+                });
+
+                assert.deepEqual(options, {
+                    useExecuteMany: 1
+                });
+            });
+        });
+    });
+
     describe('getMetaData', function () {
         it('undefined', function () {
             var testConnection = {};
@@ -4182,6 +4294,80 @@ describe('Connection Tests', function () {
             assert.isUndefined(output);
         });
 
+        it('no lobs using executeMany as default', function (done) {
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ];
+
+            var connection = {
+                executeMany: function (sql, bindVars, options, callback) {
+                    assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
+                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(options, {
+                        lobMetaInfo: {},
+                        autoCommit: true,
+                        useExecuteMany: true,
+                        bindDefs: {
+                            id1: {
+                                type: 2002
+                            },
+                            id2: {
+                                type: 2002
+                            }
+                        }
+                    });
+
+                    setTimeout(function () {
+                        callback(null, {
+                            rowsAffected: 2,
+                            outBinds: [
+                                {},
+                                {}
+                            ]
+                        });
+                    }, 5);
+                }
+            };
+            Connection.extend(connection);
+
+            var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+                {
+                    id1: 1,
+                    id2: 2
+                },
+                {
+                    id1: 3,
+                    id2: 4
+                }
+            ], {
+                lobMetaInfo: {},
+                autoCommit: true
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    },
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    }
+                ], results);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs, using promise', function (done) {
             var connection = {};
             Connection.extend(connection);
@@ -4555,6 +4741,153 @@ describe('Connection Tests', function () {
                 autoCommit: true,
                 useExecuteMany: true,
                 forceUseExecuteMany: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
+            }, function (error) {
+                assert.isNull(error);
+                assert.equal(lobsWritten, 6);
+                assert.isTrue(commitCalled);
+
+                done();
+            });
+        });
+
+        it('multiple lobs executeMany as default', function (done) {
+            var lobsWritten = 0;
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+
+            var commitCalled = false;
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                },
+                executeMany: function (sql, bindVars, options, callback) {
+                    assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                    assert.deepEqual(bindVars, [
+                        {
+                            id: 1,
+                            lob1: undefined,
+                            lob2: undefined,
+                            lob3: undefined
+                        },
+                        {
+                            id: 2,
+                            lob1: undefined,
+                            lob2: undefined,
+                            lob3: undefined
+                        }
+                    ]);
+                    assert.deepEqual(options, {
+                        autoCommit: false,
+                        lobMetaInfo: {
+                            c1: 'lob1',
+                            c2: 'lob2',
+                            b: 'lob3'
+                        },
+                        sqlModified: true,
+                        useExecuteMany: true,
+                        bindDefs: {
+                            id: {
+                                type: 2002
+                            },
+                            lob1: {
+                                dir: 3003,
+                                type: 2006
+                            },
+                            lob2: {
+                                dir: 3003,
+                                type: 2006
+                            },
+                            lob3: {
+                                dir: 3003,
+                                type: 2007
+                            }
+                        }
+                    });
+
+                    var outBinds = [];
+                    vars.forEach(function () {
+                        var lob1 = helper.createCLOB();
+                        lob1.testData = 'clob text';
+                        lob1.once('end', function () {
+                            lobsWritten++;
+                        });
+                        var lob2 = helper.createCLOB();
+                        lob2.testData = 'second clob text';
+                        lob2.once('end', function () {
+                            lobsWritten++;
+                        });
+                        var lob3 = helper.createBLOB();
+                        lob3.testData = 'binary data';
+                        lob3.once('end', function () {
+                            lobsWritten++;
+                        });
+
+                        outBinds.push({
+                            lob1: [lob1],
+                            lob2: [lob2],
+                            lob3: [lob3]
+                        });
+                    });
+
+                    callback(null, {
+                        rowsAffected: vars.length,
+                        outBinds: outBinds
+                    });
+                }
+            };
+            Connection.extend(connection);
+
+            connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                }
+            ], {
+                autoCommit: true,
                 lobMetaInfo: {
                     c1: 'lob1',
                     c2: 'lob2',
@@ -5093,6 +5426,73 @@ describe('Connection Tests', function () {
             assert.isUndefined(output);
         });
 
+        it('no lobs using executeMany as default', function (done) {
+            var connection = {};
+            Connection.extend(connection);
+
+            var vars = [
+                {
+                    id1: 1,
+                    id2: 2,
+                    id3: 'a'
+                },
+                {
+                    id1: 3,
+                    id2: 4,
+                    id3: 'b'
+                }
+            ];
+            var counter = 0;
+            connection.baseExecute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    lobMetaInfo: {},
+                    autoCommit: false
+                });
+
+                setTimeout(function () {
+                    callback(null, {
+                        rowsAffected: 1,
+                        outBinds: {}
+                    });
+                }, 5);
+            };
+
+            var output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+                {
+                    id1: 1,
+                    id2: 2,
+                    id3: 'a'
+                },
+                {
+                    id1: 3,
+                    id2: 4,
+                    id3: 'b'
+                }
+            ], {
+                lobMetaInfo: {}
+            }, function (error, results) {
+                assert.isNull(error);
+                assert.deepEqual([
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    },
+                    {
+                        outBinds: {},
+                        rowsAffected: 1
+                    }
+                ], results);
+                assert.equal(counter, 2);
+
+                done();
+            });
+
+            assert.isUndefined(output);
+        });
+
         it('no lobs, using promise', function (done) {
             var connection = {};
             Connection.extend(connection);
@@ -5444,6 +5844,119 @@ describe('Connection Tests', function () {
                 },
                 useExecuteMany: true,
                 forceUseExecuteMany: true
+            }, function (error) {
+                assert.isNull(error);
+                assert.equal(counter, 2);
+                assert.equal(lobsWritten, 6);
+                assert.isTrue(commitCalled);
+
+                done();
+            });
+        });
+
+        it('multiple lobs using executeMany as default', function (done) {
+            var commitCalled = false;
+            var connection = {
+                commit: function (callback) {
+                    commitCalled = true;
+                    callback();
+                }
+            };
+            Connection.extend(connection);
+
+            var lobsWritten = 0;
+            var vars = [
+                {
+                    id: 1,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                },
+                {
+                    id: 2,
+                    lob1: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob2: {
+                        type: constants.clobType,
+                        dir: constants.bindOut
+                    },
+                    lob3: {
+                        type: constants.blobType,
+                        dir: constants.bindOut
+                    }
+                }
+            ];
+            var counter = 0;
+            connection.baseExecute = function (sql, bindVars, options, callback) {
+                assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
+                assert.deepEqual(bindVars, vars[counter]);
+                counter++;
+                assert.deepEqual(options, {
+                    autoCommit: false,
+                    lobMetaInfo: {
+                        c1: 'lob1',
+                        c2: 'lob2',
+                        b: 'lob3'
+                    }
+                });
+
+                var lob1 = helper.createCLOB();
+                lob1.testData = 'clob text';
+                lob1.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob2 = helper.createCLOB();
+                lob2.testData = 'second clob text';
+                lob2.once('end', function () {
+                    lobsWritten++;
+                });
+                var lob3 = helper.createBLOB();
+                lob3.testData = 'binary data';
+                lob3.once('end', function () {
+                    lobsWritten++;
+                });
+
+                callback(null, {
+                    rowsAffected: 1,
+                    outBinds: {
+                        lob1: [lob1],
+                        lob2: [lob2],
+                        lob3: [lob3]
+                    }
+                });
+            };
+
+            connection.batchUpdate('UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id', [
+                {
+                    id: 1,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                },
+                {
+                    id: 2,
+                    lob1: 'clob text',
+                    lob2: 'second clob text',
+                    lob3: utils.createBuffer('binary data')
+                }
+            ], {
+                autoCommit: true,
+                lobMetaInfo: {
+                    c1: 'lob1',
+                    c2: 'lob2',
+                    b: 'lob3'
+                }
             }, function (error) {
                 assert.isNull(error);
                 assert.equal(counter, 2);
