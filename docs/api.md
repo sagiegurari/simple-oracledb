@@ -527,7 +527,7 @@ the bind params is now an array of bind params (one per row).
 | [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| [options.useExecuteMany] | <code>Boolean</code> | <code>false</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
+| [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -574,7 +574,7 @@ the bind params is now an array of bind params (one per row).
 | [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
 | [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
 | [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
-| [options.useExecuteMany] | <code>Boolean</code> | <code>false</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
+| [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
