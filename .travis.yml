@@ -11,6 +11,6 @@ before_script:
   - chmod -R 777 ./project/build/integration
 env:
   global:
-    - DOCKER_INTEGRATION_TEST_NODE_VERSION=12
+    - DOCKER_INTEGRATION_TEST_NODE_VERSION=0
 services:
   - docker
