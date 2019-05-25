@@ -1,6 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2019-02-08  | v1.4.1  | Maintenance |
+| 2019-05-25  | v1.4.2  | Maintenance |
 | 2019-01-25  | v1.4.0  | useExecuteMany=true by default |
 | 2018-09-23  | v1.3.0  | Added executeMany support for the batch APIs |
 | 2018-04-14  | v1.2.2  | Performance improvement for pooled connection fetching (#23) |
