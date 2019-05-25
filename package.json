@@ -42,7 +42,7 @@
     }
   },
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^3.0.0",
     "debuglog": "^1.0.1",
     "event-emitter-enhancer": "latest",
     "funcs-js": "latest",
