@@ -1,6 +1,5 @@
 'use strict';
 
-/*global describe: false, it: false */
 /*jslint stupid: true*/
 /*eslint-disable no-sync*/
 
