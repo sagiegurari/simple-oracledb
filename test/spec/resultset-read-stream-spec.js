@@ -2,6 +2,7 @@
 
 const chai = require('chai');
 const assert = chai.assert;
+const EventEmitterEnhancer = require('event-emitter-enhancer');
 const ResultSetReadStream = require('../../lib/resultset-read-stream');
 
 describe('ResultSetReadStream Tests', function () {
@@ -14,36 +15,45 @@ describe('ResultSetReadStream Tests', function () {
     describe('read tests', function () {
         it('no data', function (done) {
             const stream = new ResultSetReadStream();
+            EventEmitterEnhancer.modifyInstance(stream);
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback();
                 });
             };
 
-            ['data', 'error', 'close'].forEach(function (eventName) {
+            ['data', 'error'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('end', done);
+            const remove = stream.onAny(['end', 'close'], function () {
+                remove();
+                done();
+            });
         });
 
         it('null data', function (done) {
             const stream = new ResultSetReadStream();
+            EventEmitterEnhancer.modifyInstance(stream);
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(null, null);
                 });
             };
 
-            ['data', 'error', 'close'].forEach(function (eventName) {
+            ['data', 'error'].forEach(function (eventName) {
                 stream.on(eventName, failListener(eventName));
             });
 
-            stream.on('end', done);
+            const remove = stream.onAny(['end', 'close'], function () {
+                remove();
+                done();
+            });
         });
 
         it('multiple rows', function (done) {
             const stream = new ResultSetReadStream();
+            EventEmitterEnhancer.modifyInstance(stream);
             let nextCounter = 0;
             stream.nextRow = function (callback) {
                 if (nextCounter >= 5) {
@@ -61,9 +71,7 @@ describe('ResultSetReadStream Tests', function () {
                 }
             };
 
-            ['error', 'close'].forEach(function (eventName) {
-                stream.on(eventName, failListener(eventName));
-            });
+            stream.on('error', failListener('error'));
 
             let dataFound = 0;
             stream.on('data', function (data) {
@@ -74,9 +82,10 @@ describe('ResultSetReadStream Tests', function () {
                 });
             });
 
-            stream.on('end', function () {
+            const remove = stream.onAny(['end', 'close'], function () {
                 assert.equal(dataFound, 5);
 
+                remove();
                 done();
             });
         });
@@ -89,9 +98,7 @@ describe('ResultSetReadStream Tests', function () {
                 });
             };
 
-            ['data', 'end', 'close'].forEach(function (eventName) {
-                stream.on(eventName, failListener(eventName));
-            });
+            stream.on('data', failListener('data'));
 
             stream.on('error', function (error) {
                 assert.equal(error.message, 'test');
@@ -141,6 +148,7 @@ describe('ResultSetReadStream Tests', function () {
         it('all data read', function (done) {
             let counter = 0;
             const stream = new ResultSetReadStream();
+            EventEmitterEnhancer.modifyInstance(stream);
             stream.nextRow = function (callback) {
                 counter++;
 
@@ -161,9 +169,7 @@ describe('ResultSetReadStream Tests', function () {
                 }
             };
 
-            ['close', 'error'].forEach(function (eventName) {
-                stream.on(eventName, failListener(eventName));
-            });
+            stream.on('error', failListener('error'));
 
             let dataFound = 0;
             stream.on('data', function (data) {
@@ -172,9 +178,10 @@ describe('ResultSetReadStream Tests', function () {
                 assert.isTrue(data.id < 5);
             });
 
-            stream.on('end', function () {
+            const remove = stream.onAny(['end', 'close'], function () {
                 assert.equal(dataFound, 4);
 
+                remove();
                 done();
             });
         });
