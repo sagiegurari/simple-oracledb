@@ -1,25 +1,25 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var PromiseLib = global.Promise || require('promiscuous');
-var OracleDB = require('../../lib/oracledb');
-var emitter = require('../../lib/emitter');
+const chai = require('chai');
+const assert = chai.assert;
+const PromiseLib = global.Promise || require('promiscuous');
+const OracleDB = require('../../lib/oracledb');
+const emitter = require('../../lib/emitter');
 
 describe('OracleDB Tests', function () {
-    var noop = function () {
+    const noop = function () {
         return undefined;
     };
 
-    var createOracleDB = function (extend) {
-        var oracledb = {
-            getConnection: function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
-                var callback = argumentsArray.pop();
+    const createOracleDB = function (extend) {
+        const oracledb = {
+            getConnection() {
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const callback = argumentsArray.pop();
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function () {
+                        release() {
                             setTimeout(arguments[arguments.length - 1], 0);
                         }
                     });
@@ -40,7 +40,7 @@ describe('OracleDB Tests', function () {
 
     describe('extend tests', function () {
         it('valid', function () {
-            var oracledb = {
+            const oracledb = {
                 getConnection: noop
             };
 
@@ -57,11 +57,11 @@ describe('OracleDB Tests', function () {
 
     describe('getConnection tests', function () {
         it('getConnection simple', function (done) {
-            var oracledb = createOracleDB();
+            const oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
 
-            var output = oracledb.getConnection({}, function (error, connection) {
+            const output = oracledb.getConnection({}, function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -80,7 +80,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection error', function (done) {
-            var oracledb = createOracleDB();
+            const oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
             oracledb.baseGetConnection = function (attrs, callback) {
@@ -96,7 +96,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection simple promise', function (done) {
-            var oracledb = createOracleDB();
+            const oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
 
@@ -116,7 +116,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection error promise then', function (done) {
-            var oracledb = createOracleDB();
+            const oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
 
@@ -134,7 +134,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection error promise catch', function (done) {
-            var oracledb = createOracleDB();
+            const oracledb = createOracleDB();
 
             OracleDB.extend(oracledb);
 
@@ -152,11 +152,11 @@ describe('OracleDB Tests', function () {
         });
 
         it('getConnection promise not supported', function () {
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 oracledb.getConnection({}).then(function () {
@@ -174,9 +174,9 @@ describe('OracleDB Tests', function () {
 
     describe('run', function () {
         it('missing callback with connection attributes with promise', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -187,7 +187,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -197,7 +197,7 @@ describe('OracleDB Tests', function () {
                 }, 0);
             };
 
-            var promise = oracledb.run({
+            const promise = oracledb.run({
                 user: 'test',
                 password: 'mypass',
                 connectString: 'mydb'
@@ -217,11 +217,11 @@ describe('OracleDB Tests', function () {
         });
 
         it('missing callback with connection attributes, no promise support', function () {
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 oracledb.run({}, noop);
@@ -233,11 +233,11 @@ describe('OracleDB Tests', function () {
         });
 
         it('no connection attributes', function () {
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 oracledb.run(noop, function () {
@@ -251,9 +251,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('action not a function', function () {
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 oracledb.run({}, 'test', function () {
@@ -267,7 +267,7 @@ describe('OracleDB Tests', function () {
         });
 
         it('get connection error', function (done) {
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -295,9 +295,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('sync action error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -307,7 +307,7 @@ describe('OracleDB Tests', function () {
                 });
 
                 callback(null, {
-                    release: function (options, cb) {
+                    release(options, cb) {
                         assert.isDefined(options);
                         releaseCalled = true;
 
@@ -331,9 +331,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('async action error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -344,7 +344,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -372,9 +372,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('async action error and release error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -385,7 +385,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -413,9 +413,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('async action error and release error and ignore release error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -427,7 +427,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -456,9 +456,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('async action error and release error and not ignore release error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -470,7 +470,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -499,9 +499,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('release error and no ignore release error definition', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -512,7 +512,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -539,9 +539,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('release error and ignore release error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -553,7 +553,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -580,9 +580,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('release error and not ignore release error', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -594,7 +594,7 @@ describe('OracleDB Tests', function () {
 
                 setTimeout(function () {
                     callback(null, {
-                        release: function (options, cb) {
+                        release(options, cb) {
                             assert.isDefined(options);
                             releaseCalled = true;
 
@@ -622,9 +622,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('release options', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -638,7 +638,7 @@ describe('OracleDB Tests', function () {
                 });
 
                 callback(null, {
-                    release: function (options, cb) {
+                    release(options, cb) {
                         assert.deepEqual(options, {
                             force: true,
                             test: true
@@ -671,9 +671,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('release options, force false', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -687,7 +687,7 @@ describe('OracleDB Tests', function () {
                 });
 
                 callback(null, {
-                    release: function (options, cb) {
+                    release(options, cb) {
                         assert.deepEqual(options, {
                             force: false,
                             test: true
@@ -721,9 +721,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('valid', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -733,7 +733,7 @@ describe('OracleDB Tests', function () {
                 });
 
                 callback(null, {
-                    release: function (options, cb) {
+                    release(options, cb) {
                         assert.deepEqual(options, {
                             force: true
                         });
@@ -771,9 +771,9 @@ describe('OracleDB Tests', function () {
         });
 
         it('valid full promise support', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var oracledb = createOracleDB(true);
+            const oracledb = createOracleDB(true);
 
             oracledb.getConnection = function (connectionAttributes, callback) {
                 assert.deepEqual(connectionAttributes, {
@@ -783,7 +783,7 @@ describe('OracleDB Tests', function () {
                 });
 
                 callback(null, {
-                    release: function (options, cb) {
+                    release(options, cb) {
                         assert.deepEqual(options, {
                             force: true
                         });

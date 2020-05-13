@@ -1,13 +1,13 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var helper = require('../helpers/test-oracledb');
-var resultSetReader = require('../../lib/resultset-reader');
-var ResultSetReadStream = require('../../lib/resultset-read-stream');
+const chai = require('chai');
+const assert = chai.assert;
+const helper = require('../helpers/test-oracledb');
+const resultSetReader = require('../../lib/resultset-reader');
+const ResultSetReadStream = require('../../lib/resultset-read-stream');
 
 describe('resultSetReader Tests', function () {
-    var columnNames = [
+    const columnNames = [
         {
             name: 'COL1'
         },
@@ -33,7 +33,7 @@ describe('resultSetReader Tests', function () {
 
         it('valid', function (done) {
             resultSetReader.releaseResultSet({
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 }
             }, true, function (error) {
@@ -45,7 +45,7 @@ describe('resultSetReader Tests', function () {
 
         it('error no ignore', function (done) {
             resultSetReader.releaseResultSet({
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback(new Error('test'));
                 }
             }, false, function (error) {
@@ -57,7 +57,7 @@ describe('resultSetReader Tests', function () {
 
         it('error ignore', function (done) {
             resultSetReader.releaseResultSet({
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback(new Error('test'));
                 }
             }, true, function (error) {
@@ -70,11 +70,11 @@ describe('resultSetReader Tests', function () {
 
     describe('readNextRows tests', function () {
         it('array - all types without bulk size', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -86,7 +86,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -101,10 +101,10 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readNextRows(columnNames, {
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -127,11 +127,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - all types with bulk size', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -143,7 +143,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -158,10 +158,10 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readNextRows(columnNames, {
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 5);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -189,10 +189,10 @@ describe('resultSetReader Tests', function () {
     describe('readFully tests', function () {
         it('empty', function (done) {
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
@@ -206,10 +206,10 @@ describe('resultSetReader Tests', function () {
 
         it('empty error in close', function (done) {
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback(new Error('test close'));
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
@@ -222,11 +222,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - all types', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -238,7 +238,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -253,13 +253,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -300,11 +300,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('object - all types', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     {
                         COL1: 'first row',
@@ -336,7 +336,7 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -351,13 +351,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -398,11 +398,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - error', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -414,7 +414,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -429,13 +429,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -451,11 +451,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('object - error lob', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     {
                         COL1: 'first row',
@@ -487,7 +487,7 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -502,13 +502,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -525,10 +525,10 @@ describe('resultSetReader Tests', function () {
 
         it('error getRows', function (done) {
             resultSetReader.readFully(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
                     callback(new Error('getrows'));
@@ -545,10 +545,10 @@ describe('resultSetReader Tests', function () {
     describe('readBulks tests', function () {
         it('empty', function (done) {
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
@@ -561,11 +561,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - all types', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -577,7 +577,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -591,7 +591,7 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var outputData = [
+            const outputData = [
                 [
                     {
                         COL1: 'first row',
@@ -625,13 +625,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 2);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -654,11 +654,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('object - all types', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     {
                         COL1: 'first row',
@@ -690,7 +690,7 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -704,7 +704,7 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var outputData = [
+            const outputData = [
                 [
                     {
                         COL1: 'first row',
@@ -738,13 +738,13 @@ describe('resultSetReader Tests', function () {
             ];
 
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 2);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -767,11 +767,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - error', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -783,7 +783,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -797,15 +797,15 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var counter = 0;
+            let counter = 0;
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -828,11 +828,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('object - error lob', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     {
                         COL1: 'first row',
@@ -864,7 +864,7 @@ describe('resultSetReader Tests', function () {
                     }
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -878,15 +878,15 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var counter = 0;
+            let counter = 0;
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -909,10 +909,10 @@ describe('resultSetReader Tests', function () {
 
         it('error getRows', function (done) {
             resultSetReader.readBulks(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
                     callback(new Error('getrows'));
@@ -928,13 +928,13 @@ describe('resultSetReader Tests', function () {
 
     describe('stream tests', function () {
         it('empty', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
 
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
                 }
@@ -948,11 +948,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - all types', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date],
                     ['second row', 2, true, date]
@@ -967,7 +967,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -981,7 +981,7 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var resultData = [
+            const resultData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1014,15 +1014,15 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 250);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -1033,7 +1033,7 @@ describe('resultSetReader Tests', function () {
                 bulkRowsAmount: 250
             }, stream);
 
-            var eventCounter = 0;
+            let eventCounter = 0;
             stream.on('data', function (row) {
                 assert.deepEqual(resultData[eventCounter], row);
                 eventCounter++;
@@ -1047,11 +1047,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('array - error', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -1065,7 +1065,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -1079,7 +1079,7 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var resultData = [
+            const resultData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1100,15 +1100,15 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -1117,7 +1117,7 @@ describe('resultSetReader Tests', function () {
                 }
             }, stream);
 
-            var eventCounter = 0;
+            let eventCounter = 0;
             stream.on('data', function (row) {
                 assert.deepEqual(resultData[eventCounter], row);
                 eventCounter++;
@@ -1132,12 +1132,12 @@ describe('resultSetReader Tests', function () {
         });
 
         it('error getRows', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback();
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
                     process.nextTick(function () {
@@ -1158,11 +1158,11 @@ describe('resultSetReader Tests', function () {
         });
 
         it('error in close after data read', function (done) {
-            var date = new Date();
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const date = new Date();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var dbData = [
+            const dbData = [
                 [
                     ['first row', 1, false, date]
                 ],
@@ -1176,7 +1176,7 @@ describe('resultSetReader Tests', function () {
                     [10, true, lob2, 100]
                 ]
             ];
-            var dbEvents = [
+            const dbEvents = [
                 null,
                 function () {
                     lob1.emit('data', 'test1');
@@ -1190,7 +1190,7 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var resultData = [
+            const resultData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1217,15 +1217,15 @@ describe('resultSetReader Tests', function () {
                 }
             ];
 
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     releaseCallback(new Error('test close'));
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
 
-                    var events = dbEvents.shift();
+                    const events = dbEvents.shift();
                     if (events) {
                         setTimeout(events, 10);
                     }
@@ -1234,7 +1234,7 @@ describe('resultSetReader Tests', function () {
                 }
             }, stream);
 
-            var eventCounter = 0;
+            let eventCounter = 0;
             stream.on('data', function (row) {
                 assert.deepEqual(resultData[eventCounter], row);
                 eventCounter++;
@@ -1248,15 +1248,15 @@ describe('resultSetReader Tests', function () {
         });
 
         it('empty error in close', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
 
             resultSetReader.stream(columnNames, {
-                close: function (releaseCallback) {
+                close(releaseCallback) {
                     setTimeout(function () {
                         releaseCallback(new Error('test close'));
                     }, 10);
                 },
-                getRows: function (number, callback) {
+                getRows(number, callback) {
                     assert.equal(number, 100);
                     callback(null, []);
                 }

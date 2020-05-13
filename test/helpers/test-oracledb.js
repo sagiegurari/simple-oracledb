@@ -1,9 +1,9 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var EventEmitter = require('events').EventEmitter;
-var Connection = require('../../lib/connection');
+const chai = require('chai');
+const assert = chai.assert;
+const EventEmitter = require('events').EventEmitter;
+const Connection = require('../../lib/connection');
 
 /*jslint debug: true */
 function TestConnection() {
@@ -14,7 +14,7 @@ function TestPool() {
 /*jslint debug: false */
 
 TestConnection.prototype.execute = function () {
-    var callback = arguments[arguments.length - 1];
+    const callback = arguments[arguments.length - 1];
 
     if (this.throwError) {
         callback(new Error());
@@ -32,7 +32,7 @@ TestConnection.prototype.rollback = function (callback) {
 };
 
 TestConnection.prototype.release = function () {
-    var callback = arguments[arguments.length - 1];
+    const callback = arguments[arguments.length - 1];
     callback();
 };
 
@@ -44,7 +44,7 @@ TestPool.prototype.getConnection = function (callback) {
     if (this.throwError) {
         callback(new Error());
     } else {
-        var connection = new TestConnection();
+        let connection = new TestConnection();
 
         if (this.pingSupport) {
             if (this.pingError) {
@@ -71,14 +71,14 @@ TestPool.prototype.getConnection = function (callback) {
 };
 
 TestPool.prototype.terminate = function () {
-    var callback = arguments[arguments.length - 1];
+    const callback = arguments[arguments.length - 1];
     callback();
 };
 
 module.exports = {
-    create: function () {
+    create() {
         return {
-            createPool: function (invalid, callback) {
+            createPool(invalid, callback) {
                 if (callback === undefined) {
                     callback = invalid;
                     invalid = false;
@@ -90,7 +90,7 @@ module.exports = {
                     callback(null, new TestPool());
                 }
             },
-            getConnection: function (connAttrs, callback) {
+            getConnection(connAttrs, callback) {
                 if (this.throwError) {
                     callback(new Error());
                 } else if (!arguments.length) {
@@ -98,7 +98,7 @@ module.exports = {
                 } else {
                     assert.isObject(connAttrs);
 
-                    var connection = new TestConnection();
+                    const connection = new TestConnection();
 
                     if (this.extendConnection) {
                         Connection.extend(connection);
@@ -110,11 +110,11 @@ module.exports = {
             execute: TestConnection.prototype.execute
         };
     },
-    createPool: function () {
+    createPool() {
         return new TestPool();
     },
-    createCLOB: function () {
-        var testStream = new EventEmitter();
+    createCLOB() {
+        const testStream = new EventEmitter();
         testStream.type = require('../../lib/constants').clobType;
         testStream.setEncoding = function (encoding) {
             assert.equal(encoding, 'utf8');
@@ -131,8 +131,8 @@ module.exports = {
 
         return testStream;
     },
-    createBLOB: function () {
-        var testStream = new EventEmitter();
+    createBLOB() {
+        const testStream = new EventEmitter();
         testStream.type = require('../../lib/constants').blobType;
         testStream.end = function (data, callback) {
             assert.deepEqual(data.toJSON(), (new Buffer(testStream.testData)).toJSON());

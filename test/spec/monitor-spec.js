@@ -1,18 +1,18 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var events = require('events');
-var EventEmitter = events.EventEmitter;
-var Monitor = require('../../lib/monitor');
-var emitter = require('../../lib/emitter');
+const chai = require('chai');
+const assert = chai.assert;
+const events = require('events');
+const EventEmitter = events.EventEmitter;
+const Monitor = require('../../lib/monitor');
+const emitter = require('../../lib/emitter');
 
-var eventEmitter = new EventEmitter();
-var monitor = Monitor.create(eventEmitter);
+const eventEmitter = new EventEmitter();
+const monitor = Monitor.create(eventEmitter);
 
 describe('monitor Tests', function () {
-    var createConnection = function (id, sql) {
-        var connection = {
+    const createConnection = function (id, sql) {
+        const connection = {
             diagnosticInfo: {
                 id: id || 10,
                 lastSQL: sql || 'test sql'
@@ -51,7 +51,7 @@ describe('monitor Tests', function () {
         });
 
         it('monitorConnection valid no pool', function () {
-            var connection = createConnection(15, 'my sql');
+            const connection = createConnection(15, 'my sql');
 
             monitor.enabled = true;
             monitor.monitorConnection(connection);
@@ -62,7 +62,7 @@ describe('monitor Tests', function () {
             assert.isDefined(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].liveTime);
 
             assert.deepEqual(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id], {
-                connection: connection,
+                connection,
                 createTime: monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime,
                 pool: undefined
             });
@@ -73,9 +73,9 @@ describe('monitor Tests', function () {
         });
 
         it('monitorConnection valid with pool', function () {
-            var connection = createConnection();
+            const connection = createConnection();
 
-            var pool = {
+            const pool = {
                 test: true
             };
 
@@ -86,9 +86,9 @@ describe('monitor Tests', function () {
             assert.isDefined(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime);
 
             assert.deepEqual(monitor.diagnosticInfo.connection[connection.diagnosticInfo.id], {
-                connection: connection,
+                connection,
                 createTime: monitor.diagnosticInfo.connection[connection.diagnosticInfo.id].createTime,
-                pool: pool
+                pool
             });
 
             connection.emit('release');
@@ -124,7 +124,7 @@ describe('monitor Tests', function () {
         });
 
         it('monitorPool valid', function () {
-            var pool = {
+            const pool = {
                 diagnosticInfo: {
                     id: 10
                 }
@@ -139,12 +139,12 @@ describe('monitor Tests', function () {
             assert.isDefined(monitor.diagnosticInfo.pool[pool.diagnosticInfo.id].liveTime);
 
             assert.deepEqual(monitor.diagnosticInfo.pool[pool.diagnosticInfo.id], {
-                pool: pool,
+                pool,
                 createTime: monitor.diagnosticInfo.pool[pool.diagnosticInfo.id].createTime
             });
 
             assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 0);
-            var connection = createConnection();
+            const connection = createConnection();
             pool.emit('connection-created', connection);
             assert.equal(Object.keys(monitor.diagnosticInfo.connection).length, 1);
             connection.emit('release');

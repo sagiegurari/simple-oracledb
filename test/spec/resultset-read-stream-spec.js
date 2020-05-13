@@ -1,11 +1,11 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var ResultSetReadStream = require('../../lib/resultset-read-stream');
+const chai = require('chai');
+const assert = chai.assert;
+const ResultSetReadStream = require('../../lib/resultset-read-stream');
 
 describe('ResultSetReadStream Tests', function () {
-    var failListener = function (eventName) {
+    const failListener = function (eventName) {
         return function () {
             assert.fail(eventName);
         };
@@ -13,7 +13,7 @@ describe('ResultSetReadStream Tests', function () {
 
     describe('read tests', function () {
         it('no data', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback();
@@ -28,7 +28,7 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('null data', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(null, null);
@@ -43,8 +43,8 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('multiple rows', function (done) {
-            var stream = new ResultSetReadStream();
-            var nextCounter = 0;
+            const stream = new ResultSetReadStream();
+            let nextCounter = 0;
             stream.nextRow = function (callback) {
                 if (nextCounter >= 5) {
                     process.nextTick(function () {
@@ -65,7 +65,7 @@ describe('ResultSetReadStream Tests', function () {
                 stream.on(eventName, failListener(eventName));
             });
 
-            var dataFound = 0;
+            let dataFound = 0;
             stream.on('data', function (data) {
                 dataFound++;
 
@@ -82,7 +82,7 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('error on start', function (done) {
-            var stream = new ResultSetReadStream();
+            const stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 process.nextTick(function () {
                     callback(new Error('test'));
@@ -101,8 +101,8 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('error after few data events', function (done) {
-            var counter = 0;
-            var stream = new ResultSetReadStream();
+            let counter = 0;
+            const stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 counter++;
 
@@ -139,8 +139,8 @@ describe('ResultSetReadStream Tests', function () {
         });
 
         it('all data read', function (done) {
-            var counter = 0;
-            var stream = new ResultSetReadStream();
+            let counter = 0;
+            const stream = new ResultSetReadStream();
             stream.nextRow = function (callback) {
                 counter++;
 
@@ -165,7 +165,7 @@ describe('ResultSetReadStream Tests', function () {
                 stream.on(eventName, failListener(eventName));
             });
 
-            var dataFound = 0;
+            let dataFound = 0;
             stream.on('data', function (data) {
                 dataFound++;
 

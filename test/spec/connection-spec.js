@@ -3,30 +3,30 @@
 /*jslint stupid: true*/
 /*eslint-disable no-sync*/
 
-var chai = require('chai');
-var assert = chai.assert;
-var PromiseLib = global.Promise || require('promiscuous');
-var path = require('path');
-var fs = require('fs');
-var helper = require('../helpers/test-oracledb');
-var utils = require('../helpers/utils');
-var constants = require('../../lib/constants');
-var Connection = require('../../lib/connection');
-var SimpleOracleDB = require('../..');
-var extensions = require('../../lib/extensions');
+const chai = require('chai');
+const assert = chai.assert;
+const PromiseLib = global.Promise || require('promiscuous');
+const path = require('path');
+const fs = require('fs');
+const helper = require('../helpers/test-oracledb');
+const utils = require('../helpers/utils');
+const constants = require('../../lib/constants');
+const Connection = require('../../lib/connection');
+const SimpleOracleDB = require('../..');
+const extensions = require('../../lib/extensions');
 
 describe('Connection Tests', function () {
-    var asArray = function (args) {
+    const asArray = function (args) {
         return Array.prototype.slice.call(args, 0);
     };
 
-    var noop = function () {
+    const noop = function () {
         return undefined;
     };
 
     describe('extend', function () {
         it('valid', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
             assert.isTrue(testConnection.simplified);
@@ -42,7 +42,7 @@ describe('Connection Tests', function () {
                 return false;
             });
 
-            var testConnection = {};
+            const testConnection = {};
             testConnection.coreFunc = function () {
                 return true;
             };
@@ -52,7 +52,7 @@ describe('Connection Tests', function () {
             assert.isFunction(testConnection.testConnFunc);
             assert.isTrue(testConnection.coreFunc());
 
-            var output = testConnection.testConnFunc(function (error, result) {
+            const output = testConnection.testConnFunc(function (error, result) {
                 assert.isNull(error);
                 assert.isTrue(result);
 
@@ -74,7 +74,7 @@ describe('Connection Tests', function () {
                 return false;
             });
 
-            var testConnection = {};
+            const testConnection = {};
             testConnection.coreFunc = function () {
                 return true;
             };
@@ -86,7 +86,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = testConnection.testConnFunc();
+            const promise = testConnection.testConnFunc();
 
             promise.then(function (result) {
                 assert.isTrue(result);
@@ -106,14 +106,14 @@ describe('Connection Tests', function () {
 
     describe('setupDefaultOptions', function () {
         it('undefined', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
             testConnection.setupDefaultOptions();
         });
 
         it('null', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
             testConnection.setupDefaultOptions();
@@ -121,10 +121,10 @@ describe('Connection Tests', function () {
 
         describe('batch', function () {
             it('empty', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {};
+                const options = {};
                 testConnection.setupDefaultOptions(options, {
                     batch: true
                 });
@@ -135,10 +135,10 @@ describe('Connection Tests', function () {
             });
 
             it('useExecuteMany is true', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {
+                const options = {
                     useExecuteMany: true
                 };
                 testConnection.setupDefaultOptions(options, {
@@ -151,10 +151,10 @@ describe('Connection Tests', function () {
             });
 
             it('useExecuteMany is false', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {
+                const options = {
                     useExecuteMany: false
                 };
                 testConnection.setupDefaultOptions(options, {
@@ -167,10 +167,10 @@ describe('Connection Tests', function () {
             });
 
             it('useExecuteMany is null', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {
+                const options = {
                     useExecuteMany: null
                 };
                 testConnection.setupDefaultOptions(options, {
@@ -183,10 +183,10 @@ describe('Connection Tests', function () {
             });
 
             it('useExecuteMany is undefined', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {
+                const options = {
                     useExecuteMany: undefined
                 };
                 testConnection.setupDefaultOptions(options, {
@@ -199,10 +199,10 @@ describe('Connection Tests', function () {
             });
 
             it('useExecuteMany is true other', function () {
-                var testConnection = {};
+                const testConnection = {};
                 Connection.extend(testConnection);
 
-                var options = {
+                const options = {
                     useExecuteMany: 1
                 };
                 testConnection.setupDefaultOptions(options, {
@@ -218,46 +218,46 @@ describe('Connection Tests', function () {
 
     describe('getMetaData', function () {
         it('undefined', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData();
+            const output = testConnection.getMetaData();
             assert.isUndefined(output);
         });
 
         it('null', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData(null);
+            const output = testConnection.getMetaData(null);
             assert.isUndefined(output);
         });
 
         it('on top object', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData({
+            const output = testConnection.getMetaData({
                 metaData: [1, 2, 3]
             });
             assert.deepEqual(output, [1, 2, 3]);
         });
 
         it('empty array on top object', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData({
+            const output = testConnection.getMetaData({
                 metaData: []
             });
             assert.deepEqual(output, []);
         });
 
         it('empty array on top object with empty resultSet', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData({
+            const output = testConnection.getMetaData({
                 metaData: [],
                 resultSet: {}
             });
@@ -265,10 +265,10 @@ describe('Connection Tests', function () {
         });
 
         it('empty array on top object with metaData in resultSet', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData({
+            const output = testConnection.getMetaData({
                 metaData: [],
                 resultSet: {
                     metaData: [1, 2, 3]
@@ -278,10 +278,10 @@ describe('Connection Tests', function () {
         });
 
         it('on top object with empty resultSet', function () {
-            var testConnection = {};
+            const testConnection = {};
             Connection.extend(testConnection);
 
-            var output = testConnection.getMetaData({
+            const output = testConnection.getMetaData({
                 metaData: [1, 2, 3],
                 resultSet: {}
             });
@@ -291,7 +291,7 @@ describe('Connection Tests', function () {
 
     describe('execute', function () {
         it('keep sql', function () {
-            var testConnection = {
+            const testConnection = {
                 execute: noop
             };
             Connection.extend(testConnection);
@@ -301,7 +301,7 @@ describe('Connection Tests', function () {
         });
 
         it('empty sql', function () {
-            var testConnection = {
+            const testConnection = {
                 execute: noop
             };
             Connection.extend(testConnection);
@@ -311,7 +311,7 @@ describe('Connection Tests', function () {
         });
 
         it('no args', function () {
-            var testConnection = {
+            const testConnection = {
                 execute: noop
             };
             Connection.extend(testConnection);
@@ -323,7 +323,7 @@ describe('Connection Tests', function () {
 
     describe('executeMany', function () {
         it('keep sql', function () {
-            var testConnection = {
+            const testConnection = {
                 executeMany: noop
             };
             Connection.extend(testConnection);
@@ -333,7 +333,7 @@ describe('Connection Tests', function () {
         });
 
         it('empty sql', function () {
-            var testConnection = {
+            const testConnection = {
                 executeMany: noop
             };
             Connection.extend(testConnection);
@@ -343,7 +343,7 @@ describe('Connection Tests', function () {
         });
 
         it('no args', function () {
-            var testConnection = {
+            const testConnection = {
                 executeMany: noop
             };
             Connection.extend(testConnection);
@@ -354,7 +354,7 @@ describe('Connection Tests', function () {
     });
 
     describe('query', function () {
-        var columnNames = [
+        const columnNames = [
             {
                 name: 'COL1'
             },
@@ -376,11 +376,11 @@ describe('Connection Tests', function () {
         ];
 
         it('error', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(new Error('test error'));
             };
@@ -392,7 +392,7 @@ describe('Connection Tests', function () {
         });
 
         it('no callback (without streaming) using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
@@ -404,7 +404,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.query('sql', [], {});
+            const promise = connection.query('sql', [], {});
 
             promise.then(function () {
                 done();
@@ -414,10 +414,10 @@ describe('Connection Tests', function () {
         });
 
         it('no callback (without streaming), no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -435,11 +435,11 @@ describe('Connection Tests', function () {
         });
 
         it('rows - empty', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
                 assert.equal(argumentsArray.shift(), 1);
@@ -463,11 +463,11 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - empty without stream', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
                 assert.equal(argumentsArray.shift(), 1);
@@ -479,10 +479,10 @@ describe('Connection Tests', function () {
                 argumentsArray.shift()(null, {
                     metaData: columnNames,
                     resultSet: {
-                        close: function (releaseCallback) {
+                        close(releaseCallback) {
                             releaseCallback();
                         },
-                        getRows: function (number, callback) {
+                        getRows(number, callback) {
                             assert.equal(number, 100);
                             callback(null, []);
                         }
@@ -497,11 +497,11 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - empty with split', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
                 assert.equal(argumentsArray.shift(), 1);
@@ -514,10 +514,10 @@ describe('Connection Tests', function () {
                 argumentsArray.shift()(null, {
                     metaData: columnNames,
                     resultSet: {
-                        close: function (releaseCallback) {
+                        close(releaseCallback) {
                             releaseCallback();
                         },
-                        getRows: function (number, callback) {
+                        getRows(number, callback) {
                             assert.equal(number, 100);
                             callback(null, []);
                         }
@@ -534,11 +534,11 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - no result with stream', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 assert.equal(argumentsArray.length, 4);
                 assert.equal(argumentsArray.shift(), 'sql');
@@ -549,7 +549,7 @@ describe('Connection Tests', function () {
                 argumentsArray.shift()();
             };
 
-            var stream = connection.query('sql', [1, 2, 3], {
+            const stream = connection.query('sql', [1, 2, 3], {
                 streamResults: true
             }, function (error) {
                 assert.isDefined(error);
@@ -563,15 +563,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data no optional params', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -607,7 +607,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.query('sql', function (error, jsRows) {
+            const output = connection.query('sql', function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -633,15 +633,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data, options is null', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -677,7 +677,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.query('sql', [], null, function (error, jsRows) {
+            const output = connection.query('sql', [], null, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -703,15 +703,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data, no options arg', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -747,7 +747,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.query('sql', [], function (error, jsRows) {
+            const output = connection.query('sql', [], function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -773,15 +773,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -817,7 +817,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.query('sql', [], {}, function (error, jsRows) {
+            const output = connection.query('sql', [], {}, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -843,15 +843,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data using promise', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -889,7 +889,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.query('sql', [], {});
+            const promise = connection.query('sql', [], {});
 
             promise.then(function (jsRows) {
                 assert.deepEqual([
@@ -916,15 +916,15 @@ describe('Connection Tests', function () {
         });
 
         it('rows - data no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var cb = arguments[arguments.length - 1];
+                const cb = arguments[arguments.length - 1];
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
@@ -960,7 +960,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -976,15 +976,15 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1020,7 +1020,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1034,18 +1034,18 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
                 setTimeout(function () {
                     argumentsArray.pop()(null, {
                         metaData: columnNames,
                         resultSet: {
-                            close: function (releaseCallback) {
+                            close(releaseCallback) {
                                 releaseCallback();
                             },
-                            getRows: function (number, callback) {
+                            getRows(number, callback) {
                                 assert.equal(number, 100);
 
-                                var events = dbEvents.shift();
+                                const events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);
                                 }
@@ -1057,7 +1057,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.query(1, 2, {}, function (error, jsRows) {
+            const output = connection.query(1, 2, {}, function (error, jsRows) {
                 assert.isNull(error);
                 assert.deepEqual([
                     {
@@ -1101,15 +1101,15 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1145,7 +1145,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1159,18 +1159,18 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
                 setTimeout(function () {
                     argumentsArray.pop()(null, {
                         metaData: columnNames,
                         resultSet: {
-                            close: function (releaseCallback) {
+                            close(releaseCallback) {
                                 releaseCallback();
                             },
-                            getRows: function (number, callback) {
+                            getRows(number, callback) {
                                 assert.equal(number, 100);
 
-                                var events = dbEvents.shift();
+                                const events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);
                                 }
@@ -1184,7 +1184,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.query(1, 2, {});
+            const promise = connection.query(1, 2, {});
 
             promise.then(function (jsRows) {
                 assert.deepEqual([
@@ -1229,19 +1229,19 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data split', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var args = asArray(arguments);
+                const args = asArray(arguments);
                 assert.isUndefined(args[2].stream);
                 assert.isTrue(args[2].splitResults);
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1277,7 +1277,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1291,19 +1291,19 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
-                var cb = argumentsArray.pop();
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const cb = argumentsArray.pop();
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
                         resultSet: {
-                            close: function (callback) {
+                            close(callback) {
                                 setTimeout(callback, 1);
                             },
-                            getRows: function (number, callback) {
+                            getRows(number, callback) {
                                 assert.equal(number, 100);
 
-                                var events = dbEvents.shift();
+                                const events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);
                                 }
@@ -1315,7 +1315,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var outputData = [
+            const outputData = [
                 [
                     {
                         COL1: 'first row',
@@ -1356,7 +1356,7 @@ describe('Connection Tests', function () {
                 ]
             ];
 
-            var output = connection.query('sql', [1, 2, 3], {
+            const output = connection.query('sql', [1, 2, 3], {
                 splitResults: true,
                 stream: true
             }, function (error, jsRows) {
@@ -1375,19 +1375,19 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data split, no callback with promise', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var args = asArray(arguments);
+                const args = asArray(arguments);
                 assert.isUndefined(args[2].stream);
                 assert.isTrue(args[2].splitResults);
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1423,7 +1423,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1437,16 +1437,16 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
-                var cb = argumentsArray.pop();
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const cb = argumentsArray.pop();
                 setTimeout(function () {
                     cb(null, {
                         metaData: columnNames,
                         resultSet: {
-                            getRows: function (number, callback) {
+                            getRows(number, callback) {
                                 assert.equal(number, 100);
 
-                                var events = dbEvents.shift();
+                                const events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);
                                 }
@@ -1458,7 +1458,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             global.Promise = PromiseLib;
 
@@ -1475,19 +1475,19 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data stream', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var args = asArray(arguments);
+                const args = asArray(arguments);
                 assert.isUndefined(args[2].stream);
                 assert.isTrue(args[2].streamResults);
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1525,7 +1525,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1539,15 +1539,15 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
                     metaData: columnNames,
                     resultSet: {
-                        close: function (releaseCallback) {
+                        close(releaseCallback) {
                             releaseCallback();
                         },
-                        getRows: function (number, callback) {
-                            var events = dbEvents.shift();
+                        getRows(number, callback) {
+                            const events = dbEvents.shift();
                             if (events) {
                                 setTimeout(events, 10);
                             }
@@ -1558,7 +1558,7 @@ describe('Connection Tests', function () {
                 });
             };
 
-            var outputData = [
+            const outputData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1593,12 +1593,12 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var stream = connection.query('my sql', [1, 2, 3], {
+            const stream = connection.query('my sql', [1, 2, 3], {
                 streamResults: true,
                 stream: true
             });
 
-            var gotMetaData = false;
+            let gotMetaData = false;
             stream.on('metadata', function (metaData) {
                 gotMetaData = true;
 
@@ -1624,7 +1624,7 @@ describe('Connection Tests', function () {
                 ]);
             });
 
-            var eventCounter = 0;
+            let eventCounter = 0;
             stream.on('data', function (row) {
                 assert.deepEqual(outputData[eventCounter], row);
                 eventCounter++;
@@ -1639,19 +1639,19 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data stream (core flag)', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var args = asArray(arguments);
+                const args = asArray(arguments);
                 assert.isUndefined(args[2].stream);
                 assert.isUndefined(args[2].streamResults);
 
-                var dbData = [
+                const dbData = [
                     [
                         {
                             COL1: 'first row',
@@ -1689,7 +1689,7 @@ describe('Connection Tests', function () {
                         }
                     ]
                 ];
-                var dbEvents = [
+                const dbEvents = [
                     null,
                     function () {
                         lob1.emit('data', 'test1');
@@ -1703,15 +1703,15 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
                     metaData: columnNames,
                     resultSet: {
-                        close: function (releaseCallback) {
+                        close(releaseCallback) {
                             releaseCallback();
                         },
-                        getRows: function (number, callback) {
-                            var events = dbEvents.shift();
+                        getRows(number, callback) {
+                            const events = dbEvents.shift();
                             if (events) {
                                 setTimeout(events, 10);
                             }
@@ -1722,7 +1722,7 @@ describe('Connection Tests', function () {
                 });
             };
 
-            var outputData = [
+            const outputData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1762,7 +1762,7 @@ describe('Connection Tests', function () {
             }, function (error, stream) {
                 assert.isNull(error);
 
-                var eventCounter = 0;
+                let eventCounter = 0;
                 stream.on('data', function (row) {
                     assert.deepEqual(outputData[eventCounter], row);
                     eventCounter++;
@@ -1777,18 +1777,18 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - data stream no callback', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 setTimeout(function () {
-                    var lob1 = helper.createCLOB();
-                    var lob2 = helper.createCLOB();
+                    const lob1 = helper.createCLOB();
+                    const lob2 = helper.createCLOB();
 
-                    var dbData = [
+                    const dbData = [
                         [
                             {
                                 COL1: 'first row',
@@ -1826,7 +1826,7 @@ describe('Connection Tests', function () {
                             }
                         ]
                     ];
-                    var dbEvents = [
+                    const dbEvents = [
                         null,
                         function () {
                             lob1.emit('data', 'test1');
@@ -1843,11 +1843,11 @@ describe('Connection Tests', function () {
                     argumentsArray.pop()(null, {
                         metaData: columnNames,
                         resultSet: {
-                            close: function (releaseCallback) {
+                            close(releaseCallback) {
                                 releaseCallback();
                             },
-                            getRows: function (number, callback) {
-                                var events = dbEvents.shift();
+                            getRows(number, callback) {
+                                const events = dbEvents.shift();
                                 if (events) {
                                     setTimeout(events, 10);
                                 }
@@ -1859,7 +1859,7 @@ describe('Connection Tests', function () {
                 }, 10);
             };
 
-            var outputData = [
+            const outputData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -1894,11 +1894,11 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var stream = connection.query('sql', [], {
+            const stream = connection.query('sql', [], {
                 streamResults: true
             });
 
-            var eventCounter = 0;
+            let eventCounter = 0;
             stream.on('data', function (row) {
                 assert.deepEqual(outputData[eventCounter], row);
                 eventCounter++;
@@ -1912,18 +1912,18 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - error stream no callback', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 setTimeout(function () {
                     argumentsArray.pop()(new Error('test error'));
                 }, 10);
             };
 
-            var stream = connection.query('sql', [], {
+            const stream = connection.query('sql', [], {
                 streamResults: true
             });
 
@@ -1939,19 +1939,19 @@ describe('Connection Tests', function () {
         });
 
         it('resultset - stream close', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var date = new Date(500);
+            const date = new Date(500);
             connection.baseExecute = function () {
-                var lob1 = helper.createCLOB();
-                var lob2 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
 
-                var args = asArray(arguments);
+                const args = asArray(arguments);
                 assert.isUndefined(args[2].stream);
                 assert.isTrue(args[2].streamResults);
 
-                var dbData = [
+                const dbData = [
                     {
                         COL1: 'first row',
                         COL2: 1,
@@ -1982,19 +1982,19 @@ describe('Connection Tests', function () {
                     }
                 ];
 
-                var lobEvents = function () {
+                const lobEvents = function () {
                     lob1.emit('end');
                     lob2.emit('end');
                 };
 
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
                 argumentsArray.pop()(null, {
                     metaData: columnNames,
                     resultSet: {
-                        close: function (releaseCallback) {
+                        close(releaseCallback) {
                             releaseCallback();
                         },
-                        getRows: function (number, callback) {
+                        getRows(number, callback) {
                             process.nextTick(function () {
                                 callback(null, dbData);
 
@@ -2005,7 +2005,7 @@ describe('Connection Tests', function () {
                 });
             };
 
-            var outputData = [
+            const outputData = [
                 {
                     COL1: 'first row',
                     COL2: 1,
@@ -2016,7 +2016,7 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var stream = connection.query('my sql', [1, 2, 3], {
+            const stream = connection.query('my sql', [1, 2, 3], {
                 streamResults: true,
                 stream: true
             });
@@ -2025,7 +2025,7 @@ describe('Connection Tests', function () {
                 assert.fail(error);
             });
 
-            var dataFound = false;
+            let dataFound = false;
             stream.once('data', function (row) {
                 stream.close();
 
@@ -2043,7 +2043,7 @@ describe('Connection Tests', function () {
 
     describe('insert', function () {
         it('no lobs to insert, no optional params', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function (sql, callback) {
@@ -2057,7 +2057,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.insert('INSERT INTO nolobs (id, id2) VALUES (1, 2)', function (error, results) {
+            const output = connection.insert('INSERT INTO nolobs (id, id2) VALUES (1, 2)', function (error, results) {
                 assert.isNull(error);
                 assert.equal(results.rowsAffected, 1);
 
@@ -2068,12 +2068,12 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id1: 1,
                     id2: 2
                 });
@@ -2089,7 +2089,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.insert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', {
+            const output = connection.insert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', {
                 id1: 1,
                 id2: 2
             }, {
@@ -2105,12 +2105,12 @@ describe('Connection Tests', function () {
         });
 
         it('no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id1: 1,
                     id2: 2
                 });
@@ -2126,7 +2126,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -2147,19 +2147,19 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2183,17 +2183,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -2232,19 +2232,19 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs using promise', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2268,17 +2268,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -2296,7 +2296,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
+            const promise = connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
@@ -2322,19 +2322,19 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs with additional returning info', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:myid, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b, id INTO :lob1, :lob2, :lob3, :myid');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     myid: {
                         type: 123456,
                         dir: constants.bindOut,
@@ -2365,17 +2365,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -2421,12 +2421,12 @@ describe('Connection Tests', function () {
         });
 
         it('error while writing lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2450,17 +2450,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.end = function () {
-                    var cb = Array.prototype.pop.call(arguments);
+                    const cb = Array.prototype.pop.call(arguments);
                     lob2.emit('error', new Error('lob test error'));
 
                     setTimeout(cb, 10);
                 };
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
 
                 callback(null, {
@@ -2494,12 +2494,12 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2547,12 +2547,12 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2581,7 +2581,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
+            const promise = connection.insert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
@@ -2605,8 +2605,8 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     cb();
                 }
             };
@@ -2616,10 +2616,10 @@ describe('Connection Tests', function () {
                 callback(new Error('commit error'));
             };
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2643,17 +2643,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -2693,7 +2693,7 @@ describe('Connection Tests', function () {
 
     describe('update', function () {
         it('no lobs to update, no optional params', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function (sql, callback) {
@@ -2707,7 +2707,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.update('UPDATE nolobs SET id = 1, id2 = 2', function (error, results) {
+            const output = connection.update('UPDATE nolobs SET id = 1, id2 = 2', function (error, results) {
                 assert.isNull(error);
                 assert.equal(results.rowsAffected, 1);
 
@@ -2718,12 +2718,12 @@ describe('Connection Tests', function () {
         });
 
         it('no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id1: 1,
                     id2: 2
                 });
@@ -2739,7 +2739,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -2760,12 +2760,12 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id1: 1,
                     id2: 2
                 });
@@ -2781,7 +2781,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.update('UPDATE nolobs SET id = :id1, id2 = :id2', {
+            const output = connection.update('UPDATE nolobs SET id = :id1, id2 = :id2', {
                 id1: 1,
                 id2: 2
             }, {
@@ -2797,13 +2797,13 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2827,17 +2827,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.on('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.on('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.on('end', function () {
                     lobsWritten++;
@@ -2874,13 +2874,13 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -2904,17 +2904,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.on('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.on('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.on('end', function () {
                     lobsWritten++;
@@ -2932,7 +2932,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.update('UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB()', {
+            const promise = connection.update('UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB()', {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
@@ -2956,12 +2956,12 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs, no rows', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -3010,12 +3010,12 @@ describe('Connection Tests', function () {
         });
 
         it('error while writing lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -3039,17 +3039,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.end = function () {
-                    var cb = Array.prototype.pop.call(arguments);
+                    const cb = Array.prototype.pop.call(arguments);
                     lob2.emit('error', new Error('lob test error'));
 
                     setTimeout(cb, 10);
                 };
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
 
                 callback(null, {
@@ -3083,12 +3083,12 @@ describe('Connection Tests', function () {
         });
 
         it('error while writing lobs using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -3112,17 +3112,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.end = function () {
-                    var cb = Array.prototype.pop.call(arguments);
+                    const cb = Array.prototype.pop.call(arguments);
                     lob2.emit('error', new Error('lob test error'));
 
                     setTimeout(cb, 10);
                 };
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
 
                 callback(null, {
@@ -3135,7 +3135,7 @@ describe('Connection Tests', function () {
                 });
             };
 
-            var promise = connection.update('UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB()', {
+            const promise = connection.update('UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB()', {
                 id: 1,
                 lob1: 'clob text',
                 lob2: 'second clob text',
@@ -3159,12 +3159,12 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET id = :id, c1 = EMPTY_CLOB(), c2 = EMPTY_CLOB(), b = EMPTY_CLOB() RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, {
+                assert.deepEqual(bindconsts, {
                     id: 1,
                     lob1: {
                         type: constants.clobType,
@@ -3214,8 +3214,8 @@ describe('Connection Tests', function () {
 
     describe('release', function () {
         it('callback provided', function (done) {
-            var connection = {
-                release: function (cb) {
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
 
                     setTimeout(function () {
@@ -3228,7 +3228,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             assert.isFunction(connection.baseRelease);
-            var output = connection.release(function () {
+            const output = connection.release(function () {
                 return undefined;
             });
 
@@ -3236,8 +3236,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined', function (done) {
-            var connection = {
-                release: function (cb) {
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -3248,7 +3248,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.release();
+            const promise = connection.release();
 
             promise.then(function () {
                 done();
@@ -3258,8 +3258,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined, no promise support', function (done) {
-            var connection = {
-                release: function (cb) {
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -3272,7 +3272,7 @@ describe('Connection Tests', function () {
 
             delete global.Promise;
 
-            var output = connection.release();
+            const output = connection.release();
 
             global.Promise = PromiseLib;
 
@@ -3280,15 +3280,10 @@ describe('Connection Tests', function () {
         });
 
         it('only options provided', function (done) {
-            var releaseCalled = false;
-            var connection = {
-                release: function (cb) {
-                    if (releaseCalled) {
-                        assert.fail();
-                    } else {
-                        assert.isFunction(cb);
-                        cb();
-                    }
+            const connection = {
+                release(cb) {
+                    assert.isFunction(cb);
+                    cb();
                 }
             };
             Connection.extend(connection);
@@ -3297,7 +3292,7 @@ describe('Connection Tests', function () {
 
             assert.isFunction(connection.baseRelease);
 
-            var promise = connection.release({});
+            const promise = connection.release({});
 
             promise.then(function () {
                 done();
@@ -3307,14 +3302,9 @@ describe('Connection Tests', function () {
         });
 
         it('options and callback provided', function (done) {
-            var counter = 0;
-            var connection = {
-                break: function (cb) {
-                    assert.fail();
-
-                    cb();
-                },
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     if (counter > 1) {
@@ -3323,6 +3313,10 @@ describe('Connection Tests', function () {
                         cb(new Error('test'));
                     }
                 }
+            };
+            connection.break = function (cb) {
+                assert.fail();
+                cb();
             };
             Connection.extend(connection);
 
@@ -3339,9 +3333,9 @@ describe('Connection Tests', function () {
         });
 
         it('retries maxed out', function (done) {
-            var counter = 0;
-            var connection = {
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     cb(new Error('test'));
@@ -3362,9 +3356,9 @@ describe('Connection Tests', function () {
         });
 
         it('retries maxed out, using promise', function (done) {
-            var counter = 0;
-            var connection = {
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     cb(new Error('test'));
@@ -3373,7 +3367,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             assert.isFunction(connection.baseRelease);
-            var promise = connection.release({
+            const promise = connection.release({
                 retryCount: 5,
                 retryInterval: 10
             });
@@ -3389,14 +3383,14 @@ describe('Connection Tests', function () {
         });
 
         it('default retry count validation', function (done) {
-            var counter = 0;
-            var connection = {
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     cb(new Error('test'));
                 },
-                rollback: function (cb) {
+                rollback(cb) {
                     cb();
                 }
             };
@@ -3414,21 +3408,10 @@ describe('Connection Tests', function () {
         });
 
         it('force', function (done) {
-            var releaseCalled;
-            var breakCalled;
-            var connection = {
-                break: function (cb) {
-                    assert.isFunction(cb);
-
-                    if (breakCalled) {
-                        assert.fail();
-                    } else {
-                        breakCalled = true;
-
-                        cb();
-                    }
-                },
-                release: function (cb) {
+            let releaseCalled;
+            let breakCalled;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
 
                     if (releaseCalled) {
@@ -3439,7 +3422,18 @@ describe('Connection Tests', function () {
                         cb();
                     }
                 },
-                rollback: function (cb) {
+                rollback(cb) {
+                    cb();
+                }
+            };
+            connection.break = function (cb) {
+                assert.isFunction(cb);
+
+                if (breakCalled) {
+                    assert.fail();
+                } else {
+                    breakCalled = true;
+
                     cb();
                 }
             };
@@ -3460,22 +3454,22 @@ describe('Connection Tests', function () {
         });
 
         it('force maxed out', function (done) {
-            var releaseCounter = 0;
-            var breakCounter = 0;
-            var connection = {
-                break: function (cb) {
-                    breakCounter++;
-
-                    cb(new Error('test-break'));
-                },
-                release: function (cb) {
+            let releaseCounter = 0;
+            let breakCounter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     releaseCounter++;
                     cb(new Error('test-release'));
                 },
-                rollback: function (cb) {
+                rollback(cb) {
                     cb();
                 }
+            };
+            connection.break = function (cb) {
+                breakCounter++;
+
+                cb(new Error('test-break'));
             };
             Connection.extend(connection);
 
@@ -3497,8 +3491,8 @@ describe('Connection Tests', function () {
 
     describe('close', function () {
         it('callback provided', function (done) {
-            var connection = {
-                release: function (cb) {
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
 
                     setTimeout(function () {
@@ -3511,7 +3505,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             assert.isFunction(connection.baseRelease);
-            var output = connection.close(function () {
+            const output = connection.close(function () {
                 return undefined;
             });
 
@@ -3519,9 +3513,9 @@ describe('Connection Tests', function () {
         });
 
         it('options and callback provided', function (done) {
-            var counter = 0;
-            var connection = {
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     if (counter > 1) {
@@ -3545,9 +3539,9 @@ describe('Connection Tests', function () {
         });
 
         it('default retry count validation', function (done) {
-            var counter = 0;
-            var connection = {
-                release: function (cb) {
+            let counter = 0;
+            const connection = {
+                release(cb) {
                     assert.isFunction(cb);
                     counter++;
                     cb(new Error('test'));
@@ -3569,8 +3563,8 @@ describe('Connection Tests', function () {
 
     describe('commit', function () {
         it('callback provided', function (done) {
-            var connection = {
-                commit: function (cb) {
+            const connection = {
+                commit(cb) {
                     assert.isFunction(cb);
 
                     setTimeout(function () {
@@ -3581,7 +3575,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             assert.isFunction(connection.baseCommit);
-            var output = connection.commit(function () {
+            const output = connection.commit(function () {
                 done();
             });
 
@@ -3589,8 +3583,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined', function (done) {
-            var connection = {
-                commit: function (cb) {
+            const connection = {
+                commit(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -3601,7 +3595,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.commit();
+            const promise = connection.commit();
 
             promise.then(function () {
                 done();
@@ -3611,8 +3605,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined, no promise support', function () {
-            var connection = {
-                commit: function (cb) {
+            const connection = {
+                commit(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -3623,7 +3617,7 @@ describe('Connection Tests', function () {
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 connection.commit();
@@ -3637,8 +3631,8 @@ describe('Connection Tests', function () {
         });
 
         it('in middle of transaction', function (done) {
-            var connection = {
-                commit: function (cb) {
+            const connection = {
+                commit(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -3655,8 +3649,8 @@ describe('Connection Tests', function () {
         });
 
         it('in middle of transaction, using promise', function (done) {
-            var connection = {
-                commit: function (cb) {
+            const connection = {
+                commit(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -3667,7 +3661,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.commit();
+            const promise = connection.commit();
 
             promise.then(function () {
                 assert.fail();
@@ -3681,8 +3675,8 @@ describe('Connection Tests', function () {
 
     describe('rollback', function () {
         it('callback provided', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     assert.isFunction(cb);
 
                     setTimeout(function () {
@@ -3695,7 +3689,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             assert.isFunction(connection.baseRollback);
-            var output = connection.rollback(function () {
+            const output = connection.rollback(function () {
                 return undefined;
             });
 
@@ -3703,8 +3697,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -3721,8 +3715,8 @@ describe('Connection Tests', function () {
         });
 
         it('callback undefined, no promise support', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -3743,11 +3737,11 @@ describe('Connection Tests', function () {
 
     describe('queryJSON', function () {
         it('error in query', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(new Error('test error'));
             };
@@ -3759,18 +3753,18 @@ describe('Connection Tests', function () {
         });
 
         it('error in query, using promise', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function () {
-                var argumentsArray = Array.prototype.slice.call(arguments, 0);
+                const argumentsArray = Array.prototype.slice.call(arguments, 0);
 
                 argumentsArray.pop()(new Error('test error'));
             };
 
             global.Promise = PromiseLib;
 
-            var promise = connection.queryJSON(1, 2, {});
+            const promise = connection.queryJSON(1, 2, {});
 
             promise.then(function () {
                 assert.fail();
@@ -3781,7 +3775,7 @@ describe('Connection Tests', function () {
         });
 
         it('error in parse', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.baseExecute = function (sql, bindParams, options, callback) {
@@ -3811,7 +3805,7 @@ describe('Connection Tests', function () {
         });
 
         it('empty', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, bindParams, callback) {
@@ -3833,7 +3827,7 @@ describe('Connection Tests', function () {
         });
 
         it('undefined', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3850,7 +3844,7 @@ describe('Connection Tests', function () {
         });
 
         it('null', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3867,7 +3861,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row empty data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3888,7 +3882,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row undefined data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3909,7 +3903,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row not json data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3928,7 +3922,7 @@ describe('Connection Tests', function () {
         });
 
         it('multiple rows empty data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3952,7 +3946,7 @@ describe('Connection Tests', function () {
         });
 
         it('multiple rows undefined data', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3976,7 +3970,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -3998,7 +3992,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.queryJSON('test', function (error, results) {
+            const output = connection.queryJSON('test', function (error, results) {
                 assert.isNull(error);
                 assert.equal(1, results.rowCount);
                 assert.deepEqual({
@@ -4015,7 +4009,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row, using promise', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -4039,7 +4033,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.queryJSON('test');
+            const promise = connection.queryJSON('test');
 
             promise.then(function (results) {
                 assert.equal(1, results.rowCount);
@@ -4057,7 +4051,7 @@ describe('Connection Tests', function () {
         });
 
         it('single row, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -4081,7 +4075,7 @@ describe('Connection Tests', function () {
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 connection.queryJSON('test');
@@ -4095,7 +4089,7 @@ describe('Connection Tests', function () {
         });
 
         it('multiple rows', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.query = function (sql, callback) {
@@ -4154,10 +4148,10 @@ describe('Connection Tests', function () {
 
     describe('batchInsert', function () {
         it('no lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2
@@ -4167,10 +4161,10 @@ describe('Connection Tests', function () {
                     id2: 4
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -4185,7 +4179,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+            const output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
                 {
                     id1: 1,
                     id2: 2
@@ -4217,7 +4211,7 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs using executeMany', function (done) {
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2
@@ -4228,10 +4222,10 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var connection = {
-                executeMany: function (sql, bindVars, options, callback) {
+            const connection = {
+                executeMany(sql, bindconsts, options, callback) {
                     assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(bindconsts, consts);
                     assert.deepEqual(options, {
                         lobMetaInfo: {},
                         autoCommit: true,
@@ -4260,7 +4254,7 @@ describe('Connection Tests', function () {
             };
             Connection.extend(connection);
 
-            var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+            const output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
                 {
                     id1: 1,
                     id2: 2
@@ -4294,7 +4288,7 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs using executeMany as default', function (done) {
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2
@@ -4305,10 +4299,10 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var connection = {
-                executeMany: function (sql, bindVars, options, callback) {
+            const connection = {
+                executeMany(sql, bindconsts, options, callback) {
                     assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                    assert.deepEqual(bindVars, vars);
+                    assert.deepEqual(bindconsts, consts);
                     assert.deepEqual(options, {
                         lobMetaInfo: {},
                         autoCommit: true,
@@ -4336,7 +4330,7 @@ describe('Connection Tests', function () {
             };
             Connection.extend(connection);
 
-            var output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+            const output = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
                 {
                     id1: 1,
                     id2: 2
@@ -4368,10 +4362,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2
@@ -4381,10 +4375,10 @@ describe('Connection Tests', function () {
                     id2: 4
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -4401,7 +4395,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
+            const promise = connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
                 {
                     id1: 1,
                     id2: 2
@@ -4434,10 +4428,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2
@@ -4447,10 +4441,10 @@ describe('Connection Tests', function () {
                     id2: 4
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -4467,7 +4461,7 @@ describe('Connection Tests', function () {
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 connection.batchInsert('INSERT INTO nolobs (id, id2) VALUES (:id1, :id2)', [
@@ -4492,17 +4486,17 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -4534,10 +4528,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -4548,17 +4542,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -4605,8 +4599,8 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs executeMany', function (done) {
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -4639,15 +4633,15 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 },
-                executeMany: function (sql, bindVars, options, callback) {
+                executeMany(sql, bindconsts, options, callback) {
                     assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                    assert.deepEqual(bindVars, [
+                    assert.deepEqual(bindconsts, [
                         {
                             id: 1,
                             lob1: undefined,
@@ -4690,19 +4684,19 @@ describe('Connection Tests', function () {
                         }
                     });
 
-                    var outBinds = [];
-                    vars.forEach(function () {
-                        var lob1 = helper.createCLOB();
+                    const outBinds = [];
+                    consts.forEach(function () {
+                        const lob1 = helper.createCLOB();
                         lob1.testData = 'clob text';
                         lob1.once('end', function () {
                             lobsWritten++;
                         });
-                        var lob2 = helper.createCLOB();
+                        const lob2 = helper.createCLOB();
                         lob2.testData = 'second clob text';
                         lob2.once('end', function () {
                             lobsWritten++;
                         });
-                        var lob3 = helper.createBLOB();
+                        const lob3 = helper.createBLOB();
                         lob3.testData = 'binary data';
                         lob3.once('end', function () {
                             lobsWritten++;
@@ -4716,8 +4710,8 @@ describe('Connection Tests', function () {
                     });
 
                     callback(null, {
-                        rowsAffected: vars.length,
-                        outBinds: outBinds
+                        rowsAffected: consts.length,
+                        outBinds
                     });
                 }
             };
@@ -4755,8 +4749,8 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs executeMany as default', function (done) {
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -4789,15 +4783,15 @@ describe('Connection Tests', function () {
                 }
             ];
 
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 },
-                executeMany: function (sql, bindVars, options, callback) {
+                executeMany(sql, bindconsts, options, callback) {
                     assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                    assert.deepEqual(bindVars, [
+                    assert.deepEqual(bindconsts, [
                         {
                             id: 1,
                             lob1: undefined,
@@ -4839,19 +4833,19 @@ describe('Connection Tests', function () {
                         }
                     });
 
-                    var outBinds = [];
-                    vars.forEach(function () {
-                        var lob1 = helper.createCLOB();
+                    const outBinds = [];
+                    consts.forEach(function () {
+                        const lob1 = helper.createCLOB();
                         lob1.testData = 'clob text';
                         lob1.once('end', function () {
                             lobsWritten++;
                         });
-                        var lob2 = helper.createCLOB();
+                        const lob2 = helper.createCLOB();
                         lob2.testData = 'second clob text';
                         lob2.once('end', function () {
                             lobsWritten++;
                         });
-                        var lob3 = helper.createBLOB();
+                        const lob3 = helper.createBLOB();
                         lob3.testData = 'binary data';
                         lob3.once('end', function () {
                             lobsWritten++;
@@ -4865,8 +4859,8 @@ describe('Connection Tests', function () {
                     });
 
                     callback(null, {
-                        rowsAffected: vars.length,
-                        outBinds: outBinds
+                        rowsAffected: consts.length,
+                        outBinds
                     });
                 }
             };
@@ -4902,16 +4896,16 @@ describe('Connection Tests', function () {
         });
 
         it('error while writing lobs', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -4943,10 +4937,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -4957,17 +4951,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.end = function () {
-                    var cb = Array.prototype.pop.call(arguments);
+                    const cb = Array.prototype.pop.call(arguments);
                     lob2.emit('error', new Error('lob test error'));
 
                     setTimeout(cb, 10);
                 };
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
 
                 callback(null, {
@@ -5011,16 +5005,16 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -5052,10 +5046,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5107,16 +5101,16 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute, using promise', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -5148,10 +5142,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5174,7 +5168,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
+            const promise = connection.batchInsert('INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB())', [
                 {
                     id: 1,
                     lob1: 'clob text',
@@ -5208,8 +5202,8 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     cb();
                 }
             };
@@ -5219,8 +5213,8 @@ describe('Connection Tests', function () {
                 callback(new Error('commit error'));
             };
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'INSERT INTO mylobs (id, c1, c2, b) VALUES (:id, EMPTY_CLOB(), EMPTY_CLOB(), EMPTY_CLOB()) RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5231,17 +5225,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -5289,10 +5283,10 @@ describe('Connection Tests', function () {
 
     describe('batchUpdate', function () {
         it('no lobs', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2,
@@ -5304,10 +5298,10 @@ describe('Connection Tests', function () {
                     id3: 'b'
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -5322,7 +5316,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+            const output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
                 {
                     id1: 1,
                     id2: 2,
@@ -5356,10 +5350,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs using executeMany', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2,
@@ -5371,10 +5365,10 @@ describe('Connection Tests', function () {
                     id3: 'b'
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -5390,7 +5384,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+            const output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
                 {
                     id1: 1,
                     id2: 2,
@@ -5426,10 +5420,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs using executeMany as default', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2,
@@ -5441,10 +5435,10 @@ describe('Connection Tests', function () {
                     id3: 'b'
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -5459,7 +5453,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+            const output = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
                 {
                     id1: 1,
                     id2: 2,
@@ -5493,10 +5487,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2,
@@ -5508,10 +5502,10 @@ describe('Connection Tests', function () {
                     id3: 'b'
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -5528,7 +5522,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
+            const promise = connection.batchUpdate('UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3', [
                 {
                     id1: 1,
                     id2: 2,
@@ -5563,10 +5557,10 @@ describe('Connection Tests', function () {
         });
 
         it('no lobs, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id1: 1,
                     id2: 2,
@@ -5578,10 +5572,10 @@ describe('Connection Tests', function () {
                     id3: 'b'
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE nolobs SET id = :id1, id2 = :id2 where id3 = :id3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     lobMetaInfo: {},
@@ -5596,7 +5590,7 @@ describe('Connection Tests', function () {
                 }, 5);
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -5625,17 +5619,17 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -5667,10 +5661,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5681,17 +5675,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -5738,17 +5732,17 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs using executeMany', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -5780,10 +5774,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5795,17 +5789,17 @@ describe('Connection Tests', function () {
                     forceUseExecuteMany: true
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -5854,17 +5848,17 @@ describe('Connection Tests', function () {
         });
 
         it('multiple lobs using executeMany as default', function (done) {
-            var commitCalled = false;
-            var connection = {
-                commit: function (callback) {
+            let commitCalled = false;
+            const connection = {
+                commit(callback) {
                     commitCalled = true;
                     callback();
                 }
             };
             Connection.extend(connection);
 
-            var lobsWritten = 0;
-            var vars = [
+            let lobsWritten = 0;
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -5896,10 +5890,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -5910,17 +5904,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -5967,16 +5961,16 @@ describe('Connection Tests', function () {
         });
 
         it('error while writing lobs', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -6008,10 +6002,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -6022,17 +6016,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.end = function () {
-                    var cb = Array.prototype.pop.call(arguments);
+                    const cb = Array.prototype.pop.call(arguments);
                     lob2.emit('error', new Error('lob test error'));
 
                     setTimeout(cb, 10);
                 };
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
 
                 callback(null, {
@@ -6076,16 +6070,16 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -6117,10 +6111,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -6172,16 +6166,16 @@ describe('Connection Tests', function () {
         });
 
         it('error on execute, using promise', function (done) {
-            var rollbackCalled = false;
-            var connection = {
-                rollback: function (cb) {
+            let rollbackCalled = false;
+            const connection = {
+                rollback(cb) {
                     rollbackCalled = true;
                     cb();
                 }
             };
             Connection.extend(connection);
 
-            var vars = [
+            const consts = [
                 {
                     id: 1,
                     lob1: {
@@ -6213,10 +6207,10 @@ describe('Connection Tests', function () {
                     }
                 }
             ];
-            var counter = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let counter = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
-                assert.deepEqual(bindVars, vars[counter]);
+                assert.deepEqual(bindconsts, consts[counter]);
                 counter++;
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -6239,7 +6233,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.batchUpdate('UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id', [
+            const promise = connection.batchUpdate('UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id', [
                 {
                     id: 1,
                     lob1: 'clob text',
@@ -6273,8 +6267,8 @@ describe('Connection Tests', function () {
         });
 
         it('error on commit', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     cb();
                 }
             };
@@ -6284,8 +6278,8 @@ describe('Connection Tests', function () {
                 callback(new Error('commit error'));
             };
 
-            var lobsWritten = 0;
-            connection.baseExecute = function (sql, bindVars, options, callback) {
+            let lobsWritten = 0;
+            connection.baseExecute = function (sql, bindconsts, options, callback) {
                 assert.equal(sql, 'UPDATE mylobs SET c1 = EMPTY_CLOB(), c2: EMPTY_CLOB(), b = EMPTY_CLOB() WHERE id = :id RETURNING c1, c2, b INTO :lob1, :lob2, :lob3');
                 assert.deepEqual(options, {
                     autoCommit: false,
@@ -6296,17 +6290,17 @@ describe('Connection Tests', function () {
                     }
                 });
 
-                var lob1 = helper.createCLOB();
+                const lob1 = helper.createCLOB();
                 lob1.testData = 'clob text';
                 lob1.once('end', function () {
                     lobsWritten++;
                 });
-                var lob2 = helper.createCLOB();
+                const lob2 = helper.createCLOB();
                 lob2.testData = 'second clob text';
                 lob2.once('end', function () {
                     lobsWritten++;
                 });
-                var lob3 = helper.createBLOB();
+                const lob3 = helper.createBLOB();
                 lob3.testData = 'binary data';
                 lob3.once('end', function () {
                     lobsWritten++;
@@ -6354,7 +6348,7 @@ describe('Connection Tests', function () {
 
     describe('run', function () {
         it('no actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.run(undefined, function () {
@@ -6365,10 +6359,10 @@ describe('Connection Tests', function () {
         });
 
         it('single action', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -6388,10 +6382,10 @@ describe('Connection Tests', function () {
         });
 
         it('single action, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -6399,7 +6393,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.run(function (callback) {
+            const promise = connection.run(function (callback) {
                 assert.isFalse(commitDone);
 
                 callback(null, 'my result');
@@ -6416,10 +6410,10 @@ describe('Connection Tests', function () {
         });
 
         it('single promise action, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -6427,7 +6421,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.run(function () {
+            const promise = connection.run(function () {
                 assert.isFalse(commitDone);
 
                 return new PromiseLib(function (resolve) {
@@ -6446,16 +6440,16 @@ describe('Connection Tests', function () {
         });
 
         it('single action, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -6475,10 +6469,10 @@ describe('Connection Tests', function () {
         });
 
         it('multiple actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.run([
                 function (callback) {
                     setTimeout(function () {
@@ -6504,10 +6498,10 @@ describe('Connection Tests', function () {
         });
 
         it('multiple actions with mix aysnc/promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.run([
                 function (callback) {
                     setTimeout(function () {
@@ -6535,10 +6529,10 @@ describe('Connection Tests', function () {
         });
 
         it('parallel', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.run([
                 function (callback) {
                     setTimeout(function () {
@@ -6566,10 +6560,10 @@ describe('Connection Tests', function () {
         });
 
         it('sequence', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.run([
                 function (callback) {
                     setTimeout(function () {
@@ -6597,7 +6591,7 @@ describe('Connection Tests', function () {
         });
 
         it('run in run', function (done) {
-            var connection = {};
+            const connection = {};
 
             Connection.extend(connection);
 
@@ -6614,7 +6608,7 @@ describe('Connection Tests', function () {
         });
 
         it('error in actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.run([
@@ -6633,10 +6627,10 @@ describe('Connection Tests', function () {
         });
 
         it('error in actions, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var promise = connection.run([
+            const promise = connection.run([
                 function (callback) {
                     callback(null, 'my first');
                 },
@@ -6656,10 +6650,10 @@ describe('Connection Tests', function () {
         });
 
         it('error in promise actions, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var promise = connection.run([
+            const promise = connection.run([
                 function (callback) {
                     callback(null, 'my first');
                 },
@@ -6683,8 +6677,8 @@ describe('Connection Tests', function () {
 
     describe('transaction', function () {
         it('execute ensure autocommit false', function (done) {
-            var connection = {
-                execute: function (sql, bindings, options, cb) {
+            const connection = {
+                execute(sql, bindings, options, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
                     assert.deepEqual(options, {
@@ -6697,7 +6691,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             connection.inTransaction = true;
-            var output = connection.execute('sql', [], {
+            const output = connection.execute('sql', [], {
                 autoCommit: true
             }, done);
 
@@ -6705,8 +6699,8 @@ describe('Connection Tests', function () {
         });
 
         it('executeMany ensure autocommit false', function (done) {
-            var connection = {
-                executeMany: function (sql, bindings, options, cb) {
+            const connection = {
+                executeMany(sql, bindings, options, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
                     assert.deepEqual(options, {
@@ -6719,7 +6713,7 @@ describe('Connection Tests', function () {
             Connection.extend(connection);
 
             connection.inTransaction = true;
-            var output = connection.executeMany('sql', [], {
+            const output = connection.executeMany('sql', [], {
                 autoCommit: true
             }, done);
 
@@ -6727,8 +6721,8 @@ describe('Connection Tests', function () {
         });
 
         it('execute no options', function (done) {
-            var connection = {
-                execute: function (sql, bindings, cb) {
+            const connection = {
+                execute(sql, bindings, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
 
@@ -6742,8 +6736,8 @@ describe('Connection Tests', function () {
         });
 
         it('executeMany no options', function (done) {
-            var connection = {
-                executeMany: function (sql, bindings, cb) {
+            const connection = {
+                executeMany(sql, bindings, cb) {
                     assert.equal(sql, 'sql');
                     assert.deepEqual(bindings, []);
 
@@ -6757,7 +6751,7 @@ describe('Connection Tests', function () {
         });
 
         it('no actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.transaction(undefined, function () {
@@ -6768,10 +6762,10 @@ describe('Connection Tests', function () {
         });
 
         it('single action', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -6791,10 +6785,10 @@ describe('Connection Tests', function () {
         });
 
         it('single action, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -6802,7 +6796,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.transaction(function (callback) {
+            const promise = connection.transaction(function (callback) {
                 assert.isFalse(commitDone);
 
                 callback(null, 'my result');
@@ -6819,16 +6813,16 @@ describe('Connection Tests', function () {
         });
 
         it('single action, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -6848,16 +6842,16 @@ describe('Connection Tests', function () {
         });
 
         it('multiple actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.transaction([
                 function (callback) {
                     assert.isFalse(commitDone);
@@ -6887,16 +6881,16 @@ describe('Connection Tests', function () {
         });
 
         it('parallel', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.transaction([
                 function (callback) {
                     assert.isFalse(commitDone);
@@ -6928,16 +6922,16 @@ describe('Connection Tests', function () {
         });
 
         it('sequence', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var secondStarted = false;
+            let secondStarted = false;
             connection.transaction([
                 function (callback) {
                     assert.isFalse(commitDone);
@@ -6969,10 +6963,10 @@ describe('Connection Tests', function () {
         });
 
         it('prevent autoCommit', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -7020,15 +7014,15 @@ describe('Connection Tests', function () {
         });
 
         it('rollback in middle of transaction', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     cb();
                 }
             };
 
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -7045,12 +7039,12 @@ describe('Connection Tests', function () {
         });
 
         it('commit in middle of transaction', function (done) {
-            var commitDone = false;
-            var connection = {
-                rollback: function (cb) {
+            let commitDone = false;
+            const connection = {
+                rollback(cb) {
                     cb();
                 },
-                commit: function (cb) {
+                commit(cb) {
                     commitDone = true;
                     cb();
                 }
@@ -7069,15 +7063,15 @@ describe('Connection Tests', function () {
         });
 
         it('transaction in transaction', function (done) {
-            var connection = {
-                rollback: function (cb) {
+            const connection = {
+                rollback(cb) {
                     cb();
                 }
             };
 
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
@@ -7096,16 +7090,16 @@ describe('Connection Tests', function () {
         });
 
         it('error in actions', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var rollbackDone = false;
+            let rollbackDone = false;
             connection.rollback = function (callback) {
                 rollbackDone = true;
                 callback();
@@ -7133,22 +7127,22 @@ describe('Connection Tests', function () {
         });
 
         it('error in actions, using promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback();
             };
 
-            var rollbackDone = false;
+            let rollbackDone = false;
             connection.rollback = function (callback) {
                 rollbackDone = true;
                 callback();
             };
 
-            var promise = connection.transaction([
+            const promise = connection.transaction([
                 function (callback) {
                     assert.isFalse(commitDone);
 
@@ -7174,16 +7168,16 @@ describe('Connection Tests', function () {
         });
 
         it('error in commit', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var commitDone = false;
+            let commitDone = false;
             connection.commit = function (callback) {
                 commitDone = true;
                 callback(new Error('commit error'));
             };
 
-            var rollbackDone = false;
+            let rollbackDone = false;
             connection.rollback = function (callback) {
                 rollbackDone = true;
                 callback();
@@ -7212,14 +7206,14 @@ describe('Connection Tests', function () {
     });
 
     describe('executeFile', function () {
-        var sqlFile = path.join(__dirname, '../helpers/test.sql');
-        var sqlStatement = fs.readFileSync(sqlFile, {
+        const sqlFile = path.join(__dirname, '../helpers/test.sql');
+        let sqlStatement = fs.readFileSync(sqlFile, {
             encoding: 'utf8'
         });
         sqlStatement = sqlStatement.trim();
 
         it('no file', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.executeFile(function (error) {
@@ -7230,7 +7224,7 @@ describe('Connection Tests', function () {
         });
 
         it('no file', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.executeFile(function (error) {
@@ -7241,7 +7235,7 @@ describe('Connection Tests', function () {
         });
 
         it('all params', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.execute = function (sql, bindParams, options, callback) {
@@ -7267,7 +7261,7 @@ describe('Connection Tests', function () {
         });
 
         it('all params - promise', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.execute = function (sql, bindParams, options, callback) {
@@ -7283,7 +7277,7 @@ describe('Connection Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = connection.executeFile(sqlFile, {
+            const promise = connection.executeFile(sqlFile, {
                 test: 1,
                 another: 'test'
             });
@@ -7298,10 +7292,10 @@ describe('Connection Tests', function () {
         });
 
         it('no callback, no promise support', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var errorFound = false;
+            let errorFound = false;
 
             delete global.Promise;
 
@@ -7317,7 +7311,7 @@ describe('Connection Tests', function () {
         });
 
         it('no options', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.execute = function (sql, bindParams, options, callback) {
@@ -7337,7 +7331,7 @@ describe('Connection Tests', function () {
         });
 
         it('error during file read', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.readFile = function (file, callback) {
@@ -7354,7 +7348,7 @@ describe('Connection Tests', function () {
         });
 
         it('error during execute', function (done) {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.execute = function (sql, bindParams, options, callback) {
@@ -7374,47 +7368,47 @@ describe('Connection Tests', function () {
 
     describe('generateBindDefinitions', function () {
         it('no options', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
             connection.generateBindDefinitions(null, [1, 2, 3]);
         });
 
         it('undefined bind params', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {};
+            const options = {};
             connection.generateBindDefinitions(options);
 
             assert.isUndefined(options.bindDefs);
         });
 
         it('null bind params', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {};
+            const options = {};
             connection.generateBindDefinitions(options, null);
 
             assert.isUndefined(options.bindDefs);
         });
 
         it('empty bind params', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {};
+            const options = {};
             connection.generateBindDefinitions(options, []);
 
             assert.isUndefined(options.bindDefs);
         });
 
         it('bind definitions already set', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {
+            const options = {
                 bindDefs: true
             };
             connection.generateBindDefinitions(options, [1, 2, 3]);
@@ -7423,11 +7417,11 @@ describe('Connection Tests', function () {
         });
 
         it('full', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {};
-            var bindParams = [
+            const options = {};
+            const bindParams = [
                 {
                     string1: 'text1',
                     string2: 'text2',
@@ -7539,17 +7533,17 @@ describe('Connection Tests', function () {
         });
 
         it('error', function () {
-            var connection = {};
+            const connection = {};
             Connection.extend(connection);
 
-            var options = {};
-            var bindParams = [
+            const options = {};
+            const bindParams = [
                 {
                     bool: true
                 }
             ];
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 connection.generateBindDefinitions(options, bindParams);

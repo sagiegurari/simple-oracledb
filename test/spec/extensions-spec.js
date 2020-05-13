@@ -1,60 +1,60 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var extensions = require('../../lib/extensions');
+const chai = require('chai');
+const assert = chai.assert;
+const extensions = require('../../lib/extensions');
 
 describe('Extensions Tests', function () {
-    var noop = function () {
+    const noop = function () {
         return undefined;
     };
-    var noop2 = function () {
+    const noop2 = function () {
         return undefined;
     };
 
     describe('add', function () {
         it('undefined', function () {
-            var output = extensions.add();
+            const output = extensions.add();
             assert.isFalse(output);
         });
 
         it('missing type', function () {
-            var output = extensions.add(undefined, 'myfunc', noop);
+            const output = extensions.add(undefined, 'myfunc', noop);
             assert.isFalse(output);
         });
 
         it('type not string', function () {
-            var output = extensions.add(123, 'myfunc', noop);
+            const output = extensions.add(123, 'myfunc', noop);
             assert.isFalse(output);
         });
 
         it('invalid type', function () {
-            var output = extensions.add('test', 'myfunc', noop);
+            const output = extensions.add('test', 'myfunc', noop);
             assert.isFalse(output);
         });
 
         it('missing name', function () {
-            var output = extensions.add('connection', undefined, noop);
+            const output = extensions.add('connection', undefined, noop);
             assert.isFalse(output);
         });
 
         it('name not string', function () {
-            var output = extensions.add('connection', 123, noop);
+            const output = extensions.add('connection', 123, noop);
             assert.isFalse(output);
         });
 
         it('missing function', function () {
-            var output = extensions.add('connection', 'myfunc');
+            const output = extensions.add('connection', 'myfunc');
             assert.isFalse(output);
         });
 
         it('invalid function type', function () {
-            var output = extensions.add('connection', 'myfunc', 123);
+            const output = extensions.add('connection', 'myfunc', 123);
             assert.isFalse(output);
         });
 
         it('valid', function () {
-            var output = extensions.add('connection', 'myfunc1', noop);
+            let output = extensions.add('connection', 'myfunc1', noop);
             assert.isTrue(output);
 
             output = extensions.add('connection', 'myfunc2', noop2);
@@ -79,7 +79,7 @@ describe('Extensions Tests', function () {
         });
 
         it('valid, no promise', function () {
-            var output = extensions.add('connection', 'myfunc1', noop, {
+            let output = extensions.add('connection', 'myfunc1', noop, {
                 promise: {
                     noPromise: true
                 }
@@ -130,18 +130,18 @@ describe('Extensions Tests', function () {
 
     describe('get', function () {
         it('undefined', function () {
-            var output = extensions.get();
+            const output = extensions.get();
             assert.isUndefined(output);
         });
 
         it('null', function () {
-            var output = extensions.get(null);
+            const output = extensions.get(null);
             assert.isUndefined(output);
         });
 
         it('empty', function () {
             extensions.extensions.connection = {};
-            var output = extensions.get('connection');
+            const output = extensions.get('connection');
             assert.deepEqual(output, {});
         });
 
@@ -150,7 +150,7 @@ describe('Extensions Tests', function () {
                 test: noop,
                 test2: noop2
             };
-            var output = extensions.get('connection');
+            const output = extensions.get('connection');
             assert.deepEqual(output, {
                 test: noop,
                 test2: noop2

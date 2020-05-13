@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2020-05-13  | v2.0.0  | Migrate to github actions and upgrade minimal node version |
 | 2019-05-25  | v1.4.2  | Maintenance |
 | 2019-01-25  | v1.4.0  | useExecuteMany=true by default |
 | 2018-09-23  | v1.3.0  | Added executeMany support for the batch APIs |

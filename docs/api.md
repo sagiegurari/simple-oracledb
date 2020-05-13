@@ -183,7 +183,7 @@ connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
 //In order to stream results into a read stream, you can provide the streamResults = true option.
 //The optional callback will be called with a read stream instance which can be used to fetch/pipe the data.
 //Once all rows are read, the proper stream events will be called.
-var stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
+const stream = connection.query('SELECT * FROM departments WHERE manager_id > :id', [110], {
   streamResults: true
 });
 
@@ -220,20 +220,20 @@ The function arguments used to execute the 'insert' are exactly as defined in th
 | [bindParams] | <code>Object</code> | The bind parameters used to specify the values for the columns |
 | [options] | <code>Object</code> | Any execute options |
 | [options.autoCommit] | <code>Object</code> | If you wish to commit after the insert, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind constiable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindconstName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided) |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
 ```js
 connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
   id: 110,
-  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
 }, {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }, function onResults(error, output) {
@@ -247,15 +247,15 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
     dir: oracledb.BIND_INOUT,
     val: 1234
   },
-  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
 }, {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   },
-  returningInfo: { //all items in this column/bind variable object will be added to the generated RETURNING clause
+  returningInfo: { //all items in this column/bind constiable object will be added to the generated RETURNING clause
     id: 'myid'
   }
 }, function onResults(error, output) {
@@ -265,12 +265,12 @@ connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:
 //another example but with promise support
 connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
   id: 110,
-  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
 }, {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }).then(function (results) {
@@ -294,8 +294,8 @@ The function arguments used to execute the 'update' are exactly as defined in th
 | [bindParams] | <code>Object</code> | The bind parameters used to specify the values for the columns |
 | [options] | <code>Object</code> | Any execute options |
 | [options.autoCommit] | <code>Object</code> | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.lobMetaInfo] | <code>Object</code> | For LOB support this object must hold a mapping between DB column name and bind constiable name |
+| [options.returningInfo] | <code>Object</code> | columnName/bindconstName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
 **Example**  
@@ -303,12 +303,12 @@ The function arguments used to execute the 'update' are exactly as defined in th
 connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
   id: 110,
   name: 'My Name',
-  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
 }, {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }, function onResults(error, output) {
@@ -319,12 +319,12 @@ connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), 
 connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
   id: 110,
   name: 'My Name',
-  clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+  clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+  blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
 }, {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }).then(function (results) {
@@ -525,8 +525,8 @@ the bind params is now an array of bind params (one per row).
 | bindParamsArray | <code>Array</code> |  | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
 | options | <code>Object</code> |  | Any execute options |
 | [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind constiable name |
+| [options.returningInfo] | <code>Object</code> |  | columnName/bindconstName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the insert results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
@@ -535,8 +535,8 @@ the bind params is now an array of bind params (one per row).
 connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
     id: 110,
-    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+    clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
   },
   { //second row values
     id: 111,
@@ -545,8 +545,8 @@ connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALU
   }
 ], {
   autoCommit: true, //must be set to true in options to support auto commit after insert is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }, function onResults(error, output) {
@@ -572,8 +572,8 @@ the bind params is now an array of bind params (one per row).
 | bindParamsArray | <code>Array</code> |  | An array of instances of object/Array bind parameters used to specify the values for the columns per row |
 | options | <code>Object</code> |  | Any execute options |
 | [options.autoCommit] | <code>Boolean</code> |  | If you wish to commit after the update, this property must be set to true in the options (oracledb.autoCommit is not checked) |
-| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind variable name |
-| [options.returningInfo] | <code>Object</code> |  | columnName/bindVarName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
+| [options.lobMetaInfo] | <code>Object</code> |  | For LOB support this object must hold a mapping between DB column name and bind constiable name |
+| [options.returningInfo] | <code>Object</code> |  | columnName/bindconstName pairs which will be added to the RETURNING ... INTO ... clause (only used if lobMetaInfo is provided), see connection.insert example |
 | [options.useExecuteMany] | <code>Boolean</code> | <code>true</code> | If true and connection.executeMany is supported, it will be used, otherwise this function will call execute per bind values row |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the update results (if LOBs are provided, the callback will be triggered after they have been fully written to the DB) |
 
@@ -582,8 +582,8 @@ the bind params is now an array of bind params (one per row).
 connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
     id: 110,
-    clobText1: 'some long clob string', //add bind variable with LOB column name and text content (need to map that name in the options)
-    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind variable with LOB column name and text content (need to map that name in the options)
+    clobText1: 'some long clob string', //add bind constiable with LOB column name and text content (need to map that name in the options)
+    blobBuffer2: new Buffer('some blob content, can be binary...')  //add bind constiable with LOB column name and text content (need to map that name in the options)
   },
   { //second row values
     id: 111,
@@ -592,8 +592,8 @@ connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLO
   }
 ], {
   autoCommit: true, //must be set to true in options to support auto commit after update is done, otherwise the auto commit will be false (oracledb.autoCommit is not checked)
-  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind variables parameter must be an object (not array)
-    clob_column1: 'clobText1', //map oracle column name to bind variable name
+  lobMetaInfo: { //if LOBs are provided, this data structure must be provided in the options object and the bind constiables parameter must be an object (not array)
+    clob_column1: 'clobText1', //map oracle column name to bind constiable name
     blob_column2: 'blobBuffer2'
   }
 }, function onResults(error, output) {
@@ -1250,8 +1250,8 @@ pool.parallelQuery([
   }
 ], function onQueriesDone(error, results) {
   //do something with the result/error
-  var query1Results = results[0];
-  var query2Results = results[1];
+  const query1Results = results[0];
+  const query2Results = results[1];
 });
 
 //another example but with promise support
@@ -1271,8 +1271,8 @@ pool.parallelQuery([
   }
 ]).then(function onQueriesDone(results) {
   //do something with the result
-  var query1Results = results[0];
-  var query2Results = results[1];
+  const query1Results = results[0];
+  const query2Results = results[1];
 });
 ```
 <a name="Pool+terminate"></a>
@@ -1443,10 +1443,10 @@ connection objects via oracledb.getConnection or via pool.getConnection
 **Example**  
 ```js
 //load the oracledb library
-var oracledb = require('oracledb');
+const oracledb = require('oracledb');
 
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb');
+const SimpleOracleDB = require('simple-oracledb');
 
 //modify the original oracledb library
 SimpleOracleDB.extend(oracledb);
@@ -1466,7 +1466,7 @@ connection objects via pool.getConnection
 **Example**  
 ```js
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb');
+const SimpleOracleDB = require('simple-oracledb');
 
 function myFunction(pool) {
   //modify the original oracledb pool instance
@@ -1499,7 +1499,7 @@ the extended capabilities of this library.
 **Example**  
 ```js
 //load the simple oracledb
-var SimpleOracleDB = require('simple-oracledb');
+const SimpleOracleDB = require('simple-oracledb');
 
 function doSomething(connection, callback) {
   //modify the original oracledb connection instance
@@ -1547,7 +1547,7 @@ connection.myConnFunc('test', 123, function () {
 });
 
 //extensions are automatically promisified (can be disabled) so you can also run extension functions without callback
-var promise = connection.myConnFunc('test', 123);
+const promise = connection.myConnFunc('test', 123);
 promise.then(function () {
   //continue flow...
 }).catch(function (error) {

@@ -1,21 +1,21 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var integrationHelper = require('../helpers/integration-helper');
-var utils = require('../helpers/utils');
+const chai = require('chai');
+const assert = chai.assert;
+const integrationHelper = require('../helpers/integration-helper');
+const utils = require('../helpers/utils');
 
 integrationHelper(function (oracledb, connAttrs, initDB, end) {
     if (oracledb && connAttrs && initDB && end) {
         describe('Integration Tests', function () {
-            var self = this;
+            const self = this;
 
             self.timeout(60000);
 
             describe('oracledb', function () {
                 describe('getConnection', function () {
                     it('promise', function (done) {
-                        var table = 'TEST_ORA_CONN1';
+                        const table = 'TEST_ORA_CONN1';
                         initDB(table, null, function () {
                             oracledb.getConnection(connAttrs).then(function (connection) {
                                 assert.isDefined(connection);
@@ -28,7 +28,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('run', function () {
                     it('promise', function (done) {
-                        var table = 'TEST_ORA_CONN2';
+                        const table = 'TEST_ORA_CONN2';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -76,7 +76,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
             describe('pool', function () {
                 describe('getConnection', function () {
                     it('promise', function (done) {
-                        var table = 'TEST_ORA_POOL1';
+                        const table = 'TEST_ORA_POOL1';
                         initDB(table, null, function (pool) {
                             pool.getConnection().then(function (connection) {
                                 assert.isDefined(connection);
@@ -87,9 +87,9 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('error', function (done) {
-                        var table = 'TEST_ORA_POOL2';
+                        const table = 'TEST_ORA_POOL2';
                         initDB(table, null, function (pool) {
-                            var sql = pool.poolAttributes.validationSQL;
+                            const sql = pool.poolAttributes.validationSQL;
                             pool.poolAttributes.validationSQL = 'SOME BAD SQL';
                             pool.getConnection(function (err, connection) {
                                 assert.isDefined(err);
@@ -104,7 +104,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('run', function () {
                     it('query', function (done) {
-                        var table = 'TEST_ORA_POOL3';
+                        const table = 'TEST_ORA_POOL3';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -150,7 +150,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('parallelQuery', function () {
                     it('multiple queries', function (done) {
-                        var table = 'TEST_ORA_POOL4';
+                        const table = 'TEST_ORA_POOL4';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -201,7 +201,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
             describe('connection', function () {
                 describe('promise', function () {
                     it('query', function (done) {
-                        var table = 'TEST_ORA_PRMS1';
+                        const table = 'TEST_ORA_PRMS1';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -238,7 +238,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('query', function () {
                     it('error', function (done) {
-                        var table = 'TEST_ORA_QRY1';
+                        const table = 'TEST_ORA_QRY1';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -255,7 +255,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('rows - empty', function (done) {
-                        var table = 'TEST_ORA_QRY2';
+                        const table = 'TEST_ORA_QRY2';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -271,7 +271,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - empty', function (done) {
-                        var table = 'TEST_ORA_QRY3';
+                        const table = 'TEST_ORA_QRY3';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -289,7 +289,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('rows - simple data', function (done) {
-                        var table = 'TEST_ORA_QRY4';
+                        const table = 'TEST_ORA_QRY4';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -337,7 +337,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - simple data', function (done) {
-                        var table = 'TEST_ORA_QRY5';
+                        const table = 'TEST_ORA_QRY5';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -385,7 +385,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - split', function (done) {
-                        var table = 'TEST_ORA_QRY6';
+                        const table = 'TEST_ORA_QRY6';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -437,12 +437,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - stream', function (done) {
-                        var table = 'TEST_ORA_QRY7';
+                        const table = 'TEST_ORA_QRY7';
 
-                        var dbData = [];
+                        const dbData = [];
 
-                        var index;
-                        for (index = 0; index < 100; index++) {
+                        for (let index = 0; index < 100; index++) {
                             dbData.push({
                                 COL1: 'PK' + index,
                                 COL2: index,
@@ -465,12 +464,12 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                         assert.isNull(rowsError);
                                         assert.deepEqual(dbData, rowsData);
 
-                                        var stream = connection.query('SELECT * FROM ' + table + ' ORDER BY COL2', [], {
+                                        const stream = connection.query('SELECT * FROM ' + table + ' ORDER BY COL2', [], {
                                             streamResults: true,
                                             bulkRowsAmount: 5
                                         });
 
-                                        var eventCounter = 0;
+                                        let eventCounter = 0;
                                         stream.on('data', function (row) {
                                             assert.deepEqual(dbData[eventCounter], row);
                                             eventCounter++;
@@ -488,9 +487,9 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - stream no callback', function (done) {
-                        var table = 'TEST_ORA_QRY8';
+                        const table = 'TEST_ORA_QRY8';
 
-                        var dbData = [
+                        const dbData = [
                             {
                                 COL1: 'PK1',
                                 COL2: 2,
@@ -517,13 +516,13 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
-                                var stream = connection.query('SELECT * FROM ' + table, [], {
+                                const stream = connection.query('SELECT * FROM ' + table, [], {
                                     streamResults: true
                                 });
 
-                                var eventCounter = 0;
+                                let eventCounter = 0;
                                 stream.on('data', function (row) {
-                                    var orgData = dbData[eventCounter];
+                                    const orgData = dbData[eventCounter];
                                     if (!orgData.LOB1) {
                                         orgData.LOB1 = null;
                                     }
@@ -545,7 +544,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('rows - lob data', function (done) {
-                        var table = 'TEST_ORA_QRY9';
+                        const table = 'TEST_ORA_QRY9';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -581,7 +580,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('rows - simple data - extendedMetaData', function (done) {
-                        var table = 'TEST_ORA_QRY10';
+                        const table = 'TEST_ORA_QRY10';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -630,7 +629,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('resultset - simple data - extendedMetaData', function (done) {
-                        var table = 'TEST_ORA_QRY11';
+                        const table = 'TEST_ORA_QRY11';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -681,7 +680,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('insert', function () {
                     it('error', function (done) {
-                        var table = 'TEST_ORA_INST1';
+                        const table = 'TEST_ORA_INST1';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -698,7 +697,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('insert - simple data', function (done) {
-                        var table = 'TEST_ORA_INST2';
+                        const table = 'TEST_ORA_INST2';
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -733,12 +732,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('insert - LOB data', function (done) {
-                        var table = 'TEST_ORA_INST3';
+                        const table = 'TEST_ORA_INST3';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -785,12 +783,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('insert - returning info', function (done) {
-                        var table = 'TEST_ORA_INST4';
+                        const table = 'TEST_ORA_INST4';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -845,7 +842,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('update', function () {
                     it('error', function (done) {
-                        var table = 'TEST_ORA_UDT1';
+                        const table = 'TEST_ORA_UDT1';
                         initDB(table, null, function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -862,7 +859,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('update - simple data', function (done) {
-                        var table = 'TEST_ORA_UDT2';
+                        const table = 'TEST_ORA_UDT2';
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
@@ -945,12 +942,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('update - LOB data', function (done) {
-                        var table = 'TEST_ORA_UPDT3';
+                        const table = 'TEST_ORA_UPDT3';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1054,7 +1050,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('queryJSON', function () {
                     it('single row', function (done) {
-                        var table = 'TEST_ORA_JSON1';
+                        const table = 'TEST_ORA_JSON1';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -1103,7 +1099,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('multiple row', function (done) {
-                        var table = 'TEST_ORA_JSON2';
+                        const table = 'TEST_ORA_JSON2';
                         initDB(table, [
                             {
                                 COL1: 'PK1',
@@ -1194,12 +1190,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('batchInsert', function () {
                     it('batchInsert - execute - LOB data', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST1';
+                        const table = 'TEST_ORA_BTCH_INST1';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1265,12 +1260,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchInsert - executeMany - LOB data', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST2';
+                        const table = 'TEST_ORA_BTCH_INST2';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1336,7 +1330,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchInsert - executeMany - no LOB', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST3';
+                        const table = 'TEST_ORA_BTCH_INST3';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
@@ -1391,7 +1385,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchInsert - execute - arrays', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST4';
+                        const table = 'TEST_ORA_BTCH_INST4';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
@@ -1440,7 +1434,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchInsert - executeMany - arrays', function (done) {
-                        var table = 'TEST_ORA_BTCH_INST5';
+                        const table = 'TEST_ORA_BTCH_INST5';
 
                         initDB(table, [], function (pool) {
                             pool.getConnection(function (err, connection) {
@@ -1491,12 +1485,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('batchUpdate', function () {
                     it('batchUpdate - execute - LOB data', function (done) {
-                        var table = 'TEST_ORA_BTCH_UPD1';
+                        const table = 'TEST_ORA_BTCH_UPD1';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1612,12 +1605,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('batchUpdate - executeMany - LOB data', function (done) {
-                        var table = 'TEST_ORA_BTCH_UPD2';
+                        const table = 'TEST_ORA_BTCH_UPD2';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1735,12 +1727,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('transaction', function () {
                     it('multiple actions', function (done) {
-                        var table = 'TEST_ORA_TRNS1';
+                        const table = 'TEST_ORA_TRNS1';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1842,12 +1833,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('error in action', function (done) {
-                        var table = 'TEST_ORA_TRNS2';
+                        const table = 'TEST_ORA_TRNS2';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -1925,12 +1915,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
 
                 describe('run', function () {
                     it('multiple actions', function (done) {
-                        var table = 'TEST_ORA_RUN1';
+                        const table = 'TEST_ORA_RUN1';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');
@@ -2034,12 +2023,11 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                     });
 
                     it('error in action', function (done) {
-                        var table = 'TEST_ORA_RUN2';
+                        const table = 'TEST_ORA_RUN2';
 
-                        var longClobText = 'this is a really long line of test data\n';
-                        var index;
-                        var buffer = [];
-                        for (index = 0; index < 1000; index++) {
+                        let longClobText = 'this is a really long line of test data\n';
+                        const buffer = [];
+                        for (let index = 0; index < 1000; index++) {
                             buffer.push(longClobText);
                         }
                         longClobText = buffer.join('');

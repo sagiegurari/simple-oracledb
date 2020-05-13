@@ -1,66 +1,62 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var helper = require('../helpers/test-oracledb');
-var utils = require('../helpers/utils');
-var RowsReader = require('../../lib/rows-reader');
+const chai = require('chai');
+const assert = chai.assert;
+const helper = require('../helpers/test-oracledb');
+const utils = require('../helpers/utils');
+const RowsReader = require('../../lib/rows-reader');
 
 describe('RowsReader Tests', function () {
     describe('getFlattenRowsCount', function () {
         it('no flattenStackEveryRows value', function () {
-            var count = RowsReader.getFlattenRowsCount(['test'], {});
+            const count = RowsReader.getFlattenRowsCount(['test'], {});
             assert.strictEqual(count, 100);
         });
 
         it('flattenStackEveryRows value provided', function () {
-            var count = RowsReader.getFlattenRowsCount(['test'], {
+            const count = RowsReader.getFlattenRowsCount(['test'], {
                 flattenStackEveryRows: 5000
             });
             assert.strictEqual(count, 5000);
         });
 
         it('lots of columns', function () {
-            var columnNames = [];
-            var index;
-            for (index = 0; index < 6000; index++) {
+            const columnNames = [];
+            for (let index = 0; index < 6000; index++) {
                 columnNames.push('test' + index);
             }
 
-            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            const count = RowsReader.getFlattenRowsCount(columnNames, {});
             assert.strictEqual(count, 1);
         });
 
         it('fews columns', function () {
-            var columnNames = [];
-            var index;
-            for (index = 0; index < 23; index++) {
+            const columnNames = [];
+            for (let index = 0; index < 23; index++) {
                 columnNames.push('test' + index);
             }
 
-            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            const count = RowsReader.getFlattenRowsCount(columnNames, {});
             assert.strictEqual(count, 4);
         });
 
         it('exact check columns amount', function () {
-            var columnNames = [];
-            var index;
-            for (index = 0; index < 100; index++) {
+            const columnNames = [];
+            for (let index = 0; index < 100; index++) {
                 columnNames.push('test' + index);
             }
 
-            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            const count = RowsReader.getFlattenRowsCount(columnNames, {});
             assert.strictEqual(count, 1);
         });
 
         it('almost exact check columns amount', function () {
-            var columnNames = [];
-            var index;
-            for (index = 0; index < 99; index++) {
+            const columnNames = [];
+            for (let index = 0; index < 99; index++) {
                 columnNames.push('test' + index);
             }
 
-            var count = RowsReader.getFlattenRowsCount(columnNames, {});
+            const count = RowsReader.getFlattenRowsCount(columnNames, {});
             assert.strictEqual(count, 1);
         });
     });
@@ -76,7 +72,7 @@ describe('RowsReader Tests', function () {
         });
 
         it('array - basic js types', function (done) {
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -125,7 +121,7 @@ describe('RowsReader Tests', function () {
         });
 
         it('object - basic js types', function (done) {
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -176,15 +172,13 @@ describe('RowsReader Tests', function () {
         it('array - basic js types, huge size', function (done) {
             this.timeout(5000);
 
-            var data = [];
-            var result = [];
-            var rowData;
-            var index;
-            var numValue;
-            for (index = 0; index < 5000; index++) {
-                numValue = (index % 20);
+            const data = [];
+            const result = [];
 
-                rowData = [
+            for (let index = 0; index < 5000; index++) {
+                const numValue = (index % 20);
+
+                const rowData = [
                     index,
                     'test-' + index,
                     numValue,
@@ -224,10 +218,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('array - CLOB types', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -286,10 +280,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('object - CLOB types', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -348,10 +342,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('array - BLOB types', function (done) {
-            var lob1 = helper.createBLOB();
-            var lob2 = helper.createBLOB();
+            const lob1 = helper.createBLOB();
+            const lob2 = helper.createBLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -414,10 +408,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('object - BLOB types', function (done) {
-            var lob1 = helper.createBLOB();
-            var lob2 = helper.createBLOB();
+            const lob1 = helper.createBLOB();
+            const lob2 = helper.createBLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -480,10 +474,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('array - error', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -528,10 +522,10 @@ describe('RowsReader Tests', function () {
         });
 
         it('object - error', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var date = new Date();
+            const date = new Date();
             RowsReader.read([
                 {
                     name: 'COL1'
@@ -578,12 +572,12 @@ describe('RowsReader Tests', function () {
 
     describe('readJSON', function () {
         it('undefined', function () {
-            var json = RowsReader.readJSON();
+            const json = RowsReader.readJSON();
             assert.isUndefined(json);
         });
 
         it('multiple keys', function () {
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 RowsReader.readJSON([
@@ -604,12 +598,12 @@ describe('RowsReader Tests', function () {
         });
 
         it('no rows', function () {
-            var json = RowsReader.readJSON([]);
+            const json = RowsReader.readJSON([]);
             assert.deepEqual([], json);
         });
 
         it('multiple json rows', function () {
-            var output = RowsReader.readJSON([
+            const output = RowsReader.readJSON([
                 {
                     data: JSON.stringify({
                         a: 1,

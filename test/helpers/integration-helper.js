@@ -1,12 +1,12 @@
 'use strict';
 
-var asyncLib = require('async');
-var chai = require('chai');
-var assert = chai.assert;
+const asyncLib = require('async');
+const chai = require('chai');
+const assert = chai.assert;
 
 module.exports = function (setup) {
-    var integrated = true;
-    var connAttrs = {
+    let integrated = true;
+    const connAttrs = {
         user: process.env.TEST_ORACLE_USER,
         password: process.env.TEST_ORACLE_PASSWORD,
         connectString: process.env.TEST_ORACLE_CONNECTION_STRING
@@ -19,14 +19,14 @@ module.exports = function (setup) {
     if (!integrated) {
         setup();
     } else {
-        var oracledb = require('oracledb');
+        const oracledb = require('oracledb');
 
         oracledb.autoCommit = true;
 
-        var simpleOracleDB = require('../../');
+        const simpleOracleDB = require('../../');
         simpleOracleDB.extend(oracledb);
 
-        var end = function (done, connection) {
+        const end = function (done, connection) {
             if (connection) {
                 connection.release();
             }
@@ -34,8 +34,8 @@ module.exports = function (setup) {
             setTimeout(done, 10);
         };
 
-        var testPool;
-        var initDB = function (tableName, data, cb) {
+        let testPool;
+        const initDB = function (tableName, data, cb) {
             oracledb.getConnection(connAttrs, function (connErr, connection) {
                 data = data || [];
 
@@ -46,12 +46,12 @@ module.exports = function (setup) {
                     }, 100);
                 } else {
                     connection.execute('DROP TABLE ' + tableName, [], function () {
-                        connection.execute('CREATE TABLE ' + tableName + ' (COL1 VARCHAR2(250) PRIMARY KEY, COL2 NUMBER, COL3 NUMBER, COL4 VARCHAR2(250), LOB1 CLOB, LOB2 BLOB)', [], function (createError) {
+                        connection.execute('CREATE TABLE ' + tableName + ' (COL1 constCHAR2(250) PRIMARY KEY, COL2 NUMBER, COL3 NUMBER, COL4 constCHAR2(250), LOB1 CLOB, LOB2 BLOB)', [], function (createError) {
                             if (createError) {
                                 console.error(createError);
                                 assert.fail('UNABLE TO CREATE DB TABLE: ' + tableName);
                             } else {
-                                var func = [];
+                                const func = [];
                                 data.forEach(function (rowData) {
                                     func.push(function (asyncCB) {
                                         if (!rowData.COL4) {

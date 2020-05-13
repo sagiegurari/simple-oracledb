@@ -1,24 +1,24 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var PromiseLib = global.Promise || require('promiscuous');
+const chai = require('chai');
+const assert = chai.assert;
+const PromiseLib = global.Promise || require('promiscuous');
 
 describe('simple oracledb tests', function () {
-    var oracledb = require('../helpers/test-oracledb').create();
+    const oracledb = require('../helpers/test-oracledb').create();
     oracledb.BLOB = 2007;
     oracledb.CLOB = 2006;
     oracledb.STRING = 2001;
     oracledb.NUMBER = 2002;
     oracledb.DATE = 2003;
     oracledb.BIND_OUT = 3003;
-    var simpleOracleDB = require('../../');
+    const simpleOracleDB = require('../../');
     simpleOracleDB.extend(oracledb);
 
     describe('extend tests', function () {
         it('extend oracledb', function () {
-            var oracledbLib = {
-                createPool: function () {
+            const oracledbLib = {
+                createPool() {
                     return undefined;
                 }
             };
@@ -27,8 +27,8 @@ describe('simple oracledb tests', function () {
         });
 
         it('extend pool', function () {
-            var pool = {
-                getConnection: function () {
+            const pool = {
+                getConnection() {
                     return undefined;
                 }
             };
@@ -37,8 +37,8 @@ describe('simple oracledb tests', function () {
         });
 
         it('extend connection', function () {
-            var connection = {
-                execute: function () {
+            const connection = {
+                execute() {
                     return undefined;
                 }
             };
@@ -47,9 +47,9 @@ describe('simple oracledb tests', function () {
         });
 
         it('extend unsupported', function () {
-            var obj = {};
+            const obj = {};
 
-            var errorFound = false;
+            let errorFound = false;
             try {
                 simpleOracleDB.extend(obj);
             } catch (error) {
@@ -60,7 +60,7 @@ describe('simple oracledb tests', function () {
         });
 
         it('extend no input', function () {
-            var errorFound = false;
+            let errorFound = false;
             try {
                 simpleOracleDB.extend();
             } catch (error) {
@@ -73,7 +73,7 @@ describe('simple oracledb tests', function () {
 
     describe('createPool tests', function () {
         it('createPool valid', function (done) {
-            var eventTriggered = false;
+            let eventTriggered = false;
             simpleOracleDB.once('pool-created', function (pool) {
                 assert.isDefined(pool);
                 assert.isTrue(pool.simplified);
@@ -98,7 +98,7 @@ describe('simple oracledb tests', function () {
         });
 
         it('createPool valid promise', function (done) {
-            var eventTriggered = false;
+            let eventTriggered = false;
             simpleOracleDB.once('pool-created', function (pool) {
                 assert.isDefined(pool);
                 assert.isTrue(pool.simplified);
@@ -149,7 +149,7 @@ describe('simple oracledb tests', function () {
         it('createPool promise not supported', function () {
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
             try {
                 oracledb.createPool();
             } catch (error) {
@@ -164,7 +164,7 @@ describe('simple oracledb tests', function () {
 
     describe('getConnection tests', function () {
         it('getConnection valid', function (done) {
-            var eventTriggered = false;
+            let eventTriggered = false;
             simpleOracleDB.once('connection-created', function (connection) {
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -189,7 +189,7 @@ describe('simple oracledb tests', function () {
         });
 
         it('getConnection valid promise', function (done) {
-            var eventTriggered = false;
+            let eventTriggered = false;
             simpleOracleDB.once('connection-created', function (connection) {
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);

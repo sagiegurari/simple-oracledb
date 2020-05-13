@@ -5,14 +5,15 @@
 /*eslint-disable no-underscore-dangle*/
 
 module.exports = function (grunt) {
-    var commons = require('js-project-commons');
+    const commons = require('js-project-commons');
 
     grunt.loadNpmTasks('grunt-shell');
 
     commons.grunt.config.initConfig(grunt, {
         buildConfig: {
             projectRoot: __dirname,
-            nodeProject: true
+            nodeProject: true,
+            skipSecurityCheck: true
         },
         apidoc2readme: {
             readme: {
@@ -42,7 +43,7 @@ module.exports = function (grunt) {
                         'Connection+rollback': 'Connection+rollback',
                         'SimpleOracleDB+addExtension': 'SimpleOracleDB+addExtension'
                     },
-                    modifySignature: function (line) {
+                    modifySignature(line) {
                         return line.split('Pool.').join('pool.').split('Connection.').join('connection.').split('\'OracleDB.').join('\'oracledb.').split('Promise').join('[Promise]').split('ResultSetReadStream').join('[ResultSetReadStream]');
                     }
                 }

@@ -1,8 +1,8 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var emitter = require('../../lib/emitter');
+const chai = require('chai');
+const assert = chai.assert;
+const emitter = require('../../lib/emitter');
 
 describe('emitter Tests', function () {
     describe('extend', function () {
@@ -15,7 +15,7 @@ describe('emitter Tests', function () {
         });
 
         it('has on', function () {
-            var object = {
+            const object = {
                 on: true
             };
             emitter(object);
@@ -24,7 +24,7 @@ describe('emitter Tests', function () {
         });
 
         it('has emit', function () {
-            var object = {
+            const object = {
                 emit: true
             };
             emitter(object);
@@ -33,7 +33,7 @@ describe('emitter Tests', function () {
         });
 
         it('valid', function () {
-            var object = {};
+            const object = {};
             emitter(object);
 
             assert.isFunction(object.on);

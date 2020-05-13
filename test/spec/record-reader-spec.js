@@ -1,14 +1,14 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var helper = require('../helpers/test-oracledb');
-var RecordReader = require('../../lib/record-reader');
+const chai = require('chai');
+const assert = chai.assert;
+const helper = require('../helpers/test-oracledb');
+const RecordReader = require('../../lib/record-reader');
 
 describe('RecordReader Tests', function () {
     describe('getValue tests', function () {
         it('null', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(null, info, function (error, value) {
                 assert.isNull(error);
                 assert.isNull(value);
@@ -20,7 +20,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('undefined', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(undefined, info, function (error, value) {
                 assert.isNull(error);
                 assert.isUndefined(value);
@@ -32,7 +32,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('boolean - true', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(true, info, function (error, value) {
                 assert.isNull(error);
                 assert.isTrue(value);
@@ -44,7 +44,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('boolean - false', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(false, info, function (error, value) {
                 assert.isNull(error);
                 assert.isFalse(value);
@@ -56,7 +56,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('number - 0', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(0, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(0, value);
@@ -68,7 +68,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('number - int', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(1, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(1, value);
@@ -80,7 +80,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('number - float', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue(1.5, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(1.5, value);
@@ -92,7 +92,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('string - empty', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue('', info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('', value);
@@ -104,7 +104,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('string - with text', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue('TEST', info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('TEST', value);
@@ -116,8 +116,8 @@ describe('RecordReader Tests', function () {
         });
 
         it('date', function (done) {
-            var info = {};
-            var date = new Date();
+            const info = {};
+            const date = new Date();
             RecordReader.getValue(date, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal(date, value);
@@ -129,9 +129,9 @@ describe('RecordReader Tests', function () {
         });
 
         it('LOB', function (done) {
-            var testStream = helper.createCLOB();
+            const testStream = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.getValue(testStream, info, function (error, value) {
                 assert.isNull(error);
                 assert.equal('first line\nsecond line, second part.', value);
@@ -148,7 +148,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('unsupported', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.getValue({}, info, function (error) {
                 assert.isDefined(error);
 
@@ -159,9 +159,9 @@ describe('RecordReader Tests', function () {
         });
 
         it('error', function (done) {
-            var testStream = helper.createCLOB();
+            const testStream = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.getValue(testStream, info, function (error, value) {
                 assert.isDefined(error);
                 assert.equal(error.message, 'test error');
@@ -181,7 +181,7 @@ describe('RecordReader Tests', function () {
 
     describe('read tests', function () {
         it('empty', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.read([], [], info, function (error, jsObject) {
                 assert.isNull(error);
                 assert.deepEqual({}, jsObject);
@@ -193,7 +193,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('array - basic js types', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -228,7 +228,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('object - basic js types', function (done) {
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -263,10 +263,10 @@ describe('RecordReader Tests', function () {
         });
 
         it('array - LOB types', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -321,10 +321,10 @@ describe('RecordReader Tests', function () {
         });
 
         it('object - LOB types', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -379,10 +379,10 @@ describe('RecordReader Tests', function () {
         });
 
         it('array - error', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -429,10 +429,10 @@ describe('RecordReader Tests', function () {
         });
 
         it('object - error', function (done) {
-            var lob1 = helper.createCLOB();
-            var lob2 = helper.createCLOB();
+            const lob1 = helper.createCLOB();
+            const lob2 = helper.createCLOB();
 
-            var info = {};
+            const info = {};
             RecordReader.read([
                 {
                     name: 'COL1'
@@ -481,29 +481,29 @@ describe('RecordReader Tests', function () {
 
     describe('readJSON tests', function () {
         it('undefined no column', function () {
-            var json = RecordReader.readJSON();
+            const json = RecordReader.readJSON();
             assert.isUndefined(json);
         });
 
         it('undefined with column', function () {
-            var json = RecordReader.readJSON(undefined, 'data');
+            const json = RecordReader.readJSON(undefined, 'data');
             assert.isUndefined(json);
         });
 
         it('not json no column', function () {
-            var json = RecordReader.readJSON('some text');
+            const json = RecordReader.readJSON('some text');
 
             assert.isUndefined(json);
         });
 
         it('not json with column', function () {
-            var json = RecordReader.readJSON('some text', 'data');
+            const json = RecordReader.readJSON('some text', 'data');
 
             assert.isObject(json);
         });
 
         it('not json field', function () {
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 RecordReader.readJSON({
@@ -517,7 +517,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('not json in data with column', function () {
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 RecordReader.readJSON({
@@ -531,7 +531,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('json no column', function () {
-            var output = RecordReader.readJSON({
+            const output = RecordReader.readJSON({
                 data: JSON.stringify({
                     a: 1
                 })
@@ -541,7 +541,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('json with column', function () {
-            var output = RecordReader.readJSON({
+            const output = RecordReader.readJSON({
                 data: JSON.stringify({
                     a: 1,
                     test: true,
@@ -571,7 +571,7 @@ describe('RecordReader Tests', function () {
         });
 
         it('json wrong column', function () {
-            var output = RecordReader.readJSON({
+            const output = RecordReader.readJSON({
                 data: JSON.stringify({
                     a: 1,
                     test: true,

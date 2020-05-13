@@ -1,23 +1,23 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var PromiseLib = global.Promise || require('promiscuous');
-var oracledb = require('../helpers/test-oracledb');
-var Pool = require('../../lib/pool');
-var Connection = require('../../lib/connection');
-var SimpleOracleDB = require('../..');
-var extensions = require('../../lib/extensions');
-var emitter = require('../../lib/emitter');
+const chai = require('chai');
+const assert = chai.assert;
+const PromiseLib = global.Promise || require('promiscuous');
+const oracledb = require('../helpers/test-oracledb');
+const Pool = require('../../lib/pool');
+const Connection = require('../../lib/connection');
+const SimpleOracleDB = require('../..');
+const extensions = require('../../lib/extensions');
+const emitter = require('../../lib/emitter');
 
 describe('Pool Tests', function () {
-    var noop = function () {
+    const noop = function () {
         return undefined;
     };
 
     describe('extend tests', function () {
         it('valid', function () {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
             Pool.extend(testPool);
 
@@ -35,7 +35,7 @@ describe('Pool Tests', function () {
                 return false;
             });
 
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.coreFunc = function () {
                 return true;
             };
@@ -47,7 +47,7 @@ describe('Pool Tests', function () {
             assert.isFunction(testPool.testPoolFunc);
             assert.isTrue(testPool.coreFunc());
 
-            var output = testPool.testPoolFunc(function (error, result) {
+            const output = testPool.testPoolFunc(function (error, result) {
                 assert.isNull(error);
                 assert.isTrue(result);
 
@@ -69,7 +69,7 @@ describe('Pool Tests', function () {
                 return false;
             });
 
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.coreFunc = function () {
                 return true;
             };
@@ -83,7 +83,7 @@ describe('Pool Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = testPool.testPoolFunc();
+            const promise = testPool.testPoolFunc();
 
             promise.then(function (result) {
                 assert.isTrue(result);
@@ -103,12 +103,12 @@ describe('Pool Tests', function () {
 
     describe('getConnection tests', function () {
         it('getConnection simple', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
-            var output = testPool.getConnection(function (error, connection) {
+            const output = testPool.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -127,7 +127,7 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection error', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
             Pool.extend(testPool, {
                 retryInterval: 5
@@ -143,14 +143,14 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection ping valid', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
             testPool.pingSupport = true;
 
-            var output = testPool.getConnection(function (error, connection) {
+            const output = testPool.getConnection(function (error, connection) {
                 assert.isNull(error);
                 assert.isDefined(connection);
                 assert.isTrue(connection.simplified);
@@ -169,7 +169,7 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection ping error', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
             Pool.extend(testPool, {
                 retryInterval: 5
@@ -186,7 +186,7 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection simple promise', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -209,7 +209,7 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection error promise then', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
             Pool.extend(testPool, {
                 retryInterval: 5
@@ -229,7 +229,7 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection error promise catch', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
             Pool.extend(testPool, {
                 retryInterval: 5
@@ -249,14 +249,14 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection promise not supported', function () {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 testPool.getConnection().then(function () {
@@ -274,9 +274,9 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection error with valid retry', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
-            var counter = 0;
+            let counter = 0;
             testPool.getConnection = function (callback) {
                 counter++;
 
@@ -306,9 +306,9 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection error with error retry', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
 
-            var counter = 0;
+            let counter = 0;
             testPool.getConnection = function (callback) {
                 counter++;
 
@@ -333,8 +333,8 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection sql error', function (done) {
-            var testPool = oracledb.createPool();
-            var orgGetConnection = testPool.getConnection;
+            const testPool = oracledb.createPool();
+            const orgGetConnection = testPool.getConnection;
 
             testPool.getConnection = function (callback) {
                 orgGetConnection.call(testPool, function (connError, connection) {
@@ -357,8 +357,8 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection sql and release error', function (done) {
-            var testPool = oracledb.createPool();
-            var orgGetConnection = testPool.getConnection;
+            const testPool = oracledb.createPool();
+            const orgGetConnection = testPool.getConnection;
 
             testPool.getConnection = function (callback) {
                 orgGetConnection.call(testPool, function (connError, connection) {
@@ -384,10 +384,10 @@ describe('Pool Tests', function () {
         });
 
         it('getConnection sql error with valid retry', function (done) {
-            var testPool = oracledb.createPool();
-            var orgGetConnection = testPool.getConnection;
+            const testPool = oracledb.createPool();
+            const orgGetConnection = testPool.getConnection;
 
-            var counter = 0;
+            let counter = 0;
             testPool.getConnection = function (callback) {
                 counter++;
 
@@ -421,32 +421,34 @@ describe('Pool Tests', function () {
 
     describe('run', function () {
         it('missing callback with options with promise', function (done) {
-            var releaseCalled = false;
+            let releaseCalled = false;
 
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
 
             global.Promise = PromiseLib;
 
-            var promise = pool.run(function (connection, callback) {
+            const promise = pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
                 callback();
@@ -462,12 +464,12 @@ describe('Pool Tests', function () {
         });
 
         it('missing callback with options, no promise support', function () {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 pool.run(noop, {});
@@ -481,31 +483,33 @@ describe('Pool Tests', function () {
         });
 
         it('missing callback without options, using promise', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
 
             global.Promise = PromiseLib;
 
-            var promise = pool.run(function (connection, callback) {
+            const promise = pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
                 setTimeout(function () {
@@ -526,12 +530,12 @@ describe('Pool Tests', function () {
         });
 
         it('missing callback without options, no promise support', function () {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 pool.run(noop);
@@ -545,7 +549,7 @@ describe('Pool Tests', function () {
         });
 
         it('missing action with options', function (done) {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             pool.run(null, {}, function (error) {
@@ -556,7 +560,7 @@ describe('Pool Tests', function () {
         });
 
         it('action not a function with callback', function (done) {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             pool.run('test', {}, function (error) {
@@ -567,12 +571,12 @@ describe('Pool Tests', function () {
         });
 
         it('action not a function without callback', function () {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 pool.run('test', {});
@@ -586,8 +590,8 @@ describe('Pool Tests', function () {
         });
 
         it('get connection error', function (done) {
-            var pool = {
-                getConnection: function (cb) {
+            const pool = {
+                getConnection(cb) {
                     cb(new Error('test connection'));
                 }
             };
@@ -607,24 +611,26 @@ describe('Pool Tests', function () {
         });
 
         it('sync action error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        break: function (callback) {
-                            callback();
-                        },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
@@ -641,24 +647,26 @@ describe('Pool Tests', function () {
         });
 
         it('async action error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
@@ -678,11 +686,11 @@ describe('Pool Tests', function () {
         });
 
         it('async action error and release error with no options', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -711,11 +719,11 @@ describe('Pool Tests', function () {
         });
 
         it('async action error and release error with options and ignore release error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -746,11 +754,11 @@ describe('Pool Tests', function () {
         });
 
         it('async action error and release error with options and not ignore release error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -781,11 +789,11 @@ describe('Pool Tests', function () {
         });
 
         it('release error with no options', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -814,11 +822,11 @@ describe('Pool Tests', function () {
         });
 
         it('release error with options and ignore release error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -849,11 +857,11 @@ describe('Pool Tests', function () {
         });
 
         it('release error with options and not ignore release error', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
                     cb(null, {
-                        execute: function () {
+                        execute() {
                             arguments[arguments.length - 1]();
                         }
                     });
@@ -884,33 +892,35 @@ describe('Pool Tests', function () {
         });
 
         it('release options', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
 
-            var releaseOptionsFound = false;
+            let releaseOptionsFound = false;
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
-                var orgRelease = connection.release;
+                const orgRelease = connection.release;
                 connection.release = function (options, cb) {
                     assert.deepEqual(options, {
                         retryCount: 270,
@@ -942,30 +952,35 @@ describe('Pool Tests', function () {
         });
 
         it('release options - force false', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
+                        },
+                        rollback(callback) {
+                            callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
 
-            var releaseOptionsFound = false;
+            let releaseOptionsFound = false;
             pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
-                var orgRelease = connection.release;
+                const orgRelease = connection.release;
                 connection.release = function (options, cb) {
                     assert.deepEqual(options, {
                         retryCount: 270,
@@ -998,29 +1013,31 @@ describe('Pool Tests', function () {
         });
 
         it('valid', function (done) {
-            var releaseCalled = false;
-            var pool = {
-                getConnection: function (cb) {
-                    cb(null, {
-                        break: function (breakCB) {
-                            breakCB();
-                        },
-                        execute: function () {
+            let releaseCalled = false;
+            const pool = {
+                getConnection(cb) {
+                    const connection = {
+                        execute() {
                             arguments[arguments.length - 1]();
                         },
-                        release: function (callback) {
+                        release(callback) {
                             releaseCalled = true;
                             callback();
                         },
-                        rollback: function (callback) {
+                        rollback(callback) {
                             callback();
                         }
-                    });
+                    };
+                    connection.break = function (breakCB) {
+                        breakCB();
+                    };
+
+                    cb(null, connection);
                 }
             };
             Pool.extend(pool);
 
-            var output = pool.run(function (connection, callback) {
+            const output = pool.run(function (connection, callback) {
                 assert.isDefined(connection);
 
                 setTimeout(function () {
@@ -1040,14 +1057,14 @@ describe('Pool Tests', function () {
         });
 
         it('actions are a promise chain', function (done) {
-            var releaseCalled = false;
-            var pool = {};
+            let releaseCalled = false;
+            const pool = {};
             Pool.extend(pool);
 
             pool.getConnection = function (cb) {
-                var connection = {
-                    execute: function (sql) {
-                        var callback = arguments[arguments.length - 1];
+                const connection = {
+                    execute(sql) {
+                        const callback = arguments[arguments.length - 1];
 
                         setTimeout(function () {
                             if (sql === 'lastSQL') {
@@ -1104,7 +1121,7 @@ describe('Pool Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = pool.run(function (connection) {
+            const promise = pool.run(function (connection) {
                 assert.isDefined(connection);
 
                 global.Promise = PromiseLib;
@@ -1146,14 +1163,14 @@ describe('Pool Tests', function () {
 
     describe('parallelQuery', function () {
         it('callback not provided', function () {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 testPool.parallelQuery([
@@ -1171,14 +1188,14 @@ describe('Pool Tests', function () {
         });
 
         it('callback not provided, with options', function () {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 testPool.parallelQuery([
@@ -1196,7 +1213,7 @@ describe('Pool Tests', function () {
         });
 
         it('query spec not provided', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -1209,7 +1226,7 @@ describe('Pool Tests', function () {
         });
 
         it('query spec not provided, with options', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -1222,7 +1239,7 @@ describe('Pool Tests', function () {
         });
 
         it('empty query spec', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -1235,7 +1252,7 @@ describe('Pool Tests', function () {
         });
 
         it('multiple queries, no options', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -1293,7 +1310,7 @@ describe('Pool Tests', function () {
         });
 
         it('multiple queries, limit option provided', function (done) {
-            var testPool = oracledb.createPool();
+            const testPool = oracledb.createPool();
             testPool.extendConnection = true;
 
             Pool.extend(testPool);
@@ -1355,8 +1372,8 @@ describe('Pool Tests', function () {
 
     describe('terminate', function () {
         it('callback provided', function (done) {
-            var pool = {
-                terminate: function (cb) {
+            const pool = {
+                terminate(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -1368,7 +1385,7 @@ describe('Pool Tests', function () {
             });
 
             assert.isFunction(pool.baseTerminate);
-            var output = pool.terminate(function () {
+            const output = pool.terminate(function () {
                 return undefined;
             });
 
@@ -1376,8 +1393,8 @@ describe('Pool Tests', function () {
         });
 
         it('callback undefined with promise', function (done) {
-            var pool = {
-                terminate: function (cb) {
+            const pool = {
+                terminate(cb) {
                     assert.isFunction(cb);
                     cb();
                 }
@@ -1388,14 +1405,14 @@ describe('Pool Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = pool.terminate();
+            const promise = pool.terminate();
 
             promise.then(done);
         });
 
         it('callback undefined, no promise support', function (done) {
-            var pool = {
-                terminate: function (cb) {
+            const pool = {
+                terminate(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -1408,7 +1425,7 @@ describe('Pool Tests', function () {
 
             delete global.Promise;
 
-            var promise = pool.terminate();
+            const promise = pool.terminate();
             assert.isUndefined(promise);
 
             global.Promise = PromiseLib;
@@ -1417,8 +1434,8 @@ describe('Pool Tests', function () {
 
     describe('close', function () {
         it('callback provided', function (done) {
-            var pool = {
-                terminate: function (cb) {
+            const pool = {
+                terminate(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -1428,7 +1445,7 @@ describe('Pool Tests', function () {
             Pool.extend(pool);
 
             assert.isFunction(pool.baseTerminate);
-            var output = pool.close(function () {
+            const output = pool.close(function () {
                 return undefined;
             });
 
@@ -1436,8 +1453,8 @@ describe('Pool Tests', function () {
         });
 
         it('callback undefined', function (done) {
-            var pool = {
-                terminate: function (cb) {
+            const pool = {
+                terminate(cb) {
                     assert.isFunction(cb);
                     cb();
 
@@ -1453,17 +1470,17 @@ describe('Pool Tests', function () {
 
     describe('setupEvents tests', function () {
         it('setupEvents undefined', function () {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
             pool.setupEvents();
         });
 
         it('setupEvents valid', function () {
-            var pool = {};
+            const pool = {};
             Pool.extend(pool);
 
-            var connection = {};
+            const connection = {};
             emitter(connection);
             pool.setupEvents(connection);
             assert.isFunction(connection.on);

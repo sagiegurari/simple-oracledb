@@ -1,25 +1,24 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var integrationHelper = require('../helpers/integration-helper');
-var utils = require('../helpers/utils');
+const chai = require('chai');
+const assert = chai.assert;
+const integrationHelper = require('../helpers/integration-helper');
+const utils = require('../helpers/utils');
 
 if (process.env.TEST_STABILITY) {
     integrationHelper(function (oracledb, connAttrs, initDB, end) {
         if (oracledb && connAttrs && initDB && end) {
             describe('Stability Tests', function () {
-                var self = this;
+                const self = this;
 
                 self.timeout(600000);
 
                 it('batchInsert and query - LOB data', function (done) {
-                    var table = 'TEST_ORA_STB1';
+                    const table = 'TEST_ORA_STB1';
 
-                    var longClobText = 'this is a really long line of test data\n';
-                    var index;
-                    var buffer = [];
-                    for (index = 0; index < 1000; index++) {
+                    let longClobText = 'this is a really long line of test data\n';
+                    const buffer = [];
+                    for (let index = 0; index < 1000; index++) {
                         buffer.push(longClobText);
                     }
                     longClobText = buffer.join('');
@@ -28,8 +27,8 @@ if (process.env.TEST_STABILITY) {
                         pool.getConnection(function (err, connection) {
                             assert.isNull(err);
 
-                            var rowData = [];
-                            for (index = 0; index < 100; index++) {
+                            const rowData = [];
+                            for (let index = 0; index < 100; index++) {
                                 rowData.push({
                                     value1: 'test' + index,
                                     value2: index,
@@ -53,7 +52,7 @@ if (process.env.TEST_STABILITY) {
                                     assert.isNull(queryError);
                                     assert.equal(jsRows.length, rowData.length);
 
-                                    for (index = 0; index < 100; index++) {
+                                    for (let index = 0; index < 100; index++) {
                                         assert.deepEqual({
                                             COL1: 'test' + index,
                                             COL2: index,

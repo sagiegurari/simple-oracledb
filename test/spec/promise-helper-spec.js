@@ -1,43 +1,43 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var PromiseLib = global.Promise || require('promiscuous');
-var promiseHelper = require('../../lib/promise-helper');
+const chai = require('chai');
+const assert = chai.assert;
+const PromiseLib = global.Promise || require('promiscuous');
+const promiseHelper = require('../../lib/promise-helper');
 
 describe('PromiseHelper Tests', function () {
     describe('isPromise', function () {
         it('undefined', function () {
-            var output = promiseHelper.isPromise();
+            const output = promiseHelper.isPromise();
             assert.isFalse(output);
         });
 
         it('null', function () {
-            var output = promiseHelper.isPromise(null);
+            const output = promiseHelper.isPromise(null);
             assert.isFalse(output);
         });
 
         it('not an object', function () {
-            var output = promiseHelper.isPromise(1);
+            const output = promiseHelper.isPromise(1);
             assert.isFalse(output);
         });
 
         it('missing then', function () {
-            var output = promiseHelper.isPromise({
+            const output = promiseHelper.isPromise({
                 catch: promiseHelper.noop
             });
             assert.isFalse(output);
         });
 
         it('missing catch', function () {
-            var output = promiseHelper.isPromise({
+            const output = promiseHelper.isPromise({
                 then: promiseHelper.noop
             });
             assert.isFalse(output);
         });
 
         it('then not a function', function () {
-            var output = promiseHelper.isPromise({
+            const output = promiseHelper.isPromise({
                 then: true,
                 catch: promiseHelper.noop
             });
@@ -45,7 +45,7 @@ describe('PromiseHelper Tests', function () {
         });
 
         it('catch not a function', function () {
-            var output = promiseHelper.isPromise({
+            const output = promiseHelper.isPromise({
                 then: promiseHelper.noop,
                 catch: true
             });
@@ -53,7 +53,7 @@ describe('PromiseHelper Tests', function () {
         });
 
         it('valid', function () {
-            var output = promiseHelper.isPromise({
+            const output = promiseHelper.isPromise({
                 then: promiseHelper.noop,
                 catch: promiseHelper.noop
             });
@@ -117,7 +117,7 @@ describe('PromiseHelper Tests', function () {
         it('Promise not supported', function () {
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 promiseHelper.runPromise(function () {
@@ -135,7 +135,7 @@ describe('PromiseHelper Tests', function () {
         it('valid', function (done) {
             global.Promise = PromiseLib;
 
-            var promise = promiseHelper.runPromise(function (callback) {
+            const promise = promiseHelper.runPromise(function (callback) {
                 assert.isFunction(callback);
 
                 callback(null, {
@@ -157,7 +157,7 @@ describe('PromiseHelper Tests', function () {
         it('error then', function (done) {
             global.Promise = PromiseLib;
 
-            var promise = promiseHelper.runPromise(function (callback) {
+            const promise = promiseHelper.runPromise(function (callback) {
                 assert.isFunction(callback);
 
                 callback(new Error('test'));
@@ -175,7 +175,7 @@ describe('PromiseHelper Tests', function () {
         it('error catch', function (done) {
             global.Promise = PromiseLib;
 
-            var promise = promiseHelper.runPromise(function (callback) {
+            const promise = promiseHelper.runPromise(function (callback) {
                 assert.isFunction(callback);
 
                 callback(new Error('test'));
@@ -192,14 +192,14 @@ describe('PromiseHelper Tests', function () {
     });
 
     describe('run', function () {
-        var action = function (callback) {
+        const action = function (callback) {
             assert.isFunction(callback);
 
             setTimeout(callback, 0);
         };
 
         it('callback provided', function (done) {
-            var promise = promiseHelper.run(action, done);
+            const promise = promiseHelper.run(action, done);
 
             assert.isUndefined(promise);
         });
@@ -209,7 +209,7 @@ describe('PromiseHelper Tests', function () {
 
             global.Promise = PromiseLib;
 
-            var promise = promiseHelper.run(action);
+            const promise = promiseHelper.run(action);
 
             promise.then(function () {
                 done();
@@ -221,7 +221,7 @@ describe('PromiseHelper Tests', function () {
         it('no callback, no promise support', function () {
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 promiseHelper.run(action);
@@ -237,7 +237,7 @@ describe('PromiseHelper Tests', function () {
         it('no callback, no promise support with force', function () {
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 promiseHelper.run(action, undefined, true);
@@ -255,7 +255,7 @@ describe('PromiseHelper Tests', function () {
         it('no options', function () {
             global.Promise = PromiseLib;
 
-            var func = promiseHelper.promisify(function (num, callback) {
+            const func = promiseHelper.promisify(function (num, callback) {
                 assert.equal(num, 15);
 
                 callback(null, 20);
@@ -269,7 +269,7 @@ describe('PromiseHelper Tests', function () {
         });
 
         it('no promise support, no default, no force', function () {
-            var func = promiseHelper.promisify(function (num, callback) {
+            const func = promiseHelper.promisify(function (num, callback) {
                 assert.equal(num, 15);
 
                 callback(null, 20);
@@ -280,7 +280,7 @@ describe('PromiseHelper Tests', function () {
 
             delete global.Promise;
 
-            var errorFound = false;
+            let errorFound = false;
 
             try {
                 func(15);

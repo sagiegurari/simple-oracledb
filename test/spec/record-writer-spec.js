@@ -1,15 +1,15 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var EventEmitter = require('events').EventEmitter;
-var recordWriter = require('../../lib/record-writer');
-var utils = require('../helpers/utils');
+const chai = require('chai');
+const assert = chai.assert;
+const EventEmitter = require('events').EventEmitter;
+const recordWriter = require('../../lib/record-writer');
+const utils = require('../helpers/utils');
 
 describe('RecordWriter Tests', function () {
     describe('write Tests', function () {
         it('string test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, encoding, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.equal(encoding, 'utf8');
@@ -33,7 +33,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('Buffer test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, callback) {
                 assert.deepEqual(data, utils.createBuffer('TEST STRING DATA'));
                 assert.isFunction(callback);
@@ -56,7 +56,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('null data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -76,7 +76,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('undefined data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -133,9 +133,9 @@ describe('RecordWriter Tests', function () {
         });
 
         it('multiple columns test', function (done) {
-            var lobsWritten = 0;
+            let lobsWritten = 0;
 
-            var writable1 = new EventEmitter();
+            const writable1 = new EventEmitter();
             writable1.end = function (data, encoding, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.equal(encoding, 'utf8');
@@ -146,7 +146,7 @@ describe('RecordWriter Tests', function () {
                 callback();
             };
 
-            var writable2 = new EventEmitter();
+            const writable2 = new EventEmitter();
             writable2.end = function (data, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.isFunction(callback);
@@ -178,7 +178,7 @@ describe('RecordWriter Tests', function () {
 
     describe('writeMultiple Tests', function () {
         it('string test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, encoding, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.equal(encoding, 'utf8');
@@ -203,7 +203,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('Buffer test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, callback) {
                 assert.deepEqual(data, utils.createBuffer('TEST STRING DATA'));
                 assert.isFunction(callback);
@@ -227,7 +227,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('null data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -248,7 +248,7 @@ describe('RecordWriter Tests', function () {
         });
 
         it('undefined data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -306,9 +306,9 @@ describe('RecordWriter Tests', function () {
         });
 
         it('multiple columns test', function (done) {
-            var lobsWritten = 0;
+            let lobsWritten = 0;
 
-            var writable1 = new EventEmitter();
+            const writable1 = new EventEmitter();
             writable1.end = function (data, encoding, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.equal(encoding, 'utf8');
@@ -319,7 +319,7 @@ describe('RecordWriter Tests', function () {
                 callback();
             };
 
-            var writable2 = new EventEmitter();
+            const writable2 = new EventEmitter();
             writable2.end = function (data, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.isFunction(callback);

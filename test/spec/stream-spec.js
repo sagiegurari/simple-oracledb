@@ -1,15 +1,15 @@
 'use strict';
 
-var chai = require('chai');
-var assert = chai.assert;
-var EventEmitter = require('events').EventEmitter;
-var stream = require('../../lib/stream');
-var utils = require('../helpers/utils');
+const chai = require('chai');
+const assert = chai.assert;
+const EventEmitter = require('events').EventEmitter;
+const stream = require('../../lib/stream');
+const utils = require('../helpers/utils');
 
 describe('stream Tests', function () {
     describe('read Tests', function () {
         it('read valid test', function (done) {
-            var testStream = new EventEmitter();
+            const testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
@@ -37,7 +37,7 @@ describe('stream Tests', function () {
         });
 
         it('read error test', function (done) {
-            var testStream = new EventEmitter();
+            const testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
@@ -65,7 +65,7 @@ describe('stream Tests', function () {
         });
 
         it('read close test', function (done) {
-            var testStream = new EventEmitter();
+            const testStream = new EventEmitter();
             testStream.setEncoding = function (encoding) {
                 assert.equal(encoding, 'utf8');
             };
@@ -93,7 +93,7 @@ describe('stream Tests', function () {
 
     describe('write Tests', function () {
         it('write string test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, encoding, callback) {
                 assert.equal(data, 'TEST STRING DATA');
                 assert.equal(encoding, 'utf8');
@@ -111,7 +111,7 @@ describe('stream Tests', function () {
         });
 
         it('write Buffer test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function (data, callback) {
                 assert.deepEqual(data.toJSON(), (utils.createBuffer('TEST STRING DATA')).toJSON());
                 assert.isFunction(callback);
@@ -128,7 +128,7 @@ describe('stream Tests', function () {
         });
 
         it('write null data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -142,7 +142,7 @@ describe('stream Tests', function () {
         });
 
         it('write undefined data test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
                 assert.fail();
             };
@@ -172,9 +172,9 @@ describe('stream Tests', function () {
         });
 
         it('write error test', function (done) {
-            var writable = new EventEmitter();
+            const writable = new EventEmitter();
             writable.end = function () {
-                var callback = Array.prototype.pop.call(arguments);
+                const callback = Array.prototype.pop.call(arguments);
                 writable.emit('error', new Error('test'));
 
                 setTimeout(callback, 10);
