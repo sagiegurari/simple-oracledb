@@ -7423,6 +7423,7 @@ describe('Connection Tests', function () {
             const options = {};
             const bindParams = [
                 {
+                    null1: null,
                     string1: 'text1',
                     string2: 'text2',
                     string3: {
@@ -7448,6 +7449,7 @@ describe('Connection Tests', function () {
                     }
                 },
                 {
+                    null1: null,
                     string1: '_text1',
                     string2: '_text2',
                     string3: {
@@ -7476,6 +7478,9 @@ describe('Connection Tests', function () {
             connection.generateBindDefinitions(options, bindParams);
 
             assert.deepEqual(options.bindDefs, {
+                null1: {
+                    type: 4002,
+                },
                 string1: {
                     type: 2001,
                     maxSize: 100000
@@ -7510,6 +7515,7 @@ describe('Connection Tests', function () {
             });
             assert.deepEqual(bindParams, [
                 {
+                    null1: null,
                     string1: 'text1',
                     string2: 'text2',
                     string3: 'text3',
@@ -7520,6 +7526,7 @@ describe('Connection Tests', function () {
                     lob: undefined
                 },
                 {
+                    null1: null,
                     string1: '_text1',
                     string2: '_text2',
                     string3: '_text3',
