@@ -31,8 +31,8 @@
     "lint-js": "eslint ./*.js ./lib/**/*.js ./test/**/*.js",
     "lint-css": "stylelint --allow-empty-input ./docs/**/*.css",
     "lint": "npm run lint-js && npm run lint-css",
-    "jstest": "mocha --exit ./test/**/*.js",
-    "coverage": "nyc --reporter=html --reporter=text --reporter=lcovonly --check-coverage=true mocha --exit ./test/**/*.js",
+    "jstest": "mocha --exit ./test/spec/**/*.js",
+    "coverage": "nyc --reporter=html --reporter=text --reporter=lcovonly --check-coverage=true mocha --exit ./test/spec/**/*.js",
     "docs": "jsdoc2md lib/**/*.js > ./docs/api.md",
     "test": "npm run clean && npm run format && npm run lint && npm run docs && npm run coverage",
     "postpublish": "git fetch && git pull"
