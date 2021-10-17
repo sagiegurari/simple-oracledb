@@ -26,20 +26,16 @@
     "test": "test/spec"
   },
   "scripts": {
-    "test": "grunt test",
-    "clean": "grunt cleanup",
-    "lint": "grunt lint",
-    "docs": "grunt docs",
-    "format": "grunt format",
-    "build": "grunt build",
-    "jstest": "grunt jstest",
-    "postpublish": "grunt post-publish",
-    "grunt": "grunt"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run build"
-    }
+    "clean": "rm -Rf ./.nyc_output ./coverage",
+    "format": "js-beautify --config ./.jsbeautifyrc --file ./*.js ./lib/**/*.js ./test/**/*.js",
+    "lint-js": "eslint ./*.js ./lib/**/*.js ./test/**/*.js",
+    "lint-css": "stylelint --allow-empty-input ./docs/**/*.css",
+    "lint": "npm run lint-js && npm run lint-css",
+    "jstest": "mocha --exit ./test/**/*.js",
+    "coverage": "nyc --reporter=html --reporter=text --reporter=lcovonly --check-coverage=true mocha --exit ./test/**/*.js",
+    "docs": "jsdoc2md lib/**/*.js > ./docs/api.md",
+    "test": "npm run clean && npm run format && npm run lint && npm run docs && npm run coverage",
+    "postpublish": "git fetch && git pull"
   },
   "dependencies": {
     "async": "^3",
@@ -49,11 +45,14 @@
     "node-later": "latest"
   },
   "devDependencies": {
-    "chai": "latest",
-    "grunt": "latest",
-    "grunt-cli": "latest",
-    "husky": "latest",
-    "js-project-commons": "latest",
-    "promiscuous": "latest"
+    "chai": "^4",
+    "eslint": "^8",
+    "js-beautify": "^1",
+    "jsdoc-to-markdown": "^7",
+    "mocha": "^9",
+    "nyc": "^15",
+    "promiscuous": "^0.7",
+    "stylelint": "^13",
+    "stylelint-config-standard": "^22"
   }
 }

@@ -6,11 +6,9 @@ const EventEmitter = require('events').EventEmitter;
 const Connection = require('../../lib/connection');
 
 /*jslint debug: true */
-function TestConnection() {
-}
+function TestConnection() {}
 
-function TestPool() {
-}
+function TestPool() {}
 /*jslint debug: false */
 
 TestConnection.prototype.execute = function () {
