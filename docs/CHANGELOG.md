@@ -1,5 +1,6 @@
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2021-10-XX  | v2.0.1  | Add null binding support and update constants with latest changes |
 | 2020-05-13  | v2.0.0  | Migrate to github actions and upgrade minimal node version |
 | 2019-05-25  | v1.4.2  | Maintenance |
 | 2019-01-25  | v1.4.0  | useExecuteMany=true by default |

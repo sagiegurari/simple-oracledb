@@ -186,7 +186,7 @@ This function basically will remove the need of caller code to get and release a
 It is recommanded to create a pool and use the pool.run instead of oracledb.run as this function will create a new connection (and release it) for each invocation,
 on the other hand, pool.run will reuse pool managed connections which will result in improved performance.
 
-**Example**  
+**Example**
 ```js
 oracledb.run({
  user: process.env.ORACLE_USER,
@@ -273,7 +273,7 @@ It will also ensure the provided connection is valid by running a test SQL and i
 See [getConnection](https://github.com/oracle/node-oracledb/blob/master/doc/api.md#getconnectionpool) for official API details.<br>
 See [createPool](https://github.com/sagiegurari/simple-oracledb/blob/master/docs/api.md#SimpleOracleDB.oracle.createPool) for extended createPool API details.
 
-**Example**  
+**Example**
 ```js
 oracledb.createPool({
   retryCount: 5, //The max amount of retries to get a connection from the pool in case of any error (default to 10 if not provided)
@@ -315,7 +315,7 @@ The pool will ensure the connection is released properly and only afterwards wil
 This function basically will remove the need of caller code to get and release a connection and focus on the actual database operation logic.<br>
 For extended promise support, the action provided can return a promise instead of calling the provided callback (see examples).
 
-**Example**  
+**Example**
 ```js
 pool.run(function (connection, callback) {
   //run some query and the output will be available in the 'run' callback
@@ -366,7 +366,7 @@ pool.run(function (connection) {
 This function invokes the requested queries in parallel (limiting it based on the amount of node.js thread pool size).<br>
 In order for the queries to run in parallel, multiple connections will be used so use this with caution.
 
-**Example**  
+**Example**
 ```js
 pool.parallelQuery([
   {
@@ -422,7 +422,7 @@ is just log the error and continue.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.<br>
 The pool.terminate also has an alias pool.close for consistent close function naming to all relevant objects.
 
-**Example**  
+**Example**
 ```js
 pool.terminate(); //no callback needed
 
@@ -454,7 +454,7 @@ All LOBs will be read and all rows will be fetched.<br>
 This function is not recommended for huge results sets or huge LOB values as it will consume a lot of memory.<br>
 The function arguments used to execute the 'query' are exactly as defined in the oracledb connection.execute function.
 
-**Example**  
+**Example**
 ```js
 //read all rows and get an array of objects with all data
 connection.query('SELECT department_id, department_name FROM departments WHERE manager_id < :id', [110], function onResults(error, results) {
@@ -522,7 +522,7 @@ The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
-**Example**  
+**Example**
 ```js
 connection.insert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', { //no need to specify the RETURNING clause in the SQL
   id: 110,
@@ -585,7 +585,7 @@ The callback output will be the same as oracledb connection.execute.<br>
 All LOBs will be written to the DB via streams and only after all LOBs are written the callback will be called.<br>
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory.
 
-**Example**  
+**Example**
 ```js
 connection.update('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', { //no need to specify the RETURNING clause in the SQL
   id: 110,
@@ -628,7 +628,7 @@ The json property will hold a single JSON object in case the returned row count 
 The query expects that only 1 column is fetched and if more are detected in the results, this function will return an error in the callback.<br>
 The function arguments used to execute the 'queryJSON' are exactly as defined in the oracledb connection.execute function.
 
-**Example**  
+**Example**
 ```js
 connection.queryJSON('SELECT JSON_DATA FROM APP_CONFIG WHERE ID > :id', [110], function onResults(error, results) {
   if (error) {
@@ -671,7 +671,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'insert' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
-**Example**  
+**Example**
 ```js
 connection.batchInsert('INSERT INTO mylobs (id, clob_column1, blob_column2) VALUES (:id, EMPTY_CLOB(), EMPTY_BLOB())', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
@@ -706,7 +706,7 @@ All LOBs for all rows will be written to the DB via streams and only after all L
 The function arguments used to execute the 'update' are exactly as defined in the oracledb connection.execute function, however the options are mandatory and
 the bind params is now an array of bind params (one per row).
 
-**Example**  
+**Example**
 ```js
 connection.batchUpdate('UPDATE mylobs SET name = :name, clob_column1 = EMPTY_CLOB(), blob_column2 = EMPTY_BLOB() WHERE id = :id', [ //no need to specify the RETURNING clause in the SQL
   { //first row values
@@ -745,7 +745,7 @@ When calling any connection operation (execute, insert, update, ...) the connect
 This is done to prevent commits in the middle of the transaction.<br>
 In addition, you can not start a transaction while another transaction is in progress.
 
-**Example**  
+**Example**
 ```js
 //run all actions in parallel
 connection.transaction([
@@ -827,7 +827,7 @@ This function is basically the same as connection.transaction with few exception
   <li>You can invoke connection.run inside connection.run as many times as needed (for example if you execute connection.run with option.sequence=false meaning parallel and inside invoke connection.run with option.sequence=true for a subset of operations)</li>
 </ul>
 
-**Example**  
+**Example**
 ```js
 //run all actions in parallel
 connection.run([
@@ -939,7 +939,7 @@ Reads the sql string from the provided file and executes it.<br>
 The file content must be a single valid SQL command string.<br>
 This function is basically a quick helper to reduce the coding needed to read the sql file.
 
-**Example**  
+**Example**
 ```js
 connection.executeFile('./populate_table.sql', function onResults(error, results) {
   if (error) {
@@ -959,7 +959,7 @@ This function modifies the existing connection.release function by enabling the 
 callback to be an optional parameter and providing ability to auto retry in case of any errors during release.<br>
 The connection.release also has an alias connection.close for consistent close function naming to all relevant objects.
 
-**Example**  
+**Example**
 ```js
 connection.release(); //no callback needed
 
@@ -1007,7 +1007,7 @@ callback to be an optional parameter.<br>
 If rollback fails, you can't really rollback again the data, so the callback is not always needed.<br>
 Therefore this function allows you to ignore the need to pass a callback and makes it as an optional parameter.
 
-**Example**  
+**Example**
 ```js
 connection.rollback(); //no callback needed
 
@@ -1069,7 +1069,7 @@ An extension, is a function which will be added to any pool or connection instan
 This function enables external libraries to further extend oracledb using a very simple API and without the need to wrap the pool/connection creation functions.<br>
 Extension functions automatically get promisified unless specified differently in the optional options.
 
-**Example**  
+**Example**
 ```js
 //define a new function for all new connection objects called 'myConnFunc' which accepts 2 arguments
 SimpleOracleDB.addExtension('connection', 'myConnFunc', function (myParam1, myParam2, callback) {
@@ -1145,6 +1145,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
+| 2021-10-XX  | v2.0.1  | Add null binding support and update constants with latest changes |
 | 2020-05-13  | v2.0.0  | Migrate to github actions and upgrade minimal node version |
 | 2019-05-25  | v1.4.2  | Maintenance |
 | 2019-01-25  | v1.4.0  | useExecuteMany=true by default |
