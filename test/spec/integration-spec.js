@@ -702,9 +702,10 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
-                                connection.insert('INSERT INTO ' + table + ' (COL1, COL2) values (:value1, :value2)', {
+                                connection.insert('INSERT INTO ' + table + ' (COL1, COL2, COL4) values (:value1, :value2, :value3)', {
                                     value1: 'test',
-                                    value2: 123
+                                    value2: 123,
+                                    value3: null
                                 }, {}, function (error, results) {
                                     assert.isNull(error);
                                     assert.equal(1, results.rowsAffected);
@@ -1273,16 +1274,18 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
-                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, COL4, LOB1, LOB2) values (:value1, :value2, :value3, EMPTY_CLOB(), EMPTY_BLOB())', [
                                     {
                                         value1: 'test',
                                         value2: 123,
+                                        value3: null,
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('blob text here')
                                     },
                                     {
                                         value1: 'test2',
                                         value2: 455,
+                                        value3: null,
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('second row')
                                     }
@@ -1498,16 +1501,18 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
-                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, LOB1, LOB2) values (:value1, :value2, EMPTY_CLOB(), EMPTY_BLOB())', [
+                                connection.batchInsert('INSERT INTO ' + table + ' (COL1, COL2, COL4, LOB1, LOB2) values (:value1, :value2, :value3, EMPTY_CLOB(), EMPTY_BLOB())', [
                                     {
                                         value1: 'test',
                                         value2: 123,
+                                        value3: 'col4',
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('blob text here')
                                     },
                                     {
                                         value1: 'test2',
                                         value2: 455,
+                                        value3: 'col4',
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('second row')
                                     }
@@ -1533,7 +1538,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL1: 'test',
                                                 COL2: 123,
                                                 COL3: null,
-                                                COL4: null,
+                                                COL4: 'col4',
                                                 LOB1: longClobText,
                                                 LOB2: utils.createBuffer('blob text here')
                                             },
@@ -1541,22 +1546,24 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL1: 'test2',
                                                 COL2: 455,
                                                 COL3: null,
-                                                COL4: null,
+                                                COL4: 'col4',
                                                 LOB1: longClobText,
                                                 LOB2: utils.createBuffer('second row')
                                             }
                                         ], jsRows);
 
-                                        connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
+                                        connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, COL4: = :value3, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
                                             {
                                                 value1: 'testU1',
                                                 value2: 123,
+                                                value3: null,
                                                 clob1: 'NEW CLOB1',
                                                 blob2: utils.createBuffer('NEW BLOB')
                                             },
                                             {
                                                 value1: 'testU2',
                                                 value2: 455,
+                                                value3: 'col4-2',
                                                 clob1: 'NEW CLOB2',
                                                 blob2: utils.createBuffer('AND ANOTHER NEW BLOB')
                                             }
@@ -1589,7 +1596,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                         COL1: 'testU2',
                                                         COL2: 455,
                                                         COL3: null,
-                                                        COL4: null,
+                                                        COL4: 'col4-2',
                                                         LOB1: 'NEW CLOB2',
                                                         LOB2: utils.createBuffer('AND ANOTHER NEW BLOB')
                                                     }
