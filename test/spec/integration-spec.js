@@ -6,7 +6,7 @@ const integrationHelper = require('../helpers/integration-helper');
 const utils = require('../helpers/utils');
 
 integrationHelper(function (oracledb, connAttrs, initDB, end) {
-    if (oracledb && connAttrs && initDB && end && false) {
+    if (oracledb && connAttrs && initDB && end) {
         describe('Integration Tests', function () {
             const self = this;
 
