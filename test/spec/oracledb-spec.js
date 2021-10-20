@@ -632,7 +632,6 @@ describe('OracleDB Tests', function () {
                     password: 'mypass',
                     connectString: 'mydb',
                     releaseOptions: {
-                        force: true,
                         test: true
                     }
                 });
@@ -640,7 +639,6 @@ describe('OracleDB Tests', function () {
                 callback(null, {
                     release(options, cb) {
                         assert.deepEqual(options, {
-                            force: true,
                             test: true
                         });
 
@@ -720,6 +718,56 @@ describe('OracleDB Tests', function () {
             });
         });
 
+        it('release options, force true', function (done) {
+            let releaseCalled = false;
+
+            const oracledb = createOracleDB(true);
+
+            oracledb.getConnection = function (connectionAttributes, callback) {
+                assert.deepEqual(connectionAttributes, {
+                    user: 'test',
+                    password: 'mypass',
+                    connectString: 'mydb',
+                    releaseOptions: {
+                        force: true,
+                        test: true
+                    }
+                });
+
+                callback(null, {
+                    release(options, cb) {
+                        assert.deepEqual(options, {
+                            force: true,
+                            test: true
+                        });
+
+                        releaseCalled = true;
+
+                        cb();
+                    }
+                });
+            };
+
+            oracledb.run({
+                user: 'test',
+                password: 'mypass',
+                connectString: 'mydb',
+                releaseOptions: {
+                    force: true,
+                    test: true
+                }
+            }, function (connection, callback) {
+                assert.isDefined(connection);
+
+                callback();
+            }, function (error) {
+                assert.isNull(error);
+                assert.isTrue(releaseCalled);
+
+                done();
+            });
+        });
+
         it('valid', function (done) {
             let releaseCalled = false;
 
@@ -734,9 +782,7 @@ describe('OracleDB Tests', function () {
 
                 callback(null, {
                     release(options, cb) {
-                        assert.deepEqual(options, {
-                            force: true
-                        });
+                        assert.deepEqual(options, {});
 
                         releaseCalled = true;
 
@@ -784,9 +830,7 @@ describe('OracleDB Tests', function () {
 
                 callback(null, {
                     release(options, cb) {
-                        assert.deepEqual(options, {
-                            force: true
-                        });
+                        assert.deepEqual(options, {});
 
                         releaseCalled = true;
 
