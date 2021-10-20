@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# this script should be invoked from the project root
+# this script should be invoked from the project root as follows:
+# . ./test/helpers/scripts/setup.sh
+
 # run oracle DB
 docker run -d -p 1521:1521 -e ORACLE_ALLOW_REMOTE=true oracleinanutshell/oracle-xe-11g
 
@@ -23,6 +25,7 @@ npm install
 npm install --no-save oracledb
 
 export DPI_DEBUG_LEVEL=16
+export NODE_DEBUG=simple-oracledb
 
 export TEST_ORACLE_USER=system
 export TEST_ORACLE_PASSWORD=oracle
