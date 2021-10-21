@@ -456,6 +456,10 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
+                                for (let index = 0; index < dbData.length; index++) {
+                                    dbData[index].LOB2 = dbData[index].LOB2.toString();
+                                }
+
                                 connection.query('SELECT COUNT(*) count FROM ' + table, function (countError, countResults) {
                                     assert.isNull(countError);
                                     assert.equal(countResults[0].COUNT, 100);
@@ -516,6 +520,12 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                             pool.getConnection(function (err, connection) {
                                 assert.isNull(err);
 
+                                for (let index = 0; index < dbData.length; index++) {
+                                    if (dbData[index].LOB2) {
+                                        dbData[index].LOB2 = dbData[index].LOB2.toString();
+                                    }
+                                }
+
                                 const stream = connection.query('SELECT * FROM ' + table, [], {
                                     streamResults: true
                                 });
@@ -569,7 +579,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL3: 30,
                                             COL4: '123',
                                             LOB1: 'THIS IS SOME CLOB TEST TEXT',
-                                            LOB2: utils.createBuffer('BLOB - 123456')
+                                            LOB2: 'BLOB - 123456'
                                         }
                                     ], jsRows);
 
@@ -772,7 +782,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL3: null,
                                                 COL4: null,
                                                 LOB1: longClobText,
-                                                LOB2: utils.createBuffer('blob text here')
+                                                LOB2: 'blob text here'
                                             }
                                         ], jsRows);
 
@@ -829,7 +839,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL3: null,
                                                 COL4: null,
                                                 LOB1: longClobText,
-                                                LOB2: utils.createBuffer('blob text here')
+                                                LOB2: 'blob text here'
                                             }
                                         ], jsRows);
 
@@ -991,7 +1001,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                     COL3: null,
                                                     COL4: null,
                                                     LOB1: longClobText,
-                                                    LOB2: utils.createBuffer('blob text here')
+                                                    LOB2: 'blob text here'
                                                 },
                                                 {
                                                     COL1: 'test2',
@@ -999,7 +1009,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                     COL3: null,
                                                     COL4: null,
                                                     LOB1: longClobText,
-                                                    LOB2: utils.createBuffer('second blob text here')
+                                                    LOB2: 'second blob text here'
                                                 }
                                             ], jsRows);
 
@@ -1026,7 +1036,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                             COL3: 7777,
                                                             COL4: null,
                                                             LOB1: 'NEW CLOB TEXT VALUE',
-                                                            LOB2: utils.createBuffer('blob text here')
+                                                            LOB2: 'blob text here'
                                                         },
                                                         {
                                                             COL1: 'test2',
@@ -1034,7 +1044,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                             COL3: 7777,
                                                             COL4: null,
                                                             LOB1: 'NEW CLOB TEXT VALUE',
-                                                            LOB2: utils.createBuffer('second blob text here')
+                                                            LOB2: 'second blob text here'
                                                         }
                                                     ], jsRows2);
 
@@ -1241,7 +1251,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL3: null,
                                                 COL4: null,
                                                 LOB1: longClobText,
-                                                LOB2: utils.createBuffer('blob text here')
+                                                LOB2: 'blob text here'
                                             },
                                             {
                                                 COL1: 'test2',
@@ -1249,7 +1259,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                                 COL3: null,
                                                 COL4: null,
                                                 LOB1: longClobText,
-                                                LOB2: utils.createBuffer('second row')
+                                                LOB2: 'second row'
                                             }
                                         ], jsRows);
 

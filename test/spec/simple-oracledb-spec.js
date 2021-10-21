@@ -6,11 +6,11 @@ const PromiseLib = global.Promise || require('promiscuous');
 
 describe('simple oracledb tests', function () {
     const oracledb = require('../helpers/test-oracledb').create();
-    oracledb.BLOB = 2007;
-    oracledb.CLOB = 2006;
+    oracledb.BLOB = 2019;
+    oracledb.CLOB = 2017;
     oracledb.STRING = 2001;
-    oracledb.NUMBER = 2002;
-    oracledb.DATE = 2003;
+    oracledb.NUMBER = 2010;
+    oracledb.DATE = 2011;
     oracledb.BIND_OUT = 3003;
     const simpleOracleDB = require('../../');
     simpleOracleDB.extend(oracledb);

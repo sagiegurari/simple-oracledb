@@ -24,7 +24,7 @@ sudo apt-get install -y libaio1
 npm install
 npm install --no-save oracledb
 
-export DPI_DEBUG_LEVEL=16
+export DPI_DEBUG_LEVEL=93
 export NODE_DEBUG=simple-oracledb
 
 export TEST_ORACLE_USER=system

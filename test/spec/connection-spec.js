@@ -4233,10 +4233,10 @@ describe('Connection Tests', function () {
                         forceUseExecuteMany: true,
                         bindDefs: {
                             id1: {
-                                type: 2002
+                                type: 2010
                             },
                             id2: {
-                                type: 2002
+                                type: 2010
                             }
                         }
                     });
@@ -4309,10 +4309,10 @@ describe('Connection Tests', function () {
                         useExecuteMany: true,
                         bindDefs: {
                             id1: {
-                                type: 2002
+                                type: 2010
                             },
                             id2: {
-                                type: 2002
+                                type: 2010
                             }
                         }
                     });
@@ -4667,19 +4667,19 @@ describe('Connection Tests', function () {
                         forceUseExecuteMany: true,
                         bindDefs: {
                             id: {
-                                type: 2002
+                                type: 2010
                             },
                             lob1: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob2: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob3: {
                                 dir: 3003,
-                                type: 2007
+                                type: 2019
                             }
                         }
                     });
@@ -4816,19 +4816,19 @@ describe('Connection Tests', function () {
                         useExecuteMany: true,
                         bindDefs: {
                             id: {
-                                type: 2002
+                                type: 2010
                             },
                             lob1: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob2: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob3: {
                                 dir: 3003,
-                                type: 2007
+                                type: 2019
                             }
                         }
                     });
@@ -7495,14 +7495,14 @@ describe('Connection Tests', function () {
                     maxSize: 100000
                 },
                 number1: {
-                    type: 2002
+                    type: 2010
                 },
                 number2: {
                     dir: 10,
                     type: 20
                 },
                 date1: {
-                    type: 2003
+                    type: 2011
                 },
                 date2: {
                     dir: 100,
