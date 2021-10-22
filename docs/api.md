@@ -957,8 +957,8 @@ on the other hand, pool.run will reuse pool managed connections which will resul
 | --- | --- | --- | --- |
 | connectionAttributes | <code>Object</code> |  | The connection attributes object (see oracledb.getConnection for more details) |
 | [connectionAttributes.ignoreReleaseErrors] | <code>Boolean</code> | <code>false</code> | If true, errors during connection.release() invoked internally will be ignored |
-| [connectionAttributes.releaseOptions] | <code>Object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
-| [connectionAttributes.releaseOptions.force] | <code>Boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| [connectionAttributes.releaseOptions] | <code>Object</code> | <code>{force: false}</code> | The connection.release options (see connection.release for more info) |
+| [connectionAttributes.releaseOptions.force] | <code>Boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | action | [<code>ConnectionAction</code>](#ConnectionAction) |  | An action requested to be invoked. |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the oracle connection instance |
 
@@ -1169,8 +1169,8 @@ For extended promise support, the action provided can return a promise instead o
 | action | [<code>ConnectionAction</code>](#ConnectionAction) |  | An action requested by the pool to be invoked. |
 | [options] | <code>Object</code> |  | Optional runtime options |
 | [options.ignoreReleaseErrors] | <code>Boolean</code> | <code>false</code> | If true, errors during connection.release() invoked by the pool will be ignored |
-| [options.releaseOptions] | <code>Object</code> | <code>{force: true}</code> | The connection.release options (see connection.release for more info) |
-| [options.releaseOptions.force] | <code>Boolean</code> | <code>true</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
+| [options.releaseOptions] | <code>Object</code> | <code>{force: false}</code> | The connection.release options (see connection.release for more info) |
+| [options.releaseOptions.force] | <code>Boolean</code> | <code>false</code> | If force=true the connection.break will be called before trying to release to ensure all running activities are aborted |
 | [callback] | [<code>AsyncCallback</code>](#AsyncCallback) |  | Invoked with an error or the result of the action after the connection was released by the pool |
 
 **Example**  

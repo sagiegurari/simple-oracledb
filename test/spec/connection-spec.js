@@ -4233,10 +4233,10 @@ describe('Connection Tests', function () {
                         forceUseExecuteMany: true,
                         bindDefs: {
                             id1: {
-                                type: 2002
+                                type: 2010
                             },
                             id2: {
-                                type: 2002
+                                type: 2010
                             }
                         }
                     });
@@ -4309,10 +4309,10 @@ describe('Connection Tests', function () {
                         useExecuteMany: true,
                         bindDefs: {
                             id1: {
-                                type: 2002
+                                type: 2010
                             },
                             id2: {
-                                type: 2002
+                                type: 2010
                             }
                         }
                     });
@@ -4667,19 +4667,19 @@ describe('Connection Tests', function () {
                         forceUseExecuteMany: true,
                         bindDefs: {
                             id: {
-                                type: 2002
+                                type: 2010
                             },
                             lob1: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob2: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob3: {
                                 dir: 3003,
-                                type: 2007
+                                type: 2019
                             }
                         }
                     });
@@ -4816,19 +4816,19 @@ describe('Connection Tests', function () {
                         useExecuteMany: true,
                         bindDefs: {
                             id: {
-                                type: 2002
+                                type: 2010
                             },
                             lob1: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob2: {
                                 dir: 3003,
-                                type: 2006
+                                type: 2017
                             },
                             lob3: {
                                 dir: 3003,
-                                type: 2007
+                                type: 2019
                             }
                         }
                     });
@@ -7423,6 +7423,11 @@ describe('Connection Tests', function () {
             const options = {};
             const bindParams = [
                 {
+                    null1: {
+                        type: 2001,
+                        maxSize: 450,
+                        val: null
+                    },
                     string1: 'text1',
                     string2: 'text2',
                     string3: {
@@ -7448,6 +7453,7 @@ describe('Connection Tests', function () {
                     }
                 },
                 {
+                    null1: null,
                     string1: '_text1',
                     string2: '_text2',
                     string3: {
@@ -7476,6 +7482,10 @@ describe('Connection Tests', function () {
             connection.generateBindDefinitions(options, bindParams);
 
             assert.deepEqual(options.bindDefs, {
+                null1: {
+                    type: 2001,
+                    maxSize: 450
+                },
                 string1: {
                     type: 2001,
                     maxSize: 100000
@@ -7490,14 +7500,14 @@ describe('Connection Tests', function () {
                     maxSize: 100000
                 },
                 number1: {
-                    type: 2002
+                    type: 2010
                 },
                 number2: {
                     dir: 10,
                     type: 20
                 },
                 date1: {
-                    type: 2003
+                    type: 2011
                 },
                 date2: {
                     dir: 100,
@@ -7510,6 +7520,7 @@ describe('Connection Tests', function () {
             });
             assert.deepEqual(bindParams, [
                 {
+                    null1: null,
                     string1: 'text1',
                     string2: 'text2',
                     string3: 'text3',
@@ -7520,6 +7531,7 @@ describe('Connection Tests', function () {
                     lob: undefined
                 },
                 {
+                    null1: null,
                     string1: '_text1',
                     string2: '_text2',
                     string3: '_text3',

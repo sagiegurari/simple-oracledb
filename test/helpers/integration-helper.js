@@ -46,7 +46,7 @@ module.exports = function (setup) {
                     }, 100);
                 } else {
                     connection.execute('DROP TABLE ' + tableName, [], function () {
-                        connection.execute('CREATE TABLE ' + tableName + ' (COL1 constCHAR2(250) PRIMARY KEY, COL2 NUMBER, COL3 NUMBER, COL4 constCHAR2(250), LOB1 CLOB, LOB2 BLOB)', [], function (createError) {
+                        connection.execute('CREATE TABLE ' + tableName + ' (COL1 VARCHAR2(250) PRIMARY KEY, COL2 NUMBER, COL3 NUMBER, COL4 VARCHAR2(250), LOB1 CLOB, LOB2 BLOB)', [], function (createError) {
                             if (createError) {
                                 console.error(createError);
                                 assert.fail('UNABLE TO CREATE DB TABLE: ' + tableName);

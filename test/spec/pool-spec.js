@@ -924,8 +924,7 @@ describe('Pool Tests', function () {
                 connection.release = function (options, cb) {
                     assert.deepEqual(options, {
                         retryCount: 270,
-                        test: 123,
-                        force: true
+                        test: 123
                     });
                     releaseOptionsFound = true;
 
