@@ -1145,7 +1145,7 @@ See [contributing guide](.github/CONTRIBUTING.md)
 
 | Date        | Version | Description |
 | ----------- | ------- | ----------- |
-| 2021-10-XX  | v2.0.1  | Add null binding support and update constants with latest changes |
+| 2021-10-22  | v3.0.0  | Add null binding support, update constants with latest changes and do not break by default after run is done |
 | 2020-05-13  | v2.0.0  | Migrate to github actions and upgrade minimal node version |
 | 2019-05-25  | v1.4.2  | Maintenance |
 | 2019-01-25  | v1.4.0  | useExecuteMany=true by default |
