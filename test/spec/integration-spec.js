@@ -569,7 +569,7 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             COL3: 30,
                                             COL4: '123',
                                             LOB1: 'THIS IS SOME CLOB TEST TEXT',
-                                            LOB2: 'BLOB - 123456'
+                                            LOB2: utils.createBuffer('BLOB - 123456')
                                         }
                                     ], jsRows);
 
@@ -1278,14 +1278,22 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                     {
                                         value1: 'test',
                                         value2: 123,
-                                        value3: null,
+                                        value3: {
+                                            type: oracledb.DB_TYPE_VARCHAR,
+                                            maxSize: 0,
+                                            val: null
+                                        },
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('blob text here')
                                     },
                                     {
                                         value1: 'test2',
                                         value2: 455,
-                                        value3: null,
+                                        value3: {
+                                            type: oracledb.DB_TYPE_VARCHAR,
+                                            maxSize: 0,
+                                            val: null
+                                        },
                                         clob1: longClobText,
                                         blob2: utils.createBuffer('second row')
                                     }
@@ -1552,11 +1560,15 @@ integrationHelper(function (oracledb, connAttrs, initDB, end) {
                                             }
                                         ], jsRows);
 
-                                        connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, COL4: = :value3, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
+                                        connection.batchUpdate('UPDATE ' + table + ' SET COL1 = :value1, COL4 = :value3, LOB1 = EMPTY_CLOB(), LOB2 = EMPTY_BLOB() WHERE COL2 = :value2', [
                                             {
                                                 value1: 'testU1',
                                                 value2: 123,
-                                                value3: null,
+                                                value3: {
+                                                    type: oracledb.DB_TYPE_VARCHAR,
+                                                    maxSize: 100,
+                                                    val: null
+                                                },
                                                 clob1: 'NEW CLOB1',
                                                 blob2: utils.createBuffer('NEW BLOB')
                                             },

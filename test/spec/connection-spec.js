@@ -7423,7 +7423,11 @@ describe('Connection Tests', function () {
             const options = {};
             const bindParams = [
                 {
-                    null1: null,
+                    null1: {
+                        type: 2001,
+                        maxSize: 450,
+                        val: null
+                    },
                     string1: 'text1',
                     string2: 'text2',
                     string3: {
@@ -7479,7 +7483,8 @@ describe('Connection Tests', function () {
 
             assert.deepEqual(options.bindDefs, {
                 null1: {
-                    type: 4002,
+                    type: 2001,
+                    maxSize: 450
                 },
                 string1: {
                     type: 2001,

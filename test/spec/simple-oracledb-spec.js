@@ -22,6 +22,12 @@ describe('simple oracledb tests', function () {
                     return undefined;
                 }
             };
+            assert.isUndefined(oracledbLib.on);
+
+            simpleOracleDB.extend(oracledbLib);
+            assert.isTrue(oracledbLib.simplified);
+            assert.isDefined(oracledbLib.on);
+
             simpleOracleDB.extend(oracledbLib);
             assert.isTrue(oracledbLib.simplified);
         });
