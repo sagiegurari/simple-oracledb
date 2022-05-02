@@ -49,7 +49,7 @@
     "eslint": "^8",
     "js-beautify": "^1",
     "jsdoc-to-markdown": "^7",
-    "mocha": "^9",
+    "mocha": "^10",
     "nyc": "^15",
     "promiscuous": "^0.7",
     "stylelint": "^13",
