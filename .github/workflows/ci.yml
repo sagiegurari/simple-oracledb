@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['lts/*']
+        node-version: ['current']
     steps:
     - name: Checkout
       uses: actions/checkout@v2
